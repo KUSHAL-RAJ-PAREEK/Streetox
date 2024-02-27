@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/auth_nav_graph"
+    app:startDestination="@id/splashFragment">
+
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.streetox.streetox.fragments.SplashFragment"
+        android:label="fragment_splash"
+        tools:layout="@layout/fragment_splash" >
+        <action
+            android:id="@+id/action_splashFragment_to_signinLoginChooseFragment"
+            app:destination="@id/signinLoginChooseFragment"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/signinLoginChooseFragment"
+        android:name="com.streetox.streetox.fragments.SigninLoginChooseFragment"
+        android:label="fragment_signin_login_choose"
+        tools:layout="@layout/fragment_signin_login_choose" >
+        <action
+            android:id="@+id/action_signinLoginChooseFragment_to_logInFragment"
+            app:destination="@id/logInFragment" />
+        <action
+            android:id="@+id/action_signinLoginChooseFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.streetox.streetox.fragments.SignUpFragment"
+        android:label="fragment_sign_up"
+        tools:layout="@layout/fragment_sign_up" >
+        <action
+            android:id="@+id/action_signUpFragment_to_signinLoginChooseFragment"
+            app:destination="@id/signinLoginChooseFragment"
+            app:popUpTo="@id/signinLoginChooseFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_signUpFragment_to_signUpEmailFragment"
+            app:destination="@id/signUpEmailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/logInFragment"
+        android:name="com.streetox.streetox.fragments.LogInFragment"
+        android:label="fragment_log_in"
+        tools:layout="@layout/fragment_log_in" >
+        <action
+            android:id="@+id/action_logInFragment_to_signinLoginChooseFragment"
+            app:destination="@id/signinLoginChooseFragment"
+            app:popUpTo="@id/signinLoginChooseFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpEmailFragment"
+        android:name="com.streetox.streetox.fragments.SignUpEmailFragment"
+        android:label="fragment_sign_up_email"
+        tools:layout="@layout/fragment_sign_up_email" >
+        <action
+            android:id="@+id/action_signUpEmailFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment"
+            app:popUpTo="@id/signUpFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_signUpEmailFragment_to_abbreviationFragment"
+            app:destination="@id/abbreviationFragment" />
+        <action
+            android:id="@+id/action_signUpEmailFragment_to_signUpPasswordFragment"
+            app:destination="@id/signUpPasswordFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/abbreviationFragment"
+        android:name="com.streetox.streetox.fragments.AbbreviationFragment"
+        android:label="fragment_abbreviation"
+        tools:layout="@layout/fragment_abbreviation" >
+        <action
+            android:id="@+id/action_abbreviationFragment_to_signUpEmailFragment"
+            app:destination="@id/signUpEmailFragment"
+            app:popUpTo="@id/signUpEmailFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_abbreviationFragment_to_nameFragment"
+            app:destination="@id/nameFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/nameFragment"
+        android:name="com.streetox.streetox.fragments.NameFragment"
+        android:label="fragment_name"
+        tools:layout="@layout/fragment_name" >
+        <action
+            android:id="@+id/action_nameFragment_to_abbreviationFragment"
+            app:destination="@id/abbreviationFragment"
+            app:popUpTo="@id/abbreviationFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_nameFragment_to_birthDateFragment"
+            app:destination="@id/birthDateFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/birthDateFragment"
+        android:name="com.streetox.streetox.fragments.BirthDateFragment"
+        android:label="fragment_birth_date"
+        tools:layout="@layout/fragment_birth_date" >
+        <action
+            android:id="@+id/action_birthDateFragment_to_nameFragment"
+            app:destination="@id/nameFragment" />
+        <action
+            android:id="@+id/action_birthDateFragment_to_signUpPasswordFragment"
+            app:destination="@id/signUpPasswordFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpPasswordFragment"
+        android:name="com.streetox.streetox.fragments.SignUpPasswordFragment"
+        android:label="fragment_sign_up_password"
+        tools:layout="@layout/fragment_sign_up_password" >
+        <action
+            android:id="@+id/action_signUpPasswordFragment_to_birthDateFragment"
+            app:destination="@id/birthDateFragment"
+            app:popUpTo="@id/birthDateFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_signUpPasswordFragment_to_phoneNumberFragment"
+            app:destination="@id/phoneNumberFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/phoneNumberFragment"
+        android:name="com.streetox.streetox.fragments.PhoneNumberFragment"
+        android:label="fragment_phone_number"
+        tools:layout="@layout/fragment_phone_number" >
+        <action
+            android:id="@+id/action_phoneNumberFragment_to_otpFragment"
+            app:destination="@id/otpFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/otpFragment"
+        android:name="com.streetox.streetox.fragments.OtpFragment"
+        android:label="fragment_otp"
+        tools:layout="@layout/fragment_otp" >
+        <action
+            android:id="@+id/action_otpFragment_to_phoneNumberFragment"
+            app:destination="@id/phoneNumberFragment"
+            app:popUpTo="@id/phoneNumberFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+</navigation>

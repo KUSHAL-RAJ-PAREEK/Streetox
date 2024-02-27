@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Focused state -->
+    <item android:state_focused="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="16dp" />
+            <solid android:color="@color/edit_text_color" />
+            <stroke android:width="2dp" android:color="@color/streetox_primary_color" />
+        </shape>
+    </item>
+    <!-- Default state -->
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="16dp" />
+            <solid android:color="@color/edit_text_color" />
+            <stroke android:width="2dp" android:color="@color/edit_text_color" />
+        </shape>
+    </item>
+</selector>

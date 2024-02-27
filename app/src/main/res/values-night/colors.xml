@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="streetox_primary_color">#FFDE59</color>
+    <color name="background_color">#32332D</color>
+    <color name="splash_bg_color">#EACDAB</color>
+    <color name="edit_text_color">#CCCCCB</color>
+    <color name="hint_color">#6E6E6E</color>
+</resources>

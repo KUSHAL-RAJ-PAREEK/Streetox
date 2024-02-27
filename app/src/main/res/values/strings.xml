@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Streetox</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="tag_line">Welcome to streetox</string>
+    <string name="abbervation_line">In what manner would you\nlike to address ?</string>
+    <string name="mr_abbervation">Mr.</string>
+    <string name="mrs_abbervation">Mrs.</string>
+    <string name="others_abbervation">I\'d rather not say</string>
+    <string name="last_name">Last Name</string>
+    <string name="first_name">First name</string>
+    <string name="name_auth_title">What\'s your name ?</string>
+    <string name="password_tittle">A key to unlocking the\nwonders within?</string>
+    <string name="birth_date_tittle">what\'s your birthdate ?</string>
+    <string name="dd_mm_yyyy">DD/MM/YYYY</string>
+    <string name="password_essential_check">It must at least 8 characters,1 letter, 1 number and 1 special character</string>
+    <string name="login_tittle">Could you please provide\nyour email and password ?</string>
+    <string name="login_email_address">Email address</string>
+    <string name="login_password">Password</string>
+    <string name="forget_password">Forget Password ?</string>
+    <string name="buttom_login">Login</string>
+    <string name="login_or">Or</string>
+    <string name="sign_in_google">Sign in</string>
+    <string name="sign_in_facebook">Sign in</string>
+    <string name="don_t_have_an_account">Don\'t have an account ?</string>
+</resources>

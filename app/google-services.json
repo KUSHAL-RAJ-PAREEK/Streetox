@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "537705992615",
+    "project_id": "streetox-a836c",
+    "storage_bucket": "streetox-a836c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:537705992615:android:feea3bfc1552f1f155e682",
+        "android_client_info": {
+          "package_name": "com.streetox.streetox"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBs0aeMGEUVhDT5pY0gkxi2ghjgQzaC5g4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
