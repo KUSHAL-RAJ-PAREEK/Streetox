@@ -53,10 +53,16 @@ class NameFragment : Fragment() {
 
             viewModel.setUserDetails(firstName, lastName)
 
+            if(firstName.isEmpty()){
+                Utils.showToast(requireContext(),"enter the first name")
+            }else if(lastName.isEmpty()){
+                Utils.showToast(requireContext(),"enter the last name")
+            }else{
+                findNavController().navigate(
+                    R.id.action_nameFragment_to_birthDateFragment
+                )
+            }
 
-            findNavController().navigate(
-                R.id.action_nameFragment_to_birthDateFragment
-            )
         }
     }
 
@@ -67,7 +73,9 @@ class NameFragment : Fragment() {
             val lastName = binding.lastName.text.toString().trim()
             viewModel.setUserDetails(firstName, lastName)
 
+
             findNavController().navigate(R.id.action_nameFragment_to_abbreviationFragment)
+
         }
     }
 

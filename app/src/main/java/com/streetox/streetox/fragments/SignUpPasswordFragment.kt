@@ -1,5 +1,7 @@
 package com.streetox.streetox.fragments
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,10 +13,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.streetox.streetox.R
 import com.streetox.streetox.Utils
+import com.streetox.streetox.bitmap.TickBitmap
 import com.streetox.streetox.databinding.FragmentNameBinding
 import com.streetox.streetox.databinding.FragmentSignUpPasswordBinding
+import com.streetox.streetox.models.user
+import com.streetox.streetox.viewmodels.StateAbbreviationLiveData
+import com.streetox.streetox.viewmodels.StateDobViewModel
+import com.streetox.streetox.viewmodels.StateNameViewModel
 import com.streetox.streetox.viewmodels.StateSignUpViewModel
 
 
@@ -22,9 +31,13 @@ class SignUpPasswordFragment : Fragment() {
 
     private lateinit var binding: FragmentSignUpPasswordBinding
     private lateinit var auth: FirebaseAuth
+    private lateinit var database : DatabaseReference
 
     // Declare ViewModel
-    private val viewModel: StateSignUpViewModel by activityViewModels()
+    private val viewModelEmail: StateSignUpViewModel by activityViewModels()
+    private val viewModelname: StateNameViewModel by activityViewModels()
+    private val viewModeldob: StateDobViewModel by activityViewModels()
+    private val viewModelAbb: StateAbbreviationLiveData by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,14 +65,9 @@ class SignUpPasswordFragment : Fragment() {
             val password = binding.password.text.toString()
             val confirmPassword = binding.confirmPassword.text.toString()
 
-            val args = requireArguments()
-
             // Retrieve email from ViewModel
-            val email = viewModel.userEmail.value
-            val abb = args.getString("abb")
-            val firstName = args.getString("first_name")
-            val lastName = args.getString("last_name")
-            val dob = args.getString("dob")
+            val email = viewModelEmail.userEmail.value
+
 
             val errorMessage = isPasswordValid(password)
 
@@ -73,20 +81,12 @@ class SignUpPasswordFragment : Fragment() {
                 Utils.showToast(requireContext(), "Password and confirm password must be the same")
             } else {
                 if (email != null) {
+                    binding.btnGo.startAnimation()
                     auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            Utils.showToast(requireContext(), "Registration Successful")
-                            findNavController().navigate(
-                                R.id.action_signUpPasswordFragment_to_phoneNumberFragment,
-                                bundleOf(
-                                    "email" to email,
-                                    "abb" to abb,
-                                    "first_name" to firstName,
-                                    "last_name" to lastName,
-                                    "dob" to dob,
-                                    "password" to password
-                                )
-                            )
+                            savedata()
+                            Utils.showToast(requireContext(),"Registration Successful")
+                            findNavController().navigate(R.id.action_signUpPasswordFragment_to_phoneNumberFragment)
                         } else {
                             Utils.showToast(requireContext(), "Registration Failed")
                         }
@@ -96,6 +96,22 @@ class SignUpPasswordFragment : Fragment() {
         }
     }
 
+    //moving data to firebase
+
+    //moving data to firebase
+
+    private fun savedata(){
+
+        val email = viewModelEmail.userEmail.value.toString()
+        val first_name = viewModelname.firstName.value.toString()
+        val last_name = viewModelname.lastName.value.toString()
+        val dob = viewModeldob.dateOfBirth.value.toString()
+        val abb = viewModelAbb.abbreviation.value.toString()
+
+        database = FirebaseDatabase.getInstance().getReference("Users")
+        val User = user(first_name,last_name,dob,email,abb)
+        database.child(abb).child(first_name).setValue(User)
+    }
     // Check password validity
     private fun isPasswordValid(password: String): String? {
         val minLength = 8

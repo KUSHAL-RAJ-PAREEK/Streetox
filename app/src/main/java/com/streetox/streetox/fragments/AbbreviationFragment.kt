@@ -51,7 +51,7 @@ class AbbreviationFragment : Fragment() {
     private fun onmrclick(){
 
         binding.btnGoMr.setOnClickListener {
-            val mr = "Mr."
+            val mr = "Mr"
             viewModel.setAbbreviation(mr)
             val bundle = Bundle().apply {
                 putString("mr", mr)
@@ -75,7 +75,7 @@ private fun onotherclick(){
 
     private fun onmrsclick(){
             binding.btnGoMrs.setOnClickListener {
-                val mrs = "Mrs."
+                val mrs = "Mrs"
                 viewModel.setAbbreviation(mrs)
                 findNavController().navigate(R.id.action_abbreviationFragment_to_nameFragment)
             }

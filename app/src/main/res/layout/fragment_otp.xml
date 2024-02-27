@@ -43,7 +43,6 @@
             android:orientation="horizontal">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/otpEditText1"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -58,7 +57,7 @@
                 app:boxCornerRadiusTopStart="@dimen/_16sdp">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/phone_number_txt1"
+                    android:id="@+id/otpEditText1"
                     android:layout_width="@dimen/_40sdp"
                     android:layout_height="@dimen/_40sdp"
                     android:textColor="@color/black"
