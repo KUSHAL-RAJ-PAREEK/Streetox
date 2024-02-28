@@ -17,6 +17,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
+            android:id="@+id/btn_back"
             android:layout_width="@dimen/_25sdp"
             android:layout_height="@dimen/_25sdp"
             android:layout_marginStart="@dimen/_18sdp"
@@ -49,6 +50,7 @@
             app:endIconMode="clear_text">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/edit_text_background"
@@ -74,6 +76,7 @@
             app:endIconMode="password_toggle">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/edit_text_background"
@@ -85,6 +88,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
+            android:id="@+id/forget_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/forget_password"
@@ -94,6 +98,7 @@
             android:layout_marginHorizontal="@dimen/_18sdp" />
 
         <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton
+            android:id="@+id/btn_Login"
             android:layout_width="@dimen/_135sdp"
             android:layout_height="@dimen/_38sdp"
             android:layout_marginTop="@dimen/_18sdp"
@@ -230,6 +235,7 @@
                 android:textAllCaps="false"
                 android:textColor="@color/white"/>
             <TextView
+                android:id="@+id/btn_back_signup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=" Sign Up"

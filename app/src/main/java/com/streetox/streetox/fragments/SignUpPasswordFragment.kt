@@ -117,16 +117,16 @@ class SignUpPasswordFragment : Fragment() {
         val hasSpecialChar = Regex("[^A-Za-z0-9]")
 
         if (password.length < minLength) {
-            return "Password must be at least $minLength characters long."
+            return "Password must be at least $minLength characters long"
         }
         if (!password.contains(hasLetter)) {
-            return "Password must contain at least one letter."
+            return "Password must contain at least one letter"
         }
         if (!password.contains(hasNumber)) {
-            return "Password must contain at least one number."
+            return "Password must contain at least one number"
         }
         if (!password.contains(hasSpecialChar)) {
-            return "Password must contain at least one special character."
+            return "Password must contain at least one special character"
         }
         return null // Password meets all conditions
     }

@@ -48,10 +48,14 @@
         android:label="fragment_log_in"
         tools:layout="@layout/fragment_log_in" >
         <action
+            android:id="@+id/action_logInFragment_to_demoFragment"
+            app:destination="@id/demoFragment" />
+        <action
+            android:id="@+id/action_logInFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
+        <action
             android:id="@+id/action_logInFragment_to_signinLoginChooseFragment"
-            app:destination="@id/signinLoginChooseFragment"
-            app:popUpTo="@id/signinLoginChooseFragment"
-            app:popUpToInclusive="true" />
+            app:destination="@id/signinLoginChooseFragment" />
     </fragment>
     <fragment
         android:id="@+id/signUpEmailFragment"
