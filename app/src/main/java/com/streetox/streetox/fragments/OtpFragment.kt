@@ -1,5 +1,6 @@
 package com.streetox.streetox.fragments
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -14,6 +15,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
@@ -22,15 +24,31 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.streetox.streetox.R
 import com.streetox.streetox.Utils
 import com.streetox.streetox.bitmap.TickBitmap
 import com.streetox.streetox.databinding.FragmentOtpBinding
 import com.streetox.streetox.databinding.FragmentPhoneNumberBinding
+import com.streetox.streetox.viewmodels.Stateviewmodels.StateAbbreviationLiveData
+import com.streetox.streetox.viewmodels.Stateviewmodels.StateDobViewModel
+import com.streetox.streetox.viewmodels.Stateviewmodels.StateNameViewModel
+import com.streetox.streetox.viewmodels.Stateviewmodels.StateSignUpViewModel
+import java.util.HashMap
 import java.util.concurrent.TimeUnit
 
 
 class OtpFragment : Fragment() {
+
+    //data base
+    private lateinit var database : DatabaseReference
+    private val viewModelEmail: StateSignUpViewModel by activityViewModels()
+    private val viewModelname: StateNameViewModel by activityViewModels()
+    private val viewModeldob: StateDobViewModel by activityViewModels()
+    private val viewModelAbb: StateAbbreviationLiveData by activityViewModels()
+
+
 
     private lateinit var binding: FragmentOtpBinding
     private lateinit var auth: FirebaseAuth
@@ -38,6 +56,8 @@ class OtpFragment : Fragment() {
     private lateinit var resendToken: PhoneAuthProvider.ForceResendingToken
     lateinit var phoneNumber: String
 
+
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -46,7 +66,6 @@ class OtpFragment : Fragment() {
         binding = FragmentOtpBinding.inflate(layoutInflater)
 
         val args = arguments
-
 
         if (args != null) { // Check if args is not null
             OTP = args.getString("OTP").toString()
@@ -57,10 +76,9 @@ class OtpFragment : Fragment() {
             Log.e("OtpFragment", "Arguments are null")
         }
 
+        binding.editNo.setText("$phoneNumber?")
 
         addTextChangeListener()
-
-        resendOTPTVisibility()
 
         onbackbtnclcik()
 
@@ -86,8 +104,6 @@ class OtpFragment : Fragment() {
             }
         }
 
-
-
         binding.resendOtp.setOnClickListener {
             resendVerificationCode()
             resendOTPTVisibility()
@@ -96,6 +112,25 @@ class OtpFragment : Fragment() {
 
         return binding.root
     }
+
+
+    private fun update_phone_number(){
+
+         val User = HashMap<String,String>()
+        val abb = viewModelAbb.abbreviation.value.toString()
+        val email = viewModelEmail.userEmail.value.toString()
+        val first_name = viewModelname.firstName.value.toString()
+
+        User.put("phoneNumber",phoneNumber)
+
+
+        val database = FirebaseDatabase.getInstance().getReference("Users")
+        val key = email.replace('.', ',')
+        database.child(key).updateChildren(User as Map<String, Any>)
+
+
+    }
+
 
     private fun onbackbtnclcik() {
         binding.btnBack.setOnClickListener {
@@ -125,14 +160,27 @@ class OtpFragment : Fragment() {
         binding.otpEditText5.setText("")
         binding.otpEditText6.setText("")
 
-        binding.resendOtp.visibility = View.INVISIBLE
+        binding.resendOtp.visibility = View.VISIBLE
         binding.resendOtp.isEnabled = false
 
-        Handler(Looper.myLooper()!!).postDelayed(Runnable {
-            binding.resendOtp.visibility = View.VISIBLE
-            binding.resendOtp.isEnabled = true
-        }, 60000)
+        var countdown = 60
 
+        val countdownHandler = Handler(Looper.myLooper()!!)
+        val countdownRunnable = object : Runnable {
+            override fun run() {
+                if (countdown > 0) {
+                    binding.resendOtp.text = "Resend OTP in $countdown seconds"
+                    countdown--
+                    countdownHandler.postDelayed(this, 1000)
+                } else {
+                    binding.resendOtp.visibility = View.VISIBLE
+                    binding.resendOtp.isEnabled = true
+                    binding.resendOtp.text = "Resend OTP"
+                }
+            }
+        }
+
+        countdownHandler.post(countdownRunnable)
     }
 
 
@@ -140,16 +188,8 @@ class OtpFragment : Fragment() {
         auth.signInWithCredential(credential)
             .addOnCompleteListener(requireActivity()) { task ->
                 if (task.isSuccessful) {
-
                     // Sign in success, update UI with the signed-in user's information
-                    val Bitmap: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.correct)
-
-                    val greenFillColor = ContextCompat.getColor(
-                        requireContext(),
-                        com.github.leandroborgesferreira.loadingbutton.R.color.green
-                    )
-                    val tickBitmap = TickBitmap(greenFillColor, TickBitmap(greenFillColor, Bitmap))
-                    binding.btnGo.doneLoadingAnimation(greenFillColor, tickBitmap)
+                    update_phone_number()
                     Utils.showToast(requireContext(), "Authenticate successfully")
                     sendtomain()
                 } else {
@@ -163,6 +203,13 @@ class OtpFragment : Fragment() {
             }
     }
 
+//    private fun oneditclick(){
+//        binding.editNo.setOnClickListener {
+//            findNavController().navigate(
+//                R.id.action_otpFragment_to_phoneNumberFragment
+//            )
+//        }
+//    }
     private fun sendtomain() {
         findNavController().navigate(
             R.id.action_otpFragment_to_demoFragment

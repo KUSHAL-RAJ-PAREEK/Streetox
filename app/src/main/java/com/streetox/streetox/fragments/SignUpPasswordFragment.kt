@@ -102,10 +102,12 @@ class SignUpPasswordFragment : Fragment() {
         val last_name = viewModelname.lastName.value.toString()
         val dob = viewModeldob.dateOfBirth.value.toString()
         val abb = viewModelAbb.abbreviation.value.toString()
+        val pass = binding.password.text.toString()
 
         database = FirebaseDatabase.getInstance().getReference("Users")
-        val User = user(first_name,last_name,dob,email,abb)
-        database.child(abb).child(first_name).setValue(User)
+        val User = user(first_name,last_name,dob,email,pass,null,abb)
+        val key = email.replace('.', ',')
+        database.child(key).setValue(User)
     }
     // Check password validity
     private fun isPasswordValid(password: String): String? {

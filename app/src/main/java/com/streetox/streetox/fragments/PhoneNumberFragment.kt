@@ -76,6 +76,8 @@ class PhoneNumberFragment : Fragment() {
         return binding.root
     }
 
+
+
     private fun sendtomain(){
         findNavController().navigate(
             com.streetox.streetox.R.id.action_phoneNumberFragment_to_demoFragment)
@@ -150,6 +152,7 @@ private fun ondoItLaterclick(){
                 putString("phoneNumber", number)
             }
 
+
             findNavController().navigate(
                 com.streetox.streetox.R.id.action_phoneNumberFragment_to_otpFragment,
                 bundle // Pass the bundle when navigating
@@ -172,12 +175,6 @@ private fun ondoItLaterclick(){
 // Call the doneLoadingAnimation method with the bitmap
         binding.btnGo.doneLoadingAnimation(fillColor, bitmap)
     }
-    override fun onStart() {
-        super.onStart()
-//        if(auth.currentUser != null){
-//            findNavController().navigate(
-//                R.id.action_phoneNumberFragment_to_demoFragment)
-//        }
-    }
+
 
 }

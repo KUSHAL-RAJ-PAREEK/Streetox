@@ -31,7 +31,7 @@
             android:layout_marginHorizontal="@dimen/_18sdp"
             android:layout_marginTop="@dimen/_25sdp"
             android:fontFamily="@font/notosanskannada"
-            android:text="please provide received otp"
+            android:text="OTP verification"
             android:textColor="@color/white"
             android:textSize="@dimen/_18ssp"
             android:textStyle="bold" />
@@ -39,7 +39,35 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/_14sdp"
+            android:layout_marginStart="@dimen/_18sdp"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/edit_msg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Do uou wan to edit "
+                android:textSize="@dimen/_12ssp"
+                android:layout_gravity="start|center"
+                android:textColor="@color/white"
+                android:fontFamily="@font/notosanskannada"/>
+
+            <TextView
+                android:id="@+id/edit_no"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="xxxxx"
+                android:textSize="@dimen/_12ssp"
+                android:layout_gravity="start|center"
+                android:textColor="@color/streetox_primary_color"
+                android:fontFamily="@font/notosanskannada"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:orientation="horizontal">
 
             <com.google.android.material.textfield.TextInputLayout
@@ -47,7 +75,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="@dimen/_4sdp"
                 android:layout_marginTop="@dimen/_18sdp"
                 android:backgroundTint="@color/edit_text_color"
                 app:boxCornerRadiusBottomEnd="@dimen/_4sdp"
@@ -60,9 +87,10 @@
                     android:id="@+id/otpEditText1"
                     android:layout_width="@dimen/_40sdp"
                     android:layout_height="@dimen/_40sdp"
+                    android:maxLength="1"
                     android:textColor="@color/black"
                     android:background="@drawable/edit_text_background"
-                    android:drawablePadding="9.10dp"
+                    android:drawablePadding="@dimen/_10sdp"
                     android:inputType="number"
                     android:textColorHint="@color/hint_color" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -85,9 +113,10 @@
                     android:id="@+id/otpEditText2"
                     android:layout_width="@dimen/_40sdp"
                     android:layout_height="@dimen/_40sdp"
+                    android:maxLength="1"
                     android:textColor="@color/black"
                     android:background="@drawable/edit_text_background"
-                    android:drawablePadding="9.10dp"
+                    android:drawablePadding="@dimen/_10sdp"
                     android:inputType="number"
                     android:textColorHint="@color/hint_color" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -110,9 +139,10 @@
                     android:id="@+id/otpEditText3"
                     android:layout_width="@dimen/_40sdp"
                     android:layout_height="@dimen/_40sdp"
+                    android:maxLength="1"
                     android:textColor="@color/black"
                     android:background="@drawable/edit_text_background"
-                    android:drawablePadding="9.10dp"
+                    android:drawablePadding="@dimen/_10sdp"
                     android:inputType="number"
                     android:textColorHint="@color/hint_color" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -134,9 +164,10 @@
                     android:id="@+id/otpEditText4"
                     android:layout_width="@dimen/_40sdp"
                     android:layout_height="@dimen/_40sdp"
+                    android:maxLength="1"
                     android:textColor="@color/black"
                     android:background="@drawable/edit_text_background"
-                    android:drawablePadding="9.10dp"
+                    android:drawablePadding="@dimen/_10sdp"
                     android:inputType="number"
                     android:textColorHint="@color/hint_color" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -158,9 +189,10 @@
                     android:id="@+id/otpEditText5"
                     android:layout_width="@dimen/_40sdp"
                     android:layout_height="@dimen/_40sdp"
+                    android:maxLength="1"
                     android:textColor="@color/black"
                     android:background="@drawable/edit_text_background"
-                    android:drawablePadding="9.10dp"
+                    android:drawablePadding="@dimen/_10sdp"
                     android:inputType="number"
                     android:textColorHint="@color/hint_color" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -182,9 +214,10 @@
                     android:id="@+id/otpEditText6"
                     android:layout_width="@dimen/_40sdp"
                     android:layout_height="@dimen/_40sdp"
+                    android:maxLength="1"
                     android:textColor="@color/black"
                     android:background="@drawable/edit_text_background"
-                    android:drawablePadding="9.10dp"
+                    android:drawablePadding="@dimen/_10sdp"
                     android:inputType="number"
                     android:textColorHint="@color/hint_color" />
             </com.google.android.material.textfield.TextInputLayout>
