@@ -17,7 +17,7 @@ import com.streetox.streetox.Utils
 import com.streetox.streetox.databinding.FragmentSignUpEmailBinding
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.streetox.streetox.viewmodels.StateSignUpViewModel
+import com.streetox.streetox.viewmodels.Stateviewmodels.StateSignUpViewModel
 
 
 class SignUpEmailFragment : Fragment() {

@@ -59,7 +59,10 @@ class OtpFragment : Fragment() {
 
 
         addTextChangeListener()
+
         resendOTPTVisibility()
+
+        onbackbtnclcik()
 
         binding.btnGo.setOnClickListener {
             // Collect otp from all edit texts
@@ -84,6 +87,7 @@ class OtpFragment : Fragment() {
         }
 
 
+
         binding.resendOtp.setOnClickListener {
             resendVerificationCode()
             resendOTPTVisibility()
@@ -91,6 +95,14 @@ class OtpFragment : Fragment() {
 
 
         return binding.root
+    }
+
+    private fun onbackbtnclcik() {
+        binding.btnBack.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_otpFragment_to_phoneNumberFragment
+            )
+        }
     }
 
     private fun resendVerificationCode() {
@@ -132,9 +144,12 @@ class OtpFragment : Fragment() {
                     // Sign in success, update UI with the signed-in user's information
                     val Bitmap: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.correct)
 
-                    val greenFillColor = ContextCompat.getColor(requireContext(), com.github.leandroborgesferreira.loadingbutton.R.color.green)
-                    val tickBitmap = TickBitmap(greenFillColor, TickBitmap(greenFillColor,Bitmap))
-                    binding.btnGo.doneLoadingAnimation(greenFillColor,tickBitmap)
+                    val greenFillColor = ContextCompat.getColor(
+                        requireContext(),
+                        com.github.leandroborgesferreira.loadingbutton.R.color.green
+                    )
+                    val tickBitmap = TickBitmap(greenFillColor, TickBitmap(greenFillColor, Bitmap))
+                    binding.btnGo.doneLoadingAnimation(greenFillColor, tickBitmap)
                     Utils.showToast(requireContext(), "Authenticate successfully")
                     sendtomain()
                 } else {

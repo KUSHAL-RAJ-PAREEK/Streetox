@@ -6,14 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.streetox.streetox.R
 import com.streetox.streetox.Utils
 import com.streetox.streetox.databinding.FragmentBirthDateBinding
 import com.streetox.streetox.pickers.DatePickerFragment
-import com.streetox.streetox.viewmodels.StateDobViewModel
+import com.streetox.streetox.viewmodels.Stateviewmodels.StateDobViewModel
 import java.time.LocalDate
 import java.time.Period
 import java.time.format.DateTimeFormatter

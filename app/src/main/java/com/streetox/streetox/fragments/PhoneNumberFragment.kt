@@ -1,31 +1,26 @@
 package com.streetox.streetox.fragments
 
-import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.R.attr.fillColor
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.FirebaseAuthMissingActivityForRecaptchaException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
-import com.streetox.streetox.R
 import com.streetox.streetox.Utils
-import com.streetox.streetox.bitmap.TickBitmap
 import com.streetox.streetox.databinding.FragmentPhoneNumberBinding
+import com.streetox.streetox.viewmodels.Stateviewmodels.StatePhoneNumberFragment
 import java.util.concurrent.TimeUnit
-import kotlin.math.log
 
 
 class PhoneNumberFragment : Fragment() {
@@ -33,6 +28,10 @@ class PhoneNumberFragment : Fragment() {
     private lateinit var binding : FragmentPhoneNumberBinding
     private lateinit var auth : FirebaseAuth
     private lateinit var number : String
+
+    //viewmodel
+    private val viewModelPhoneNumber: StatePhoneNumberFragment by activityViewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -41,11 +40,16 @@ class PhoneNumberFragment : Fragment() {
         binding = FragmentPhoneNumberBinding.inflate(layoutInflater)
         auth = FirebaseAuth.getInstance()
 
+        viewModelPhoneNumber.phoneNumber.observe(viewLifecycleOwner) { number ->
+            binding.phoneNumberTxt.setText(number)
+        }
+
         binding.btnGo.setOnClickListener {
            number = binding.phoneNumberTxt.text.toString()
 
             if (!number.isNullOrEmpty()) { // Check if the number is not null or empty
                 if (number.length == 10) { // Check if the length of the number is 10
+                    viewModelPhoneNumber.setPhoneNumber(number)
                     binding.btnGo.startAnimation()
                     number = "+91$number"
                     val options = PhoneAuthOptions.newBuilder(auth)
@@ -56,10 +60,9 @@ class PhoneNumberFragment : Fragment() {
                         .build()
                     PhoneAuthProvider.verifyPhoneNumber(options)
 
-                    val Bitmap: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.correct)
-                    val greenFillColor = ContextCompat.getColor(requireContext(), com.github.leandroborgesferreira.loadingbutton.R.color.green)
-                    val tickBitmap = TickBitmap(greenFillColor, TickBitmap(greenFillColor,Bitmap))
-                    binding.btnGo.doneLoadingAnimation(greenFillColor,tickBitmap)
+//                    val Bitmap: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.correct)
+//                    val greenFillColor = ContextCompat.getColor(requireContext(), com.github.leandroborgesferreira.loadingbutton.R.color.green)
+//                    val tickBitmap = TickBitmap(greenFillColor, TickBitmap(greenFillColor,Bitmap))
 
                 } else {
                     Utils.showToast(requireContext(), "Please enter a correct 10-digit number")
@@ -75,18 +78,19 @@ class PhoneNumberFragment : Fragment() {
 
     private fun sendtomain(){
         findNavController().navigate(
-            R.id.action_phoneNumberFragment_to_demoFragment)
+            com.streetox.streetox.R.id.action_phoneNumberFragment_to_demoFragment)
     }
 private fun ondoItLaterclick(){
     binding.doItLater.setOnClickListener {
         findNavController().navigate(
-            R.id.action_phoneNumberFragment_to_demoFragment)
+            com.streetox.streetox.R.id.action_phoneNumberFragment_to_demoFragment)
     }
 }
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
         auth.signInWithCredential(credential)
             .addOnCompleteListener(requireActivity()) { task ->
                 if (task.isSuccessful) {
+                    changbtn()
                     // Sign in success, update UI with the signed-in user's information
                     Utils.showToast(requireContext(),"Authenticate successfully")
                     sendtomain()
@@ -147,13 +151,27 @@ private fun ondoItLaterclick(){
             }
 
             findNavController().navigate(
-                R.id.action_phoneNumberFragment_to_otpFragment,
+                com.streetox.streetox.R.id.action_phoneNumberFragment_to_otpFragment,
                 bundle // Pass the bundle when navigating
             )
 
         }
     }
 
+    private fun changbtn(){
+        val drawable = resources.getDrawable(com.streetox.streetox.R.drawable.correct)
+
+// Convert the drawable to a bitmap
+
+// Convert the drawable to a bitmap
+        val bitmapDrawable = drawable as BitmapDrawable
+        val bitmap = bitmapDrawable.bitmap
+
+// Call the doneLoadingAnimation method with the bitmap
+
+// Call the doneLoadingAnimation method with the bitmap
+        binding.btnGo.doneLoadingAnimation(fillColor, bitmap)
+    }
     override fun onStart() {
         super.onStart()
 //        if(auth.currentUser != null){

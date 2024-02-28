@@ -5,18 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.streetox.streetox.R
-import com.streetox.streetox.Utils
 import com.streetox.streetox.databinding.FragmentAbbreviationBinding
-import com.streetox.streetox.databinding.FragmentSignUpEmailBinding
-import com.streetox.streetox.databinding.FragmentSigninLoginChooseBinding
-import com.streetox.streetox.viewmodels.StateAbbreviationLiveData
-import com.streetox.streetox.viewmodels.StateNameViewModel
+import com.streetox.streetox.viewmodels.Stateviewmodels.StateAbbreviationLiveData
 
 
 class AbbreviationFragment : Fragment() {

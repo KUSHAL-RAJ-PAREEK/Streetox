@@ -1,14 +1,11 @@
 package com.streetox.streetox.fragments
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -17,14 +14,12 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.streetox.streetox.R
 import com.streetox.streetox.Utils
-import com.streetox.streetox.bitmap.TickBitmap
-import com.streetox.streetox.databinding.FragmentNameBinding
 import com.streetox.streetox.databinding.FragmentSignUpPasswordBinding
 import com.streetox.streetox.models.user
-import com.streetox.streetox.viewmodels.StateAbbreviationLiveData
-import com.streetox.streetox.viewmodels.StateDobViewModel
-import com.streetox.streetox.viewmodels.StateNameViewModel
-import com.streetox.streetox.viewmodels.StateSignUpViewModel
+import com.streetox.streetox.viewmodels.Stateviewmodels.StateAbbreviationLiveData
+import com.streetox.streetox.viewmodels.Stateviewmodels.StateDobViewModel
+import com.streetox.streetox.viewmodels.Stateviewmodels.StateNameViewModel
+import com.streetox.streetox.viewmodels.Stateviewmodels.StateSignUpViewModel
 
 
 class SignUpPasswordFragment : Fragment() {

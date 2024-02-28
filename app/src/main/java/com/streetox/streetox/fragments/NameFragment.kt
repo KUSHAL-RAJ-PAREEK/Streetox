@@ -7,13 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.streetox.streetox.R
 import com.streetox.streetox.Utils
 import com.streetox.streetox.databinding.FragmentNameBinding
-import com.streetox.streetox.viewmodels.StateNameViewModel
+import com.streetox.streetox.viewmodels.Stateviewmodels.StateNameViewModel
 
 class NameFragment : Fragment() {
     private lateinit var binding: FragmentNameBinding
