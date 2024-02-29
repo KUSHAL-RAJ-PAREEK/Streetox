@@ -87,15 +87,15 @@
                 android:textColorHint="@color/hint_color" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:id="@+id/forget_password"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/forget_password"
-            android:textColor="@color/streetox_primary_color"
-            android:textSize="@dimen/_12ssp"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:layout_marginHorizontal="@dimen/_18sdp" />
+     <TextView
+         android:id="@+id/forgot_pass"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:text="@string/forget_password"
+         android:textColor="@color/streetox_primary_color"
+         android:textSize="@dimen/_12ssp"
+         android:layout_marginTop="@dimen/_10sdp"
+         android:layout_marginHorizontal="@dimen/_18sdp"/>
 
         <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton
             android:id="@+id/btn_Login"
@@ -163,6 +163,7 @@
             android:orientation="horizontal">
 
             <LinearLayout
+                android:id="@+id/google_sign_in"
                 android:layout_width="@dimen/_100sdp"
                 android:layout_height="@dimen/_32sdp"
                 android:gravity="center"
@@ -194,6 +195,7 @@
                 android:layout_weight="1"
                 android:layout_gravity="center_vertical"/>
             <LinearLayout
+                android:id="@+id/facebook_sign_in"
                 android:layout_width="@dimen/_100sdp"
                 android:layout_height="@dimen/_32sdp"
                 android:gravity="center"

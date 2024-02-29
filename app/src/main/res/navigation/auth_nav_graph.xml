@@ -56,6 +56,9 @@
         <action
             android:id="@+id/action_logInFragment_to_signinLoginChooseFragment"
             app:destination="@id/signinLoginChooseFragment" />
+        <action
+            android:id="@+id/action_logInFragment_to_passwordForgotFragment"
+            app:destination="@id/passwordForgotFragment" />
     </fragment>
     <fragment
         android:id="@+id/signUpEmailFragment"
@@ -162,5 +165,16 @@
         <action
             android:id="@+id/action_demoFragment_to_signinLoginChooseFragment"
             app:destination="@id/signinLoginChooseFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/passwordForgotFragment"
+        android:name="com.streetox.streetox.fragments.PasswordForgotFragment"
+        android:label="fragment_password_forgot"
+        tools:layout="@layout/fragment_password_forgot" >
+        <action
+            android:id="@+id/action_passwordForgotFragment_to_logInFragment"
+            app:destination="@id/logInFragment"
+            app:popUpTo="@id/logInFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

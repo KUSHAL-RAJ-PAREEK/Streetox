@@ -98,14 +98,13 @@ class SignUpPasswordFragment : Fragment() {
     private fun savedata(){
 
         val email = viewModelEmail.userEmail.value.toString()
-        val first_name = viewModelname.firstName.value.toString()
-        val last_name = viewModelname.lastName.value.toString()
+        val name = viewModelname.firstName.value.toString() +" "+ viewModelname.lastName.value.toString()
         val dob = viewModeldob.dateOfBirth.value.toString()
         val abb = viewModelAbb.abbreviation.value.toString()
         val pass = binding.password.text.toString()
 
         database = FirebaseDatabase.getInstance().getReference("Users")
-        val User = user(first_name,last_name,dob,email,pass,null,abb)
+        val User = user(name,dob,email,pass,null,abb)
         val key = email.replace('.', ',')
         database.child(key).setValue(User)
     }
