@@ -71,4 +71,7 @@ dependencies {
     implementation("com.github.leandroborgesferreira:loading-button-android:2.3.0")
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
+
+    //facebook
+    implementation ("com.facebook.android:facebook-android-sdk:latest.release")
 }

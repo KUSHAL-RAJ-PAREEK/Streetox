@@ -24,4 +24,9 @@
     <string name="sign_in_facebook">Sign in</string>
     <string name="don_t_have_an_account">Don\'t have an account ?</string>
    <string name="default_web_client_id">537705992615-bq762ifhus65iqao4678n8aclrdhjcqe.apps.googleusercontent.com</string>
+    <string name="facebook_app_id">249571148211809</string>
+    <string name="fb_login_protocol_scheme">fb249571148211809</string>
+    <string name="facebook_client_token">56789</string>
+
+
 </resources>

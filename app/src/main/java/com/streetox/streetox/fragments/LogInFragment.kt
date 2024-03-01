@@ -1,42 +1,59 @@
 package com.streetox.streetox.fragments
 
 import android.app.Activity
-import android.app.Instrumentation.ActivityResult
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.registerForActivityResult
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.facebook.AccessToken
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import com.streetox.streetox.R
 import com.streetox.streetox.Utils
 import com.streetox.streetox.databinding.FragmentLogInBinding
+import com.streetox.streetox.models.user
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
 
 
 class LogInFragment : Fragment() {
 
     //sign in
     private lateinit var auth : FirebaseAuth
+    //database
+    private lateinit var database : DatabaseReference
 
     //google sign in
     private lateinit var googleSignInClient : GoogleSignInClient
 
-    companion object {
-        private const val GOOGLE_SIGN_IN = 1001
-    }
+
+    var callbackManager : CallbackManager?= null
+
+
+
 
     private lateinit var binding: FragmentLogInBinding
     override fun onCreateView(
@@ -53,6 +70,8 @@ class LogInFragment : Fragment() {
         btnsignup()
 
         google_signin()
+
+        facebook_signin()
 
         onforgotpasswordclick()
 
@@ -81,6 +100,71 @@ class LogInFragment : Fragment() {
                 }
             }
         }
+    }
+
+
+    private fun facebook_signin(){
+        callbackManager = CallbackManager.Factory.create()
+        binding.facebookSignIn.setReadPermissions("email")
+
+        binding.facebookSignIn.setOnClickListener {
+            signInwithfacebook()
+        }
+    }
+
+    private fun signInwithfacebook() {
+
+        callbackManager?.let {
+            binding.facebookSignIn.registerCallback(it,object: FacebookCallback<LoginResult>{
+            override fun onCancel() {
+            }
+
+            override fun onError(error: FacebookException) {
+            }
+
+            override fun onSuccess(result: LoginResult) {
+                handleFacebookAccessToken(result.accessToken)
+            }
+
+        })
+        }
+
+        fun onClick(v: View) {
+            if (v == binding.facebookSignIn) {
+                LoginManager.getInstance().logInWithReadPermissions(
+                    this,
+                    listOf("user_photos", "email", "user_birthday", "public_profile")
+                )
+            }
+        }
+
+
+    }
+
+    private fun handleFacebookAccessToken(accessToken: AccessToken) {
+        //getting credentials
+        var credential = FacebookAuthProvider.getCredential(accessToken.token)
+        auth.signInWithCredential(credential).addOnFailureListener{ e->
+            Utils.showToast(requireContext(),e.message.toString())
+            Log.e("ERROR_EDMT",e.message.toString())
+        }
+            .addOnSuccessListener { result ->
+                //get email
+                val email = result.user?.email.toString()
+                val name = result.user?.displayName.toString()
+                val phone_number = result.user?.phoneNumber.toString()
+
+                val User = user(name,null,email,"",phone_number,null)
+                val key = email.replace('.', ',')
+                database.child(key).setValue(User)
+                Utils.showToast(requireContext(),"login with facebook")
+                findNavController().navigate(R.id.action_logInFragment_to_demoFragment)
+            }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        callbackManager!!.onActivityResult(resultCode,resultCode,data)
     }
 
     private fun google_signin(){
@@ -122,13 +206,20 @@ private fun signInGoogle(){
     private fun updateUI(account: GoogleSignInAccount) {
         val credential = GoogleAuthProvider.getCredential(account.idToken,null)
         auth.signInWithCredential(credential).addOnCompleteListener {
+            database = FirebaseDatabase.getInstance().getReference("Users")
             if(it.isSuccessful){
                 val bundle = Bundle()
+                val email = account.email.toString()
+                val name = account.givenName.toString()
+                val User = user(name,null,email,"",null,null)
+                val key = email.replace('.', ',')
+                database.child(key).setValue(User)
                 bundle.apply {
                     putString("email",account.email)
                     putString("name",account.displayName)
-                    putString("dob",account.givenName)
                 }
+
+                Utils.showToast(requireContext(),"login with google")
                 findNavController().navigate(R.id.action_logInFragment_to_demoFragment,bundle)
             }else{
                 Utils.showToast(requireContext(),it.exception.toString())
