@@ -1,31 +1,22 @@
-package com.streetox.streetox.fragments
+package com.streetox.streetox.fragments.auth
 
-import android.content.Context
-import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.streetox.streetox.R
 import com.streetox.streetox.Utils
 import com.streetox.streetox.databinding.FragmentSignUpEmailBinding
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.ktx.Firebase
 import com.streetox.streetox.viewmodels.Stateviewmodels.StateSignUpViewModel
 
 

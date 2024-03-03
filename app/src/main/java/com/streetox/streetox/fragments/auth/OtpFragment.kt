@@ -1,8 +1,7 @@
-package com.streetox.streetox.fragments
+package com.streetox.streetox.fragments.auth
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -12,7 +11,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -28,9 +26,8 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.streetox.streetox.R
 import com.streetox.streetox.Utils
-import com.streetox.streetox.bitmap.TickBitmap
+import com.streetox.streetox.activities.UserMainActivity
 import com.streetox.streetox.databinding.FragmentOtpBinding
-import com.streetox.streetox.databinding.FragmentPhoneNumberBinding
 import com.streetox.streetox.viewmodels.Stateviewmodels.StateAbbreviationLiveData
 import com.streetox.streetox.viewmodels.Stateviewmodels.StateDobViewModel
 import com.streetox.streetox.viewmodels.Stateviewmodels.StateNameViewModel
@@ -211,9 +208,7 @@ class OtpFragment : Fragment() {
 //        }
 //    }
     private fun sendtomain() {
-        findNavController().navigate(
-            R.id.action_otpFragment_to_demoFragment
-        )
+    startActivity(Intent(requireActivity(), UserMainActivity::class.java))
     }
 
     private val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {

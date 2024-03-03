@@ -62,6 +62,7 @@ dependencies {
     // Navigation Component
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
+
     //lifecycle
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation("androidx.lifecycle:lifecycle-common-java8:2.7.0")
@@ -74,4 +75,8 @@ dependencies {
 
     //facebook
     implementation ("com.facebook.android:facebook-android-sdk:latest.release")
+
+
+    //circular image
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
 }

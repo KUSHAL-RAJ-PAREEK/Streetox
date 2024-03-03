@@ -1,10 +1,8 @@
-package com.streetox.streetox.fragments
+package com.streetox.streetox.fragments.auth
 
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +14,6 @@ import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
-import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -33,10 +30,9 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import com.streetox.streetox.R
 import com.streetox.streetox.Utils
+import com.streetox.streetox.activities.UserMainActivity
 import com.streetox.streetox.databinding.FragmentLogInBinding
 import com.streetox.streetox.models.user
-import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
 
 
 class LogInFragment : Fragment() {
@@ -88,7 +84,7 @@ class LogInFragment : Fragment() {
                 auth.signInWithEmailAndPassword(email,password).addOnCompleteListener {
                     if(it.isSuccessful){
                         Utils.showToast(requireContext(),"welcome back")
-                        findNavController().navigate(R.id.action_logInFragment_to_demoFragment)
+                        startActivity(Intent(requireActivity(),UserMainActivity::class.java))
                     }else{
 
                         if (it.exception is FirebaseAuthInvalidCredentialsException) {
@@ -129,16 +125,6 @@ class LogInFragment : Fragment() {
         })
         }
 
-        fun onClick(v: View) {
-            if (v == binding.facebookSignIn) {
-                LoginManager.getInstance().logInWithReadPermissions(
-                    this,
-                    listOf("user_photos", "email", "user_birthday", "public_profile")
-                )
-            }
-        }
-
-
     }
 
     private fun handleFacebookAccessToken(accessToken: AccessToken) {
@@ -158,7 +144,7 @@ class LogInFragment : Fragment() {
                 val key = email.replace('.', ',')
                 database.child(key).setValue(User)
                 Utils.showToast(requireContext(),"login with facebook")
-                findNavController().navigate(R.id.action_logInFragment_to_demoFragment)
+                startActivity(Intent(requireActivity(),UserMainActivity::class.java))
             }
     }
 
@@ -208,19 +194,13 @@ private fun signInGoogle(){
         auth.signInWithCredential(credential).addOnCompleteListener {
             database = FirebaseDatabase.getInstance().getReference("Users")
             if(it.isSuccessful){
-                val bundle = Bundle()
                 val email = account.email.toString()
                 val name = account.givenName.toString()
                 val User = user(name,null,email,"",null,null)
                 val key = email.replace('.', ',')
                 database.child(key).setValue(User)
-                bundle.apply {
-                    putString("email",account.email)
-                    putString("name",account.displayName)
-                }
-
                 Utils.showToast(requireContext(),"login with google")
-                findNavController().navigate(R.id.action_logInFragment_to_demoFragment,bundle)
+                startActivity(Intent(requireActivity(),UserMainActivity::class.java))
             }else{
                 Utils.showToast(requireContext(),it.exception.toString())
             }

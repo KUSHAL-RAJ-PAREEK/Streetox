@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/notiFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/notification_icon"
+        app:tooltipText=""
+        tools:ignore="MenuTitle" />
+    <item
+        android:id="@+id/searchFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/search_icon"
+        app:tooltipText=""
+        tools:ignore="MenuTitle" />
+    <item
+        android:id="@+id/requestFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/request_icon"
+        app:tooltipText=""
+        tools:ignore="MenuTitle"  />
+    <item
+        android:id="@+id/walletFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/wallet_icon"
+        app:tooltipText=""
+        tools:ignore="MenuTitle" />
+    <item
+        android:id="@+id/profileFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/profile_icon"
+        app:tooltipText=""
+        tools:ignore="MenuTitle" />
+</menu>

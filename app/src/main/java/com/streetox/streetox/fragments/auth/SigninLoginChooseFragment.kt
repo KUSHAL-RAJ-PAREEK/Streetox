@@ -1,4 +1,4 @@
-package com.streetox.streetox.fragments
+package com.streetox.streetox.fragments.auth
 
 import android.annotation.SuppressLint
 import android.os.Build

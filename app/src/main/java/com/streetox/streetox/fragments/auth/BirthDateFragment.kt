@@ -1,4 +1,4 @@
-package com.streetox.streetox.fragments
+package com.streetox.streetox.fragments.auth
 import android.os.Build
 import androidx.fragment.app.Fragment
 import android.os.Bundle

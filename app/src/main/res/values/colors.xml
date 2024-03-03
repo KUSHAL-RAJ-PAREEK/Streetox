@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:override = "true">
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="streetox_primary_color">#FFDE59</color>
@@ -7,4 +8,7 @@
     <color name="splash_bg_color">#EACDAB</color>
     <color name="edit_text_color">#CCCCCB</color>
     <color name="hint_color">#6E6E6E</color>
+    <color name="bottom_nav_color">#969BA1</color>
+    <color name="name_card_color" >#BDBDBD</color>
+    <color name="profile_card_color">#504D4D</color>
 </resources>

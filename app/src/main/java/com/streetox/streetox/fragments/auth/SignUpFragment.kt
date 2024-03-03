@@ -1,4 +1,4 @@
-package com.streetox.streetox.fragments
+package com.streetox.streetox.fragments.auth
 
 import android.os.Build
 import android.os.Bundle
@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.streetox.streetox.R
 import com.streetox.streetox.databinding.FragmentSignUpBinding
-import com.streetox.streetox.databinding.FragmentSignUpEmailBinding
 
 
 class SignUpFragment : Fragment() {

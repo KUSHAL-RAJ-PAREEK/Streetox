@@ -18,7 +18,7 @@
     </fragment>
     <fragment
         android:id="@+id/signinLoginChooseFragment"
-        android:name="com.streetox.streetox.fragments.SigninLoginChooseFragment"
+        android:name="com.streetox.streetox.fragments.auth.SigninLoginChooseFragment"
         android:label="fragment_signin_login_choose"
         tools:layout="@layout/fragment_signin_login_choose" >
         <action
@@ -30,7 +30,7 @@
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
-        android:name="com.streetox.streetox.fragments.SignUpFragment"
+        android:name="com.streetox.streetox.fragments.auth.SignUpFragment"
         android:label="fragment_sign_up"
         tools:layout="@layout/fragment_sign_up" >
         <action
@@ -44,7 +44,7 @@
     </fragment>
     <fragment
         android:id="@+id/logInFragment"
-        android:name="com.streetox.streetox.fragments.LogInFragment"
+        android:name="com.streetox.streetox.fragments.auth.LogInFragment"
         android:label="fragment_log_in"
         tools:layout="@layout/fragment_log_in" >
         <action
@@ -62,7 +62,7 @@
     </fragment>
     <fragment
         android:id="@+id/signUpEmailFragment"
-        android:name="com.streetox.streetox.fragments.SignUpEmailFragment"
+        android:name="com.streetox.streetox.fragments.auth.SignUpEmailFragment"
         android:label="fragment_sign_up_email"
         tools:layout="@layout/fragment_sign_up_email" >
         <action
@@ -79,7 +79,7 @@
     </fragment>
     <fragment
         android:id="@+id/abbreviationFragment"
-        android:name="com.streetox.streetox.fragments.AbbreviationFragment"
+        android:name="com.streetox.streetox.fragments.auth.AbbreviationFragment"
         android:label="fragment_abbreviation"
         tools:layout="@layout/fragment_abbreviation" >
         <action
@@ -93,7 +93,7 @@
     </fragment>
     <fragment
         android:id="@+id/nameFragment"
-        android:name="com.streetox.streetox.fragments.NameFragment"
+        android:name="com.streetox.streetox.fragments.auth.NameFragment"
         android:label="fragment_name"
         tools:layout="@layout/fragment_name" >
         <action
@@ -107,7 +107,7 @@
     </fragment>
     <fragment
         android:id="@+id/birthDateFragment"
-        android:name="com.streetox.streetox.fragments.BirthDateFragment"
+        android:name="com.streetox.streetox.fragments.auth.BirthDateFragment"
         android:label="fragment_birth_date"
         tools:layout="@layout/fragment_birth_date" >
         <action
@@ -119,7 +119,7 @@
     </fragment>
     <fragment
         android:id="@+id/signUpPasswordFragment"
-        android:name="com.streetox.streetox.fragments.SignUpPasswordFragment"
+        android:name="com.streetox.streetox.fragments.auth.SignUpPasswordFragment"
         android:label="fragment_sign_up_password"
         tools:layout="@layout/fragment_sign_up_password" >
         <action
@@ -133,7 +133,7 @@
     </fragment>
     <fragment
         android:id="@+id/phoneNumberFragment"
-        android:name="com.streetox.streetox.fragments.PhoneNumberFragment"
+        android:name="com.streetox.streetox.fragments.auth.PhoneNumberFragment"
         android:label="fragment_phone_number"
         tools:layout="@layout/fragment_phone_number" >
         <action
@@ -145,7 +145,7 @@
     </fragment>
     <fragment
         android:id="@+id/otpFragment"
-        android:name="com.streetox.streetox.fragments.OtpFragment"
+        android:name="com.streetox.streetox.fragments.auth.OtpFragment"
         android:label="fragment_otp"
         tools:layout="@layout/fragment_otp" >
         <action
@@ -168,7 +168,7 @@
     </fragment>
     <fragment
         android:id="@+id/passwordForgotFragment"
-        android:name="com.streetox.streetox.fragments.PasswordForgotFragment"
+        android:name="com.streetox.streetox.fragments.auth.PasswordForgotFragment"
         android:label="fragment_password_forgot"
         tools:layout="@layout/fragment_password_forgot" >
         <action

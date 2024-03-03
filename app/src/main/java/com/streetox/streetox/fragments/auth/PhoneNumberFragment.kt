@@ -1,6 +1,7 @@
-package com.streetox.streetox.fragments
+package com.streetox.streetox.fragments.auth
 
 import android.R.attr.fillColor
+import android.content.Intent
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.util.Log
@@ -18,6 +19,7 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.streetox.streetox.Utils
+import com.streetox.streetox.activities.UserMainActivity
 import com.streetox.streetox.databinding.FragmentPhoneNumberBinding
 import com.streetox.streetox.viewmodels.Stateviewmodels.StatePhoneNumberFragment
 import java.util.concurrent.TimeUnit
@@ -79,8 +81,7 @@ class PhoneNumberFragment : Fragment() {
 
 
     private fun sendtomain(){
-        findNavController().navigate(
-            com.streetox.streetox.R.id.action_phoneNumberFragment_to_demoFragment)
+        startActivity(Intent(requireActivity(), UserMainActivity::class.java))
     }
 private fun ondoItLaterclick(){
     binding.doItLater.setOnClickListener {

@@ -1,4 +1,4 @@
-package com.streetox.streetox.fragments
+package com.streetox.streetox.fragments.auth
 
 import android.os.Bundle
 import android.util.Patterns

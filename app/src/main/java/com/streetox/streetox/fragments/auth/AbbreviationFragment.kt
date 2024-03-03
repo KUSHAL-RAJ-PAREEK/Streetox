@@ -1,4 +1,4 @@
-package com.streetox.streetox.fragments
+package com.streetox.streetox.fragments.auth
 
 import android.os.Build
 import android.os.Bundle
@@ -23,6 +23,7 @@ class AbbreviationFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentAbbreviationBinding.inflate(layoutInflater)
+
 
         // statusbar changing function
         setstatusBarColor()
