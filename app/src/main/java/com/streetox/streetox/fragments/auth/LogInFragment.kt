@@ -1,5 +1,6 @@
 package com.streetox.streetox.fragments.auth
 
+
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
@@ -33,6 +35,7 @@ import com.streetox.streetox.Utils
 import com.streetox.streetox.activities.UserMainActivity
 import com.streetox.streetox.databinding.FragmentLogInBinding
 import com.streetox.streetox.models.user
+
 
 
 class LogInFragment : Fragment() {
@@ -142,6 +145,7 @@ class LogInFragment : Fragment() {
 
                 val User = user(name,null,email,"",phone_number,null)
                 val key = email.replace('.', ',')
+
                 database.child(key).setValue(User)
                 Utils.showToast(requireContext(),"login with facebook")
                 startActivity(Intent(requireActivity(),UserMainActivity::class.java))
@@ -152,6 +156,8 @@ class LogInFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         callbackManager!!.onActivityResult(resultCode,resultCode,data)
     }
+
+    //sign in with google
 
     private fun google_signin(){
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -165,6 +171,7 @@ class LogInFragment : Fragment() {
             signInGoogle()
         }
     }
+
 private fun signInGoogle(){
     val signInIntent = googleSignInClient.signInIntent
     launcher.launch(signInIntent)
@@ -199,6 +206,7 @@ private fun signInGoogle(){
                 val User = user(name,null,email,"",null,null)
                 val key = email.replace('.', ',')
                 database.child(key).setValue(User)
+
                 Utils.showToast(requireContext(),"login with google")
                 startActivity(Intent(requireActivity(),UserMainActivity::class.java))
             }else{
@@ -206,6 +214,7 @@ private fun signInGoogle(){
             }
         }
     }
+
 
     private fun btngoback(){
        binding.btnBack.setOnClickListener{

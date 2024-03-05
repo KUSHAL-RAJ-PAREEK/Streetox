@@ -48,9 +48,6 @@
         android:label="fragment_log_in"
         tools:layout="@layout/fragment_log_in" >
         <action
-            android:id="@+id/action_logInFragment_to_demoFragment"
-            app:destination="@id/demoFragment" />
-        <action
             android:id="@+id/action_logInFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
         <action
@@ -139,9 +136,6 @@
         <action
             android:id="@+id/action_phoneNumberFragment_to_otpFragment"
             app:destination="@id/otpFragment" />
-        <action
-            android:id="@+id/action_phoneNumberFragment_to_demoFragment"
-            app:destination="@id/demoFragment" />
     </fragment>
     <fragment
         android:id="@+id/otpFragment"
@@ -153,18 +147,6 @@
             app:destination="@id/phoneNumberFragment"
             app:popUpTo="@id/phoneNumberFragment"
             app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_otpFragment_to_demoFragment"
-            app:destination="@id/demoFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/demoFragment"
-        android:name="com.streetox.streetox.demoFragment"
-        android:label="fragment_demo"
-        tools:layout="@layout/fragment_demo" >
-        <action
-            android:id="@+id/action_demoFragment_to_signinLoginChooseFragment"
-            app:destination="@id/signinLoginChooseFragment" />
     </fragment>
     <fragment
         android:id="@+id/passwordForgotFragment"

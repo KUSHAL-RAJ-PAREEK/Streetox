@@ -1,6 +1,8 @@
 package com.streetox.streetox.fragments
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -10,17 +12,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.ktx.Firebase
 import com.streetox.streetox.R
 import com.streetox.streetox.Utils
 import com.streetox.streetox.activities.UserMainActivity
 import com.streetox.streetox.databinding.FragmentSplashBinding
+
 
 
 class SplashFragment : Fragment() {
@@ -28,11 +34,15 @@ class SplashFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var database: DatabaseReference
     private lateinit var binding: FragmentSplashBinding
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentSplashBinding.inflate(layoutInflater)
+
+        auth = Firebase.auth
 
         // statusbar changing function
         setstatusBarColor()
@@ -41,8 +51,18 @@ class SplashFragment : Fragment() {
 
         // Handler for delay in splash screen
         Handler(Looper.getMainLooper()).postDelayed({
-            findNavController().navigate(R.id.action_splashFragment_to_signinLoginChooseFragment)
+            val user = auth.currentUser
+            if(user != null){
+                startActivity(Intent(requireActivity(), UserMainActivity::class.java))
+            }else{
+                findNavController().navigate(R.id.action_splashFragment_to_signinLoginChooseFragment)
+
+            }
         },3000)
+
+
+
+
         return binding.root
     }
 
@@ -58,5 +78,7 @@ class SplashFragment : Fragment() {
             }
         }
     }
+
+
 
 }

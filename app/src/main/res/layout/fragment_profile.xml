@@ -30,6 +30,7 @@
                 android:src="@drawable/man" />
 
             <TextView
+                android:id="@+id/user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_87sdp"
@@ -118,6 +119,7 @@
                             android:textSize="@dimen/_16sdp" />
 
                         <TextView
+                            android:id="@+id/change_password"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_30sdp"
@@ -127,6 +129,7 @@
                             android:textSize="@dimen/_13sdp" />
 
                         <TextView
+                            android:id="@+id/help"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_30sdp"
@@ -136,6 +139,7 @@
                             android:textSize="@dimen/_13sdp" />
 
                         <TextView
+                            android:id="@+id/privacy_policy"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_30sdp"
@@ -145,6 +149,7 @@
                             android:textSize="@dimen/_13sdp" />
 
                         <TextView
+                            android:id="@+id/terms_and_condition"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_30sdp"
@@ -154,6 +159,7 @@
                             android:textSize="@dimen/_13sdp" />
 
                         <TextView
+                            android:id="@+id/logout"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_30sdp"

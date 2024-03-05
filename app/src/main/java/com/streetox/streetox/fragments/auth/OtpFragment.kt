@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -24,6 +25,7 @@ import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.childEvents
 import com.streetox.streetox.R
 import com.streetox.streetox.Utils
 import com.streetox.streetox.activities.UserMainActivity
@@ -67,7 +69,7 @@ class OtpFragment : Fragment() {
         if (args != null) { // Check if args is not null
             OTP = args.getString("OTP").toString()
             resendToken = args.getParcelable("resendToken")!!
-            phoneNumber = args.getString("phoneNumber") ?: ""
+            phoneNumber = args.getString("phoneNumber").toString()
         } else {
             // Handle the case when arguments are null, perhaps by showing an error message
             Log.e("OtpFragment", "Arguments are null")
@@ -111,22 +113,19 @@ class OtpFragment : Fragment() {
     }
 
 
-    private fun update_phone_number(){
+    private fun update_data(){
 
          val User = HashMap<String,String>()
-        val abb = viewModelAbb.abbreviation.value.toString()
         val email = viewModelEmail.userEmail.value.toString()
-        val first_name = viewModelname.firstName.value.toString()
 
-        User.put("phoneNumber",phoneNumber)
-
+        User.put("phone_number",phoneNumber)
 
         val database = FirebaseDatabase.getInstance().getReference("Users")
         val key = email.replace('.', ',')
-        database.child(key).updateChildren(User as Map<String, Any>)
-
+        database.child(key).child("phone_number").setValue(phoneNumber)
 
     }
+
 
 
     private fun onbackbtnclcik() {
@@ -182,20 +181,58 @@ class OtpFragment : Fragment() {
 
 
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
-        auth.signInWithCredential(credential)
-            .addOnCompleteListener(requireActivity()) { task ->
+        val currentUser = auth.currentUser
+        val email = viewModelEmail.userEmail.value
+
+        if (currentUser != null && email != null) {
+            // User is already signed in with email, link the phone authentication
+            linkUserAuth(credential, email)
+        } else {
+            // User is not signed in with email, sign in with phone authentication directly
+            auth.signInWithCredential(credential)
+                .addOnCompleteListener(requireActivity()) { task ->
+                    if (task.isSuccessful) {
+                        // Sign in with phone authentication successful
+                        Log.d("TAG", "signInWithPhoneAuthCredential: success")
+                        // Retrieve stored email from ViewModel
+                        val email = viewModelEmail.userEmail.value
+                        if (email != null) {
+                            // Link the phone authentication with the existing email authentication
+                            linkUserAuth(credential, email)
+                        } else {
+                            Utils.showToast(requireContext(), "Email not found")
+                        }
+                        sendtomain() // Proceed to main activity
+                        // Update UI or perform further actions
+                    } else {
+                        // Sign in with phone authentication failed, display error message
+                        Log.d("TAG", "signInWithPhoneAuthCredential: ${task.exception}")
+                        if (task.exception is FirebaseAuthInvalidCredentialsException) {
+                            // The verification code entered was invalid
+                        }
+                        // Update UI or handle error case
+                    }
+                }
+        }
+    }
+
+
+    private fun linkUserAuth(credential: PhoneAuthCredential, email: String) {
+        val currentUser = auth.currentUser
+        currentUser?.linkWithCredential(credential)
+            ?.addOnCompleteListener(requireActivity()) { task ->
                 if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    update_phone_number()
-                    Utils.showToast(requireContext(), "Authenticate successfully")
+                    // Linking the phone number with the email was successful
+                    Log.d("TAG", "linkWithCredential: success")
+                    val mergedAuthUser = task.result?.user
+                    // Handle further actions or UI updates
+                    update_data() // Update phone number in database
+
                     sendtomain()
                 } else {
-                    // Sign in failed, display a message and update the UI
-                    Log.d("TAG", "signInWithPhoneAuthCredential: ${task.exception.toString()}")
-                    if (task.exception is FirebaseAuthInvalidCredentialsException) {
-                        // The verification code entered was invalid
-                    }
-                    // Update UI
+                    // Linking failed, display an error message
+                    Log.w("TAG", "linkWithCredential: failure", task.exception)
+                    // Handle error message or UI updates
                 }
             }
     }

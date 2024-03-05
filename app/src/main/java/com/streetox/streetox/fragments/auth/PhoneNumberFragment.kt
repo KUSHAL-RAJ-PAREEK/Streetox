@@ -83,10 +83,9 @@ class PhoneNumberFragment : Fragment() {
     private fun sendtomain(){
         startActivity(Intent(requireActivity(), UserMainActivity::class.java))
     }
-private fun ondoItLaterclick(){
+private fun ondoItLaterclick() {
     binding.doItLater.setOnClickListener {
-        findNavController().navigate(
-            com.streetox.streetox.R.id.action_phoneNumberFragment_to_demoFragment)
+        startActivity(Intent(requireActivity(), UserMainActivity::class.java))
     }
 }
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {

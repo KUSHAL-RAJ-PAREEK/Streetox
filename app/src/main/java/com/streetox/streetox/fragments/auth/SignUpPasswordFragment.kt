@@ -1,5 +1,6 @@
 package com.streetox.streetox.fragments.auth
 
+
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -22,6 +23,7 @@ import com.streetox.streetox.viewmodels.Stateviewmodels.StateNameViewModel
 import com.streetox.streetox.viewmodels.Stateviewmodels.StateSignUpViewModel
 
 
+
 class SignUpPasswordFragment : Fragment() {
 
     private lateinit var binding: FragmentSignUpPasswordBinding
@@ -33,6 +35,8 @@ class SignUpPasswordFragment : Fragment() {
     private val viewModelname: StateNameViewModel by activityViewModels()
     private val viewModeldob: StateDobViewModel by activityViewModels()
     private val viewModelAbb: StateAbbreviationLiveData by activityViewModels()
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -91,7 +95,6 @@ class SignUpPasswordFragment : Fragment() {
         }
     }
 
-    //moving data to firebase
 
     //moving data to firebase
 
@@ -104,7 +107,7 @@ class SignUpPasswordFragment : Fragment() {
         val pass = binding.password.text.toString()
 
         database = FirebaseDatabase.getInstance().getReference("Users")
-        val User = user(name,dob,email,pass,null,abb)
+        val User = user(name,dob,email,pass,"",abb)
         val key = email.replace('.', ',')
         database.child(key).setValue(User)
     }
