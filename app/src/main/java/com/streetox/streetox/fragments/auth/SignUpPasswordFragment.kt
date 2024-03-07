@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -55,6 +56,9 @@ class SignUpPasswordFragment : Fragment() {
 
         // On Back button click
         onBackButtonClick()
+
+        binding.password.addTextChangedListener { show_btn_go() }
+        binding.confirmPassword.addTextChangedListener { show_btn_go() }
 
         return binding.root
     }
@@ -107,7 +111,7 @@ class SignUpPasswordFragment : Fragment() {
         val pass = binding.password.text.toString()
 
         database = FirebaseDatabase.getInstance().getReference("Users")
-        val User = user(name,dob,email,pass,"",abb)
+        val User = user(name,dob,email,pass,null,abb)
         val key = email.replace('.', ',')
         database.child(key).setValue(User)
     }
@@ -151,6 +155,18 @@ class SignUpPasswordFragment : Fragment() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             }
+        }
+    }
+
+
+    private fun show_btn_go(){
+        val pass = binding.password.text.toString()
+        val confirm_pass = binding.confirmPassword.text.toString()
+
+        if(pass.isNotEmpty() && confirm_pass.isNotEmpty()){
+            binding.btnGo.visibility = View.VISIBLE
+        }else {
+            binding.btnGo.visibility = View.GONE
         }
     }
 }

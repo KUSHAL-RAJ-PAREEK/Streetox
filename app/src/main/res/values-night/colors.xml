@@ -11,4 +11,6 @@
     <color name="bottom_nav_color">#969BA1</color>
     <color name="name_card_color">#BDBDBD</color>
     <color name="profile_card_color">#504D4D</color>
+    <color name="sign_up_fb_logo_color">#262626</color>
+    <color name="pop_up_background_color">#393636</color>
 </resources>

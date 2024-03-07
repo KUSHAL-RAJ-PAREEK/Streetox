@@ -115,7 +115,7 @@ class OtpFragment : Fragment() {
 
     private fun update_data(){
 
-         val User = HashMap<String,String>()
+        val User = HashMap<String,String>()
         val email = viewModelEmail.userEmail.value.toString()
 
         User.put("phone_number",phoneNumber)
@@ -237,7 +237,7 @@ class OtpFragment : Fragment() {
             }
     }
 
-//    private fun oneditclick(){
+    //    private fun oneditclick(){
 //        binding.editNo.setOnClickListener {
 //            findNavController().navigate(
 //                R.id.action_otpFragment_to_phoneNumberFragment
@@ -245,7 +245,7 @@ class OtpFragment : Fragment() {
 //        }
 //    }
     private fun sendtomain() {
-    startActivity(Intent(requireActivity(), UserMainActivity::class.java))
+        startActivity(Intent(requireActivity(), UserMainActivity::class.java))
     }
 
     private val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {

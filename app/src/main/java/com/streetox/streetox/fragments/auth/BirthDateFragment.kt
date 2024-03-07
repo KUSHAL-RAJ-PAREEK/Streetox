@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.streetox.streetox.R
@@ -40,6 +41,8 @@ class BirthDateFragment : Fragment() {
         // navigating
         onBackButtonClick()
 
+        binding.dobTxt.addTextChangedListener { show_btn_go() }
+
         // observe date of birth
         dateOfBirthViewModel.dateOfBirth.observe(viewLifecycleOwner) { dob ->
             // update UI with date of birth
@@ -47,6 +50,17 @@ class BirthDateFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+
+    private fun show_btn_go(){
+        val bith_date = binding.dobTxt.text.toString()
+
+        if(bith_date.isNotEmpty()){
+            binding.btnGo.visibility = View.VISIBLE
+        }else {
+            binding.btnGo.visibility = View.GONE
+        }
     }
 
     //on go btn click

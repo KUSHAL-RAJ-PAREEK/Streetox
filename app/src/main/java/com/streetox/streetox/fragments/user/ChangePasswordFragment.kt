@@ -6,8 +6,10 @@ import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.streetox.streetox.R
@@ -18,7 +20,7 @@ import com.streetox.streetox.databinding.FragmentProfileBinding
 
 class ChangePasswordFragment : Fragment() {
 
-
+    private var bottomNavigationView: BottomNavigationView? = null
     private lateinit var binding: FragmentChangePasswordBinding
 
     private lateinit var auth : FirebaseAuth
@@ -32,10 +34,17 @@ class ChangePasswordFragment : Fragment() {
 
         auth = FirebaseAuth.getInstance()
 
-
         on_btn_go_click()
 
+        bottomNavigationView = activity?.findViewById(R.id.bottom_nav_view)
+        bottomNavigationView?.visibility = View.GONE
+
         on_back_btn_click()
+
+        binding.currentPassword.addTextChangedListener { show_btn_go() }
+        binding.newPassword.addTextChangedListener { show_btn_go() }
+        binding.confirmPassword.addTextChangedListener { show_btn_go() }
+
 
         return binding.root
     }
@@ -43,6 +52,26 @@ class ChangePasswordFragment : Fragment() {
     private fun on_btn_go_click(){
         binding.btnGo.setOnClickListener {
             changepassword()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Show the bottom navigation view when the fragment is destroyed
+        bottomNavigationView?.visibility = View.VISIBLE
+    }
+
+    private fun show_btn_go(){
+        val curr_password = binding.currentPassword.text.toString()
+        val new_paaword = binding.newPassword.text.toString()
+        val confirm_password = binding.confirmPassword.text.toString()
+
+        if(curr_password.isNotEmpty() &&
+            new_paaword.isNotEmpty() &&
+            confirm_password.isNotEmpty()){
+            binding.btnGo.visibility = View.VISIBLE
+        }else {
+            binding.btnGo.visibility = View.GONE
         }
     }
 

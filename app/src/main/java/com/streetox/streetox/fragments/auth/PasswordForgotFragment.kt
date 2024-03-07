@@ -35,7 +35,7 @@ class PasswordForgotFragment : Fragment() {
 
         onbtngoclick()
 
-//        onbackbtnclcik()
+       onbackbtnclick()
 
         return binding.root
     }
@@ -85,7 +85,7 @@ class PasswordForgotFragment : Fragment() {
         })
     }
 
-    private fun onbackbtnclcik(){
+    private fun onbackbtnclick(){
        binding.btnBack.setOnClickListener {
            findNavController().navigate(R.id.action_passwordForgotFragment_to_logInFragment)
        }
@@ -94,4 +94,5 @@ class PasswordForgotFragment : Fragment() {
     private fun isEmailValid(email: String): Boolean {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
+
 }

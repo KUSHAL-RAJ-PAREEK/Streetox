@@ -5,6 +5,7 @@ import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.streetox.streetox.R
@@ -34,6 +35,9 @@ class SignUpEmailFragment : Fragment() {
         binding = FragmentSignUpEmailBinding.inflate(inflater, container, false)
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().getReference("Users")
+
+        binding.userEmail.addTextChangedListener { show_btn_go() }
+
         return binding.root
     }
 
@@ -63,6 +67,17 @@ class SignUpEmailFragment : Fragment() {
                 // Check if the user already exists in the database
                 checkIfUserExists(email)
             }
+        }
+    }
+
+
+    private fun show_btn_go(){
+        val email = binding.userEmail.text.toString()
+
+        if(email.isNotEmpty()){
+            binding.btnGo.visibility = View.VISIBLE
+        }else {
+            binding.btnGo.visibility = View.GONE
         }
     }
 

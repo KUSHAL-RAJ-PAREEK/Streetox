@@ -59,6 +59,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_marginHorizontal="@dimen/_16sdp"
+            android:scrollbars="none"
             android:layout_marginTop="@dimen/_24sdp">
 
 

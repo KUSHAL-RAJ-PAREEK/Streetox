@@ -41,6 +41,11 @@
         <action
             android:id="@+id/action_signUpFragment_to_signUpEmailFragment"
             app:destination="@id/signUpEmailFragment" />
+        <action
+            android:id="@+id/action_signUpFragment_to_logInFragment"
+            app:destination="@id/logInFragment"
+            app:popUpTo="@id/logInFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/logInFragment"

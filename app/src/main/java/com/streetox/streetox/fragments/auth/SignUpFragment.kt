@@ -1,6 +1,7 @@
 package com.streetox.streetox.fragments.auth
 
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
@@ -66,7 +67,26 @@ class SignUpFragment : Fragment() {
         facebook_signin()
 
         onContinueOrBackButtonClick()
+
+        on_login_text_click()
+
+        remove_fb_button_logo_and_color()
+
         return binding.root
+    }
+
+    // on login text click
+    private fun on_login_text_click(){
+        binding.loginText.setOnClickListener {
+                findNavController().navigate(R.id.action_signUpFragment_to_logInFragment)
+            }
+        }
+
+    //facebook button logo change
+    @SuppressLint("ResourceAsColor")
+    private fun remove_fb_button_logo_and_color() {
+        binding.facebookSignIn.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0)
+        binding.facebookSignIn.setBackgroundResource(R.color.sign_up_fb_logo_color)
     }
 
     //sign in with google

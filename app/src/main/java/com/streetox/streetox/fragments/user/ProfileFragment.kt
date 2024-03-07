@@ -1,9 +1,19 @@
 package com.streetox.streetox.fragments.user
 
+import android.app.Activity
+import android.app.Dialog
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Rect
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.view.WindowManager
+import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayout
@@ -14,10 +24,15 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.collection.LLRBNode.Color
 import com.streetox.streetox.R
 import com.streetox.streetox.Utils
+import com.streetox.streetox.activities.MainActivity
+import com.streetox.streetox.activities.UserMainActivity
+
 import com.streetox.streetox.adapters.ProfileCdAdapter
 import com.streetox.streetox.databinding.FragmentProfileBinding
+import com.streetox.streetox.fragments.utils.LogoutDailogBoxFragment
 import com.streetox.streetox.models.user
 
 class ProfileFragment : Fragment() {
@@ -51,6 +66,8 @@ class ProfileFragment : Fragment() {
 
         changePassword()
 
+        logout()
+
         return binding.root
     }
 
@@ -60,6 +77,39 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    private fun logout(){
+        binding.logout.setOnClickListener {
+            showCustomDialogBox()
+        }
+    }
+
+
+    private fun showCustomDialogBox() {
+        val dialog = Dialog(requireContext())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.fragment_logout_dailog_box)
+
+        // Blur background
+        val window = dialog.window
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+
+
+        val logoutBtn = dialog.findViewById<Button>(R.id.logout_btn)
+        val cancelBtn = dialog.findViewById<Button>(R.id.logout_cancel_btn)
+
+        logoutBtn.setOnClickListener {
+         auth.signOut()
+            startActivity(Intent(requireActivity(), MainActivity::class.java))
+        }
+
+        cancelBtn.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
     private fun setUserData() {
         database = FirebaseDatabase.getInstance().getReference("Users")
         if (email.isNotEmpty()) {
@@ -67,13 +117,15 @@ class ProfileFragment : Fragment() {
         }
     }
 
+
+
     private fun getUserData() {
         val key = email.replace('.', ',')
         database.child(key).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val user = snapshot.getValue(user::class.java)
                 if (user != null) {
-                    binding.userName.setText(user.name)
+                    binding.userName.text = user.name
                 } else {
                     Utils.showToast(requireContext(), "User data is null")
                 }

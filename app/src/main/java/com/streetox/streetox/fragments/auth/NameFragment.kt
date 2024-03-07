@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.streetox.streetox.R
@@ -34,7 +35,8 @@ class NameFragment : Fragment() {
         viewModel.lastName.observe(viewLifecycleOwner) { lastName ->
             binding.lastName.setText(lastName)
         }
-
+        binding.firstName.addTextChangedListener { show_btn_go() }
+        binding.lastName.addTextChangedListener { show_btn_go() }
         // navigating
         onBackButtonClick()
 
@@ -42,6 +44,17 @@ class NameFragment : Fragment() {
         OnGobtnClick()
 
         return binding.root
+    }
+
+    private fun show_btn_go(){
+        val first_name = binding.firstName.text.toString()
+        val last_name = binding.lastName.text.toString()
+
+        if(first_name.isNotEmpty()  && last_name.isNotEmpty()){
+            binding.btnGo.visibility = View.VISIBLE
+        }else {
+            binding.btnGo.visibility = View.GONE
+        }
     }
 
     private fun OnGobtnClick() {

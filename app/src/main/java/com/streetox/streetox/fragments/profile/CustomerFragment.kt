@@ -56,9 +56,9 @@ class CustomerFragment : Fragment() {
 
                 User = snapshot.getValue(user::class.java)!!
 
-                binding.customerEmail.setText((User.email))
-                if(User.phone_number != ""){
-                    binding.customerPhoneNumber.setText(User.phone_number)
+                binding.customerEmail.text = (User.email)
+                if(User.phone_number != null){
+                    binding.customerPhoneNumber.text = User.phone_number
                 }
             }
 
