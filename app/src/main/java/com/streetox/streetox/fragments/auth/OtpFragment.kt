@@ -41,12 +41,7 @@ import java.util.concurrent.TimeUnit
 class OtpFragment : Fragment() {
 
     //data base
-    private lateinit var database : DatabaseReference
     private val viewModelEmail: StateSignUpViewModel by activityViewModels()
-    private val viewModelname: StateNameViewModel by activityViewModels()
-    private val viewModeldob: StateDobViewModel by activityViewModels()
-    private val viewModelAbb: StateAbbreviationLiveData by activityViewModels()
-
 
 
     private lateinit var binding: FragmentOtpBinding
@@ -61,6 +56,7 @@ class OtpFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         auth = FirebaseAuth.getInstance()
         binding = FragmentOtpBinding.inflate(layoutInflater)
 
@@ -121,7 +117,7 @@ class OtpFragment : Fragment() {
         User.put("phone_number",phoneNumber)
 
         val database = FirebaseDatabase.getInstance().getReference("Users")
-        val key = email.replace('.', ',')
+        val key = auth.currentUser?.uid.toString()
         database.child(key).child("phone_number").setValue(phoneNumber)
 
     }

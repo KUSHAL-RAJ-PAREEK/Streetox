@@ -35,8 +35,11 @@ class NameFragment : Fragment() {
         viewModel.lastName.observe(viewLifecycleOwner) { lastName ->
             binding.lastName.setText(lastName)
         }
+
+        //showing button
         binding.firstName.addTextChangedListener { show_btn_go() }
         binding.lastName.addTextChangedListener { show_btn_go() }
+
         // navigating
         onBackButtonClick()
 

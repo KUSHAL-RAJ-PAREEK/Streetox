@@ -16,6 +16,7 @@ import android.view.WindowManager
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
@@ -43,6 +44,8 @@ class ProfileFragment : Fragment() {
     private lateinit var database: DatabaseReference
     private lateinit var email: String
 
+    private var bottomNavigationView: BottomNavigationView? = null
+
     var tabTitle = arrayOf("As Customer", "As Courier")
 
     override fun onCreateView(
@@ -58,6 +61,9 @@ class ProfileFragment : Fragment() {
         val tab = binding.profileTabLayout
         pager.adapter = ProfileCdAdapter(childFragmentManager, lifecycle)
 
+        bottomNavigationView = activity?.findViewById(R.id.bottom_nav_view)
+        bottomNavigationView?.visibility = View.VISIBLE
+
         TabLayoutMediator(tab, pager) { tab, position ->
             tab.text = tabTitle[position]
         }.attach()
@@ -66,9 +72,19 @@ class ProfileFragment : Fragment() {
 
         changePassword()
 
+        click_on_edit_profile()
+
+
         logout()
 
         return binding.root
+    }
+
+
+    private fun click_on_edit_profile() {
+        binding.editProfile.setOnClickListener {
+            findNavController().navigate(R.id.action_profileFragment_to_editProfileFragment)
+        }
     }
 
     private fun changePassword() {
@@ -77,7 +93,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun logout(){
+    private fun logout() {
         binding.logout.setOnClickListener {
             showCustomDialogBox()
         }
@@ -95,12 +111,11 @@ class ProfileFragment : Fragment() {
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
 
-
         val logoutBtn = dialog.findViewById<Button>(R.id.logout_btn)
         val cancelBtn = dialog.findViewById<Button>(R.id.logout_cancel_btn)
 
         logoutBtn.setOnClickListener {
-         auth.signOut()
+            auth.signOut()
             startActivity(Intent(requireActivity(), MainActivity::class.java))
         }
 
@@ -110,6 +125,7 @@ class ProfileFragment : Fragment() {
 
         dialog.show()
     }
+
     private fun setUserData() {
         database = FirebaseDatabase.getInstance().getReference("Users")
         if (email.isNotEmpty()) {
@@ -117,23 +133,23 @@ class ProfileFragment : Fragment() {
         }
     }
 
-
-
     private fun getUserData() {
-        val key = email.replace('.', ',')
-        database.child(key).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val user = snapshot.getValue(user::class.java)
-                if (user != null) {
-                    binding.userName.text = user.name
-                } else {
-                    Utils.showToast(requireContext(), "User data is null")
+        val key = auth.currentUser?.uid
+        if (key != null) {
+            database.child(key).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val user = snapshot.getValue(user::class.java)
+                    if (user != null) {
+                        binding.userName.text = user.name
+                    } else {
+                        Utils.showToast(requireContext(), "User data is null")
+                    }
                 }
-            }
 
-            override fun onCancelled(error: DatabaseError) {
-                Utils.showToast(requireContext(), "Unable to fetch user data")
-            }
-        })
+                override fun onCancelled(error: DatabaseError) {
+                    Utils.showToast(requireContext(), "Unable to fetch user data")
+                }
+            })
+        }
     }
 }

@@ -1,11 +1,12 @@
 package com.streetox.streetox.fragments.profile
 
+
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.fragment.findNavController
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -45,27 +46,40 @@ class CustomerFragment : Fragment() {
 
 
 
-
-
     private fun set_user_email_and_phone_number(){
 
+        val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.correct)
 
-        val key = email.replace('.', ',')
-        database.child(key).addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
+        val key = auth.currentUser?.uid
+        if (key != null) {
+            database.child(key).addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
 
-                User = snapshot.getValue(user::class.java)!!
+                    User = snapshot.getValue(user::class.java)!!
 
-                binding.customerEmail.text = (User.email)
-                if(User.phone_number != null){
-                    binding.customerPhoneNumber.text = User.phone_number
+
+                    binding.checkerEmail.apply {
+                        setImageDrawable(drawable)
+                        requestLayout()
+                    }
+
+                    binding.customerEmail.text = (User.email)
+
+                    if(User.phone_number != null){
+                        //check icon
+                        binding.checkerEmail.apply {
+                            setImageDrawable(drawable)
+                            requestLayout()
+                        }
+                        binding.customerPhoneNumber.text = User.phone_number
+                    }
                 }
-            }
 
-            override fun onCancelled(error: DatabaseError) {
-                Utils.showToast(requireContext(),"unable to fetch data")
-            }
+                override fun onCancelled(error: DatabaseError) {
+                    Utils.showToast(requireContext(),"unable to fetch data")
+                }
 
-        })
+            })
+        }
     }
 }

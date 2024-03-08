@@ -112,7 +112,7 @@ class SignUpPasswordFragment : Fragment() {
 
         database = FirebaseDatabase.getInstance().getReference("Users")
         val User = user(name,dob,email,pass,null,abb)
-        val key = email.replace('.', ',')
+        val key = auth.currentUser?.uid.toString()
         database.child(key).setValue(User)
     }
     // Check password validity

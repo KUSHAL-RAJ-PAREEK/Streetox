@@ -33,6 +33,9 @@
         <action
             android:id="@+id/action_profileFragment_to_changePasswordFragment"
             app:destination="@id/changePasswordFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
     </fragment>
     <fragment
         android:id="@+id/changePasswordFragment"
@@ -55,4 +58,71 @@
         android:name="com.streetox.streetox.fragments.profile.DeliveryFragment"
         android:label="fragment_delivery"
         tools:layout="@layout/fragment_delivery" />
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.streetox.streetox.fragments.user.EditProfileFragment"
+        android:label="fragment_edit_profile"
+        tools:layout="@layout/fragment_edit_profile" >
+        <action
+            android:id="@+id/action_editProfileFragment_to_updateDOBFragment"
+            app:destination="@id/updateDOBFragment" />
+        <action
+            android:id="@+id/action_editProfileFragment_to_profileFragment"
+            app:destination="@id/profileFragment"
+            app:popUpTo="@id/profileFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_editProfileFragment_to_updateNameFragment"
+            app:destination="@id/updateNameFragment" />
+        <action
+            android:id="@+id/action_editProfileFragment_to_updateEmailPasswordFragment"
+            app:destination="@id/updateEmailPasswordFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/updateDOBFragment"
+        android:name="com.streetox.streetox.fragments.editprofile.UpdateDOBFragment"
+        android:label="fragment_update_d_o_b"
+        tools:layout="@layout/fragment_update_d_o_b" >
+        <action
+            android:id="@+id/action_updateDOBFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment"
+            app:popUpTo="@id/editProfileFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/updateNameFragment"
+        android:name="com.streetox.streetox.fragments.editprofile.UpdateNameFragment"
+        android:label="fragment_update_name"
+        tools:layout="@layout/fragment_update_name" >
+        <action
+            android:id="@+id/action_updateNameFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment"
+            app:popUpTo="@id/editProfileFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/updateEmailPasswordFragment"
+        android:name="com.streetox.streetox.fragments.editprofile.UpdateEmailPasswordFragment"
+        android:label="fragment_update_email_password"
+        tools:layout="@layout/fragment_update_email_password" >
+        <action
+            android:id="@+id/action_updateEmailPasswordFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment"
+            app:popUpTo="@id/editProfileFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_updateEmailPasswordFragment_to_updateEmailFragment"
+            app:destination="@id/updateEmailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/updateEmailFragment"
+        android:name="com.streetox.streetox.fragments.editprofile.UpdateEmailFragment"
+        android:label="fragment_update_email"
+        tools:layout="@layout/fragment_update_email" >
+        <action
+            android:id="@+id/action_updateEmailFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment"
+            app:popUpTo="@id/editProfileFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
 </navigation>

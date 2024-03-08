@@ -144,7 +144,7 @@ class LogInFragment : Fragment() {
                 val phone_number = result.user?.phoneNumber.toString()
 
                 val User = user(name,null,email,"",phone_number,null)
-                val key = email.replace('.', ',')
+                val key = auth.currentUser?.uid.toString()
 
                 database.child(key).setValue(User)
                 Utils.showToast(requireContext(),"login with facebook")
@@ -204,7 +204,7 @@ private fun signInGoogle(){
                 val email = account.email.toString()
                 val name = account.givenName.toString()
                 val User = user(name,null,email,"",null,null)
-                val key = email.replace('.', ',')
+                val key = auth.currentUser?.uid.toString()
                 database.child(key).setValue(User)
 
                 Utils.showToast(requireContext(),"login with google")

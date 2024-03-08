@@ -13,4 +13,6 @@
     <color name="profile_card_color">#504D4D</color>
     <color name="sign_up_fb_logo_color">#262626</color>
     <color name="pop_up_background_color">#393636</color>
+    <color name="edit_profile_text">#C6C6C6</color>
+    <color name="edit_profile_button">#BBBBBB</color>
 </resources>

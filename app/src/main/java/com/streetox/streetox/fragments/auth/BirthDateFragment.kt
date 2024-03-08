@@ -11,12 +11,14 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.streetox.streetox.R
 import com.streetox.streetox.Utils
+import com.streetox.streetox.Utils.calculateAgeFromDate
 import com.streetox.streetox.databinding.FragmentBirthDateBinding
 import com.streetox.streetox.pickers.DatePickerFragment
 import com.streetox.streetox.viewmodels.Stateviewmodels.StateDobViewModel
 import java.time.LocalDate
 import java.time.Period
 import java.time.format.DateTimeFormatter
+
 
 class BirthDateFragment : Fragment() {
     private val MINIMUM_AGE = 13
@@ -90,14 +92,7 @@ class BirthDateFragment : Fragment() {
         }
     }
 
-    //calculate age
-    private fun calculateAgeFromDate(dateOfBirth: String): Int {
-        val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy") // Specify the date format pattern
-        val dob = LocalDate.parse(dateOfBirth, formatter) // Parse date of birth string to LocalDate
-        val currentDate = LocalDate.now() // Get current date
-        val period = Period.between(dob, currentDate) // Calculate period between dates
-        return period.years // Return years component of the period
-    }
+
 
 
     private fun ondocTxtClick() {

@@ -41,6 +41,7 @@
                 android:textSize="@dimen/_20ssp" />
 
             <TextView
+                android:id="@+id/edit_profile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_87sdp"

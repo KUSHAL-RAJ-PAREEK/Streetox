@@ -82,25 +82,26 @@ class SignUpEmailFragment : Fragment() {
     }
 
     private fun checkIfUserExists(email: String) {
-        val key = email.replace('.', ',')
-        database.child(key).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    // User with this email already exists in the database
-                    Utils.showToast(requireContext(), "User with this email already exists")
-                } else {
-                    viewModel.setUserEmail(email)
-                    // Email does not exist, proceed to the next step
-                    findNavController().navigate(R.id.action_signUpEmailFragment_to_abbreviationFragment)
-                }
-            }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Handle database error
-                Utils.showToast(requireContext(), "Database error occurred")
-            }
-        })
-    }
+            database.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        // User with this email already exists in the database
+                        Utils.showToast(requireContext(), "User with this email already exists")
+                    } else {
+                        viewModel.setUserEmail(email)
+                        // Email does not exist, proceed to the next step
+                        findNavController().navigate(R.id.action_signUpEmailFragment_to_abbreviationFragment)
+                    }
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    // Handle database error
+                    Utils.showToast(requireContext(), "Database error occurred")
+                }
+            })
+        }
+
 
 
 
