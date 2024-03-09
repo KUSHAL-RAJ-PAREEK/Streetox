@@ -16,6 +16,8 @@ import android.view.WindowManager
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.room.Room
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -26,6 +28,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.collection.LLRBNode.Color
+import com.google.firebase.storage.FirebaseStorage
 import com.streetox.streetox.R
 import com.streetox.streetox.Utils
 import com.streetox.streetox.activities.MainActivity
@@ -35,6 +38,13 @@ import com.streetox.streetox.adapters.ProfileCdAdapter
 import com.streetox.streetox.databinding.FragmentProfileBinding
 import com.streetox.streetox.fragments.utils.LogoutDailogBoxFragment
 import com.streetox.streetox.models.user
+import com.streetox.streetox.room.AppDatabase
+import com.streetox.streetox.room.UserProfile
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 class ProfileFragment : Fragment() {
 
@@ -43,6 +53,8 @@ class ProfileFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var database: DatabaseReference
     private lateinit var email: String
+    lateinit var db: AppDatabase
+
 
     private var bottomNavigationView: BottomNavigationView? = null
 
@@ -52,10 +64,17 @@ class ProfileFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        db = Room.databaseBuilder(
+            requireContext(),
+            AppDatabase::class.java, "app-database"
+        ).build()
+
         binding = FragmentProfileBinding.inflate(layoutInflater)
 
         auth = FirebaseAuth.getInstance()
         email = auth.currentUser?.email.toString()
+
 
         val pager = binding.profileViewpager
         val tab = binding.profileTabLayout
@@ -74,10 +93,53 @@ class ProfileFragment : Fragment() {
 
         click_on_edit_profile()
 
+        set_user_profile()
+
 
         logout()
 
+        database.keepSynced(true)
         return binding.root
+    }
+
+    private fun set_user_profile() {
+        val uid = auth.currentUser?.uid
+        if (uid != null) {
+            GlobalScope.launch(Dispatchers.IO) {
+                val userProfile = db.userProfileDao().getUserProfile(uid)
+                if (userProfile != null) {
+                    // User profile exists in Room, load the image from Room
+                    withContext(Dispatchers.Main) {
+                        loadImageFromRoom(userProfile.profileImageUri)
+                    }
+                } else {
+                    // User profile doesn't exist in Room, load it from Firebase Storage
+                    val storageRef = FirebaseStorage.getInstance().getReference("profile").child(uid).child("profile.jpg")
+                    storageRef.downloadUrl.addOnSuccessListener { uri ->
+                        // Save the image URI to Room database
+                        val userProfile =
+                            UserProfile(userId = uid, profileImageUri = uri.toString())
+                        GlobalScope.launch(Dispatchers.IO) {
+                            db.userProfileDao().insert(userProfile)
+                        }
+                        // Load the image from Room
+                        GlobalScope.launch {
+                            withContext(Dispatchers.Main) {
+                                loadImageFromRoom(uri.toString())
+                            }
+                        }
+                    }.addOnFailureListener { exception ->
+                        Utils.showToast(requireContext(), exception.message.toString())
+                    }
+                }
+            }
+        }
+    }
+
+    private fun loadImageFromRoom(imageUri: String) {
+        Glide.with(requireContext())
+            .load(imageUri)
+            .into(binding.mainImg)
     }
 
 

@@ -1,6 +1,7 @@
 package com.streetox.streetox
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Point
@@ -15,11 +16,13 @@ import android.util.Log
 import android.view.PixelCopy
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.time.LocalDate
 import java.time.Period
 import java.time.format.DateTimeFormatter
 
 object Utils {
+
 
     //make toast
     fun showToast(context: Context, message: String){
@@ -35,6 +38,11 @@ object Utils {
         return period.years // Return years component of the period
     }
 
-    }
+
+   }
+
+
+
+
 
 

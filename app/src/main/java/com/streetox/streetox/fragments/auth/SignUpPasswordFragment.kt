@@ -111,7 +111,7 @@ class SignUpPasswordFragment : Fragment() {
         val pass = binding.password.text.toString()
 
         database = FirebaseDatabase.getInstance().getReference("Users")
-        val User = user(name,dob,email,pass,null,abb)
+        val User = user(null,name,dob,email,pass,null,abb)
         val key = auth.currentUser?.uid.toString()
         database.child(key).setValue(User)
     }

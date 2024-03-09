@@ -23,6 +23,7 @@
             app:cardCornerRadius="@dimen/_30sdp">
 
             <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/main_img"
                 android:layout_width="@dimen/_60sdp"
                 android:layout_height="@dimen/_60sdp"
                 android:layout_marginVertical="@dimen/_21sdp"

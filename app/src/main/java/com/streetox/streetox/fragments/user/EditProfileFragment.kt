@@ -1,12 +1,17 @@
 package com.streetox.streetox.fragments.user
 
 import android.annotation.SuppressLint
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
+import androidx.room.Room
+import com.bumptech.glide.Glide
 import com.facebook.appevents.AppEventsLogger.Companion.getUserData
 import com.facebook.appevents.codeless.internal.ViewHierarchy.setOnClickListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -16,26 +21,41 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.internal.Util
 import com.streetox.streetox.R
 import com.streetox.streetox.Utils
 import com.streetox.streetox.databinding.FragmentChangePasswordBinding
 import com.streetox.streetox.databinding.FragmentEditProfileBinding
 import com.streetox.streetox.models.user
-
-@SuppressLint("StaticFieldLeak")
-private lateinit var binding: FragmentEditProfileBinding
-private lateinit var auth: FirebaseAuth
-private lateinit var database: DatabaseReference
-private lateinit var email: String
-private lateinit var name: String
-private lateinit var User : user
-private lateinit var dob: String
-
-
+import com.streetox.streetox.room.AppDatabase
+import com.streetox.streetox.room.UserProfile
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.HashMap
 
 
 class EditProfileFragment : Fragment() {
     private var bottomNavigationView: BottomNavigationView? = null
+    private lateinit var binding: FragmentEditProfileBinding
+    private lateinit var auth: FirebaseAuth
+    private lateinit var database: DatabaseReference
+    private lateinit var email: String
+    private lateinit var name: String
+    private lateinit var User : user
+    private lateinit var dob: String
+    private var imageUri : Uri? = null
+    lateinit var db: AppDatabase
+
+    private val selectImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        imageUri = uri
+        binding.mainImg.setImageURI(imageUri)
+        if (imageUri != null) {
+            uploadImage()
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -50,6 +70,11 @@ class EditProfileFragment : Fragment() {
 
         email = auth.currentUser?.email.toString()
 
+        db = Room.databaseBuilder(
+            requireContext(),
+            AppDatabase::class.java, "app-database"
+        ).build()
+
         setUserData()
 
         on_dob_click()
@@ -60,8 +85,56 @@ class EditProfileFragment : Fragment() {
 
         on_email_click()
 
+        on_number_click()
+
+        on_img_edit_click()
+
+        set_user_profile()
+
+        database.keepSynced(true)
         return binding.root
     }
+
+    private fun set_user_profile() {
+        val uid = auth.currentUser?.uid
+        if (uid != null) {
+            GlobalScope.launch(Dispatchers.IO) {
+                val userProfile = db.userProfileDao().getUserProfile(uid)
+                if (userProfile != null) {
+                    // User profile exists in Room, load the image from Room
+                    withContext(Dispatchers.Main) {
+                        loadImageFromRoom(userProfile.profileImageUri)
+                    }
+                } else {
+                    // User profile doesn't exist in Room, load it from Firebase Storage
+                    val storageRef = FirebaseStorage.getInstance().getReference("profile").child(uid).child("profile.jpg")
+                    storageRef.downloadUrl.addOnSuccessListener { uri ->
+                        // Save the image URI to Room database
+                        val userProfile =
+                            UserProfile(userId = uid, profileImageUri = uri.toString())
+                        GlobalScope.launch(Dispatchers.IO) {
+                            db.userProfileDao().insert(userProfile)
+                        }
+                        // Load the image from Room
+                        GlobalScope.launch {
+                            withContext(Dispatchers.Main) {
+                                loadImageFromRoom(uri.toString())
+                            }
+                        }
+                    }.addOnFailureListener { exception ->
+                        Utils.showToast(requireContext(), exception.message.toString())
+                    }
+                }
+            }
+        }
+    }
+
+    private fun loadImageFromRoom(imageUri: String) {
+        Glide.with(requireContext())
+            .load(imageUri)
+            .into(binding.mainImg)
+    }
+
 
     private fun on_back_btn_click(){
         binding.btnClose.setOnClickListener {
@@ -129,11 +202,53 @@ class EditProfileFragment : Fragment() {
     }
 
 
+    private fun on_img_edit_click(){
+        binding.imgEditBtn.setOnClickListener {
+            selectImage.launch("image/*")
+
+            uploadImage()
+        }
+    }
+
+    private fun uploadImage() {
+        if (imageUri != null) {
+            val userId = auth.currentUser?.uid ?: return
+            val userProfile = UserProfile(userId = userId, profileImageUri = imageUri.toString())
+            GlobalScope.launch(Dispatchers.IO) {
+                db.userProfileDao().insert(userProfile)
+            }
+            binding.mainImg.setImageURI(imageUri)
+        } else {
+            Utils.showToast(requireContext(), "Upload a nice picture")
+        }
+    }
+
+    private fun storedata(it: Uri?) {
+        val User = HashMap<String,String>()
+        val key = auth.currentUser?.uid.toString()
+        User["img"] = it.toString()
+        database.child(key).updateChildren(User as Map<String, String>)
+    }
+
+
     private fun on_email_click(){
         binding.emailTxt.setOnClickListener {
             findNavController().navigate(R.id.action_editProfileFragment_to_updateEmailPasswordFragment)
         }
     }
 
+    private fun on_number_click(){
+        database = FirebaseDatabase.getInstance().getReference("Users")
+
+        val number = auth.currentUser?.phoneNumber.toString()
+
+        binding.numberTxt.setOnClickListener {
+            if(number != ""){
+                Utils.showToast(requireContext(),"phone number cannot be changed")
+            }else{
+                Utils.showToast(requireContext(),"please verify phone number")
+            }
+        }
+    }
 
 }

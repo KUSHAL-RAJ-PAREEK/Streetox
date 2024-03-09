@@ -41,6 +41,8 @@ class CustomerFragment : Fragment() {
 
         set_user_email_and_phone_number()
 
+        database.keepSynced(true)
+
         return binding.root
     }
 
