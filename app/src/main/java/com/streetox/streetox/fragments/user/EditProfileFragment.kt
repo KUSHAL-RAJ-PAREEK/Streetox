@@ -1,6 +1,7 @@
 package com.streetox.streetox.fragments.user
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
@@ -28,8 +29,8 @@ import com.streetox.streetox.Utils
 import com.streetox.streetox.databinding.FragmentChangePasswordBinding
 import com.streetox.streetox.databinding.FragmentEditProfileBinding
 import com.streetox.streetox.models.user
-import com.streetox.streetox.room.AppDatabase
 import com.streetox.streetox.room.UserProfile
+import com.streetox.streetox.room.UserProfileDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -47,7 +48,8 @@ class EditProfileFragment : Fragment() {
     private lateinit var User : user
     private lateinit var dob: String
     private var imageUri : Uri? = null
-    lateinit var db: AppDatabase
+    lateinit var db: UserProfileDao.AppDatabase
+
 
     private val selectImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         imageUri = uri
@@ -56,6 +58,9 @@ class EditProfileFragment : Fragment() {
             uploadImage()
         }
     }
+
+
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -72,7 +77,7 @@ class EditProfileFragment : Fragment() {
 
         db = Room.databaseBuilder(
             requireContext(),
-            AppDatabase::class.java, "app-database"
+            UserProfileDao.AppDatabase::class.java, "app-database"
         ).build()
 
         setUserData()
@@ -89,41 +94,23 @@ class EditProfileFragment : Fragment() {
 
         on_img_edit_click()
 
-        set_user_profile()
+        setUserProfile()
 
         database.keepSynced(true)
         return binding.root
     }
 
-    private fun set_user_profile() {
+    private fun setUserProfile() {
         val uid = auth.currentUser?.uid
         if (uid != null) {
             GlobalScope.launch(Dispatchers.IO) {
                 val userProfile = db.userProfileDao().getUserProfile(uid)
                 if (userProfile != null) {
-                    // User profile exists in Room, load the image from Room
                     withContext(Dispatchers.Main) {
                         loadImageFromRoom(userProfile.profileImageUri)
                     }
                 } else {
-                    // User profile doesn't exist in Room, load it from Firebase Storage
-                    val storageRef = FirebaseStorage.getInstance().getReference("profile").child(uid).child("profile.jpg")
-                    storageRef.downloadUrl.addOnSuccessListener { uri ->
-                        // Save the image URI to Room database
-                        val userProfile =
-                            UserProfile(userId = uid, profileImageUri = uri.toString())
-                        GlobalScope.launch(Dispatchers.IO) {
-                            db.userProfileDao().insert(userProfile)
-                        }
-                        // Load the image from Room
-                        GlobalScope.launch {
-                            withContext(Dispatchers.Main) {
-                                loadImageFromRoom(uri.toString())
-                            }
-                        }
-                    }.addOnFailureListener { exception ->
-                        Utils.showToast(requireContext(), exception.message.toString())
-                    }
+                    Utils.showToast(requireContext(), "User profile not found")
                 }
             }
         }
@@ -213,21 +200,23 @@ class EditProfileFragment : Fragment() {
     private fun uploadImage() {
         if (imageUri != null) {
             val userId = auth.currentUser?.uid ?: return
-            val userProfile = UserProfile(userId = userId, profileImageUri = imageUri.toString())
             GlobalScope.launch(Dispatchers.IO) {
-                db.userProfileDao().insert(userProfile)
+                val existingProfile = db.userProfileDao().getUserProfile(userId)
+                if (existingProfile != null) {
+                    // Update the existing profile image URI
+                    existingProfile.profileImageUri = imageUri.toString()
+                    // Update the existing profile in the database
+                    db.userProfileDao().update(existingProfile)
+                } else {
+                    // If the user doesn't have an existing profile, insert a new one
+                    val userProfile = UserProfile(userId = userId, profileImageUri = imageUri.toString())
+                    db.userProfileDao().insert(userProfile)
+                }
             }
             binding.mainImg.setImageURI(imageUri)
         } else {
             Utils.showToast(requireContext(), "Upload a nice picture")
         }
-    }
-
-    private fun storedata(it: Uri?) {
-        val User = HashMap<String,String>()
-        val key = auth.currentUser?.uid.toString()
-        User["img"] = it.toString()
-        database.child(key).updateChildren(User as Map<String, String>)
     }
 
 

@@ -4,7 +4,6 @@ import android.provider.ContactsContract.CommonDataKinds.Email
 import java.util.Date
 
 data class user(
-    val img  : String? = null,
     val name: String = "",
     val dob: String? = null,
     val email: String = "",

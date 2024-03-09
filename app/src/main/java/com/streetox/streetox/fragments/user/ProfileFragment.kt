@@ -38,8 +38,8 @@ import com.streetox.streetox.adapters.ProfileCdAdapter
 import com.streetox.streetox.databinding.FragmentProfileBinding
 import com.streetox.streetox.fragments.utils.LogoutDailogBoxFragment
 import com.streetox.streetox.models.user
-import com.streetox.streetox.room.AppDatabase
 import com.streetox.streetox.room.UserProfile
+import com.streetox.streetox.room.UserProfileDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -53,7 +53,7 @@ class ProfileFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var database: DatabaseReference
     private lateinit var email: String
-    lateinit var db: AppDatabase
+    lateinit var db: UserProfileDao.AppDatabase
 
 
     private var bottomNavigationView: BottomNavigationView? = null
@@ -67,7 +67,7 @@ class ProfileFragment : Fragment() {
 
         db = Room.databaseBuilder(
             requireContext(),
-            AppDatabase::class.java, "app-database"
+            UserProfileDao.AppDatabase::class.java, "app-database"
         ).build()
 
         binding = FragmentProfileBinding.inflate(layoutInflater)
@@ -93,7 +93,7 @@ class ProfileFragment : Fragment() {
 
         click_on_edit_profile()
 
-        set_user_profile()
+        setUserProfile()
 
 
         logout()
@@ -102,35 +102,17 @@ class ProfileFragment : Fragment() {
         return binding.root
     }
 
-    private fun set_user_profile() {
+    private fun setUserProfile() {
         val uid = auth.currentUser?.uid
         if (uid != null) {
             GlobalScope.launch(Dispatchers.IO) {
                 val userProfile = db.userProfileDao().getUserProfile(uid)
                 if (userProfile != null) {
-                    // User profile exists in Room, load the image from Room
                     withContext(Dispatchers.Main) {
                         loadImageFromRoom(userProfile.profileImageUri)
                     }
                 } else {
-                    // User profile doesn't exist in Room, load it from Firebase Storage
-                    val storageRef = FirebaseStorage.getInstance().getReference("profile").child(uid).child("profile.jpg")
-                    storageRef.downloadUrl.addOnSuccessListener { uri ->
-                        // Save the image URI to Room database
-                        val userProfile =
-                            UserProfile(userId = uid, profileImageUri = uri.toString())
-                        GlobalScope.launch(Dispatchers.IO) {
-                            db.userProfileDao().insert(userProfile)
-                        }
-                        // Load the image from Room
-                        GlobalScope.launch {
-                            withContext(Dispatchers.Main) {
-                                loadImageFromRoom(uri.toString())
-                            }
-                        }
-                    }.addOnFailureListener { exception ->
-                        Utils.showToast(requireContext(), exception.message.toString())
-                    }
+                    Utils.showToast(requireContext(), "User profile not found")
                 }
             }
         }

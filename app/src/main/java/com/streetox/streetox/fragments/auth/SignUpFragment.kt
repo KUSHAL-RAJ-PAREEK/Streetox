@@ -136,7 +136,7 @@ class SignUpFragment : Fragment() {
             if(it.isSuccessful){
                 val email = account.email.toString()
                 val name = account.givenName.toString()
-                val User = user(null,name,null,email,"",null,null)
+                val User = user(name,null,email,"",null,null)
                 val key = auth.currentUser?.uid.toString()
                 database.child(key).setValue(User)
 
@@ -191,7 +191,7 @@ class SignUpFragment : Fragment() {
                 val name = result.user?.displayName.toString()
                 val phone_number = result.user?.phoneNumber.toString()
 
-                val User = user(null,name,null,email,"",phone_number,null)
+                val User = user(name,null,email,"",phone_number,null)
                 val key = auth.currentUser?.uid.toString()
 
                 database.child(key).setValue(User)

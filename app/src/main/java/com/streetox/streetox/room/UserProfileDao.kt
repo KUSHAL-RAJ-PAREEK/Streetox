@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.RoomDatabase
+import androidx.room.Update
 
 @Dao
 interface UserProfileDao {
@@ -14,9 +15,14 @@ interface UserProfileDao {
 
     @Query("SELECT * FROM user_profiles WHERE userId = :userId")
     suspend fun getUserProfile(userId: String): UserProfile?
-}
+
+
+@Update
+  suspend fun update(userProfile: UserProfile)
 
 @Database(entities = [UserProfile::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userProfileDao(): UserProfileDao
+
+}
 }
