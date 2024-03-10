@@ -104,6 +104,8 @@ dependencies {
 
     implementation("com.theartofdev.edmodo:android-image-cropper:2.8.0")
 
+    implementation("com.github.dhaval2404:imagepicker:2.1")
+
 
 
 }

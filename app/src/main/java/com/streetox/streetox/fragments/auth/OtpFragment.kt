@@ -191,7 +191,7 @@ class OtpFragment : Fragment() {
                         // Sign in with phone authentication successful
                         Log.d("TAG", "signInWithPhoneAuthCredential: success")
                         // Retrieve stored email from ViewModel
-                        val email = viewModelEmail.userEmail.value
+                        val email = auth.currentUser?.email
                         if (email != null) {
                             // Link the phone authentication with the existing email authentication
                             linkUserAuth(credential, email)
@@ -233,13 +233,14 @@ class OtpFragment : Fragment() {
             }
     }
 
-    //    private fun oneditclick(){
+//        private fun oneditclick(){
 //        binding.editNo.setOnClickListener {
 //            findNavController().navigate(
 //                R.id.action_otpFragment_to_phoneNumberFragment
 //            )
 //        }
 //    }
+//
     private fun sendtomain() {
         startActivity(Intent(requireActivity(), UserMainActivity::class.java))
     }
