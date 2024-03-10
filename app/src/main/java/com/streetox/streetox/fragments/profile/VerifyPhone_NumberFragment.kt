@@ -1,19 +1,18 @@
-package com.streetox.streetox.fragments.auth
+package com.streetox.streetox.fragments.profile
 
-import android.R.attr.fillColor
 import android.content.Intent
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.addCallback
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
@@ -21,30 +20,38 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
+import com.streetox.streetox.R
 import com.streetox.streetox.Utils
 import com.streetox.streetox.activities.UserMainActivity
 import com.streetox.streetox.databinding.FragmentPhoneNumberBinding
+import com.streetox.streetox.databinding.FragmentVerifyPhoneNumberBinding
 import com.streetox.streetox.viewmodels.Stateviewmodels.StatePhoneNumberFragment
 import java.util.concurrent.TimeUnit
 
 
-class PhoneNumberFragment : Fragment() {
+class VerifyPhone_NumberFragment : Fragment() {
 
-    private lateinit var binding: FragmentPhoneNumberBinding
+    private var bottomNavigationView: BottomNavigationView? = null
+    private lateinit var binding: FragmentVerifyPhoneNumberBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var number: String
 
     //viewmodel
     private val viewModelPhoneNumber: StatePhoneNumberFragment by activityViewModels()
 
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
-
-        binding = FragmentPhoneNumberBinding.inflate(layoutInflater)
+        binding = FragmentVerifyPhoneNumberBinding.inflate(layoutInflater)
         auth = FirebaseAuth.getInstance()
+
+        bottomNavigationView = activity?.findViewById(R.id.bottom_nav_view)
+        bottomNavigationView?.visibility = View.GONE
+
 
         binding.phoneNumberTxt.addTextChangedListener { show_btn_go() }
 
@@ -68,9 +75,6 @@ class PhoneNumberFragment : Fragment() {
                         .build()
                     PhoneAuthProvider.verifyPhoneNumber(options)
 
-//                    val Bitmap: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.correct)
-//                    val greenFillColor = ContextCompat.getColor(requireContext(), com.github.leandroborgesferreira.loadingbutton.R.color.green)
-//                    val tickBitmap = TickBitmap(greenFillColor, TickBitmap(greenFillColor,Bitmap))
 
                 } else {
                     Utils.showToast(requireContext(), "Please enter a correct 10-digit number")
@@ -79,7 +83,8 @@ class PhoneNumberFragment : Fragment() {
                 Utils.showToast(requireContext(), "Please enter the number")
             }
         }
-        ondoItLaterclick()
+
+        onBackBtn()
 
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
@@ -102,12 +107,14 @@ class PhoneNumberFragment : Fragment() {
 
 
     private fun sendtomain() {
-        startActivity(Intent(requireActivity(), UserMainActivity::class.java))
+        findNavController().navigate(
+            R.id.action_verifyPhone_NumberFragment_to_profileFragment)
     }
 
-    private fun ondoItLaterclick() {
-        binding.doItLater.setOnClickListener {
-            startActivity(Intent(requireActivity(), UserMainActivity::class.java))
+    private fun onBackBtn() {
+        binding.btnBack.setOnClickListener {
+            findNavController().navigate(
+               R.id.action_verifyPhone_NumberFragment_to_profileFragment)
         }
     }
 
@@ -182,7 +189,6 @@ class PhoneNumberFragment : Fragment() {
                 putString("phoneNumber", number)
             }
 
-
             findNavController().navigate(
                 com.streetox.streetox.R.id.action_phoneNumberFragment_to_otpFragment,
                 bundle // Pass the bundle when navigating
@@ -203,7 +209,7 @@ class PhoneNumberFragment : Fragment() {
 // Call the doneLoadingAnimation method with the bitmap
 
 // Call the doneLoadingAnimation method with the bitmap
-        binding.btnGo.doneLoadingAnimation(fillColor, bitmap)
+        binding.btnGo.doneLoadingAnimation(android.R.attr.fillColor, bitmap)
     }
 
 

@@ -50,6 +50,7 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    implementation("androidx.activity:activity:1.8.2")
 
     //firebase
     implementation("com.google.firebase:firebase-auth:22.3.1")
@@ -104,7 +105,7 @@ dependencies {
 
     implementation("com.theartofdev.edmodo:android-image-cropper:2.8.0")
 
-    implementation("com.github.dhaval2404:imagepicker:2.1")
+
 
 
 

@@ -1,6 +1,5 @@
-package com.streetox.streetox.fragments.auth
+package com.streetox.streetox.fragments.profile
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -8,14 +7,14 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
@@ -23,43 +22,38 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.childEvents
 import com.streetox.streetox.R
 import com.streetox.streetox.Utils
 import com.streetox.streetox.activities.UserMainActivity
+import com.streetox.streetox.databinding.FragmentOTPVerifyBinding
 import com.streetox.streetox.databinding.FragmentOtpBinding
-import com.streetox.streetox.viewmodels.Stateviewmodels.StateAbbreviationLiveData
-import com.streetox.streetox.viewmodels.Stateviewmodels.StateDobViewModel
-import com.streetox.streetox.viewmodels.Stateviewmodels.StateNameViewModel
 import com.streetox.streetox.viewmodels.Stateviewmodels.StateSignUpViewModel
 import java.util.HashMap
 import java.util.concurrent.TimeUnit
 
 
-class OtpFragment : Fragment() {
 
-    //data base
-    private val viewModelEmail: StateSignUpViewModel by activityViewModels()
+class OTPVerifyFragment : Fragment() {
 
-
-    private lateinit var binding: FragmentOtpBinding
+    private var bottomNavigationView: BottomNavigationView? = null
+    private lateinit var binding: FragmentOTPVerifyBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var OTP: String
     private lateinit var resendToken: PhoneAuthProvider.ForceResendingToken
     lateinit var phoneNumber: String
 
 
-    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         auth = FirebaseAuth.getInstance()
-        binding = FragmentOtpBinding.inflate(layoutInflater)
+        binding = FragmentOTPVerifyBinding.inflate(layoutInflater)
 
+        bottomNavigationView = activity?.findViewById(R.id.bottom_nav_view)
+        bottomNavigationView?.visibility = View.GONE
+        
         val args = arguments
 
         if (args != null) { // Check if args is not null
@@ -76,6 +70,8 @@ class OtpFragment : Fragment() {
         addTextChangeListener()
 
         onbackbtnclcik()
+
+        oneditclick()
 
         binding.btnGo.setOnClickListener {
             // Collect otp from all edit texts
@@ -140,7 +136,6 @@ class OtpFragment : Fragment() {
     private fun update_data(){
 
         val User = HashMap<String,String>()
-        val email = viewModelEmail.userEmail.value.toString()
 
         User.put("phone_number",phoneNumber)
 
@@ -155,7 +150,7 @@ class OtpFragment : Fragment() {
     private fun onbackbtnclcik() {
         binding.btnBack.setOnClickListener {
             findNavController().navigate(
-                R.id.action_otpFragment_to_phoneNumberFragment
+                R.id.action_OTPVerifyFragment_to_verifyPhone_NumberFragment
             )
         }
     }
@@ -206,7 +201,7 @@ class OtpFragment : Fragment() {
 
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
         val currentUser = auth.currentUser
-        val email = viewModelEmail.userEmail.value
+        val email = auth.currentUser?.email
 
         if (currentUser != null && email != null) {
             // User is already signed in with email, link the phone authentication
@@ -261,16 +256,17 @@ class OtpFragment : Fragment() {
             }
     }
 
-//        private fun oneditclick(){
-//        binding.editNo.setOnClickListener {
-//            findNavController().navigate(
-//                R.id.action_otpFragment_to_phoneNumberFragment
-//            )
-//        }
-//    }
+            private fun oneditclick(){
+        binding.editNo.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_OTPVerifyFragment_to_verifyPhone_NumberFragment
+            )
+        }
+    }
 //
     private fun sendtomain() {
-        startActivity(Intent(requireActivity(), UserMainActivity::class.java))
+        findNavController().navigate(
+            R.id.action_OTPVerifyFragment_to_profileFragment)
     }
 
     private val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {

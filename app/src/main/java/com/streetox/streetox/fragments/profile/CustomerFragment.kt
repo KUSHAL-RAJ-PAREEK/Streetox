@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -41,6 +42,7 @@ class CustomerFragment : Fragment() {
 
         set_user_email_and_phone_number()
 
+
         database.keepSynced(true)
 
         return binding.root
@@ -74,6 +76,8 @@ class CustomerFragment : Fragment() {
                             requestLayout()
                         }
                         binding.customerPhoneNumber.text = User.phone_number
+                    }else{
+                       verify_phone_number()
                     }
                 }
 
@@ -84,4 +88,13 @@ class CustomerFragment : Fragment() {
             })
         }
     }
+
+    private fun verify_phone_number(){
+        binding.customerPhoneNumber.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_profileFragment_to_verifyPhone_NumberFragment
+            )
+        }
+    }
+
 }

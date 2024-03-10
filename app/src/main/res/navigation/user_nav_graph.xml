@@ -36,6 +36,9 @@
         <action
             android:id="@+id/action_profileFragment_to_editProfileFragment"
             app:destination="@id/editProfileFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_verifyPhone_NumberFragment"
+            app:destination="@id/verifyPhone_NumberFragment" />
     </fragment>
     <fragment
         android:id="@+id/changePasswordFragment"
@@ -124,5 +127,33 @@
             app:destination="@id/editProfileFragment"
             app:popUpTo="@id/editProfileFragment"
             app:popUpToInclusive="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/verifyPhone_NumberFragment"
+        android:name="com.streetox.streetox.fragments.profile.VerifyPhone_NumberFragment"
+        android:label="fragment_verify_phone__number"
+        tools:layout="@layout/fragment_verify_phone__number" >
+        <action
+            android:id="@+id/action_verifyPhone_NumberFragment_to_profileFragment"
+            app:destination="@id/profileFragment"
+            app:popUpTo="@id/profileFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_verifyPhone_NumberFragment_to_OTPVerifyFragment"
+            app:destination="@id/OTPVerifyFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/OTPVerifyFragment"
+        android:name="com.streetox.streetox.fragments.profile.OTPVerifyFragment"
+        android:label="fragment_o_t_p_verify"
+        tools:layout="@layout/fragment_o_t_p_verify" >
+        <action
+            android:id="@+id/action_OTPVerifyFragment_to_profileFragment"
+            app:destination="@id/profileFragment"
+            app:popUpTo="@id/profileFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_OTPVerifyFragment_to_verifyPhone_NumberFragment"
+            app:destination="@id/verifyPhone_NumberFragment" />
     </fragment>
 </navigation>

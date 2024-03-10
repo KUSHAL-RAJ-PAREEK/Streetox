@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_color"
-    tools:context=".fragments.auth.PhoneNumberFragment">
+    tools:context=".fragments.profile.VerifyPhone_NumberFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,12 +16,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <ImageView
+            android:id="@+id/btn_back"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_marginStart="@dimen/_18sdp"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:src="@drawable/back_arrow" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/_18sdp"
-            android:layout_marginTop="@dimen/_65sdp"
+            android:layout_marginTop="@dimen/_30sdp"
             android:fontFamily="@font/notosanskannada"
             android:text="Please verify your mobile\nnumber"
             android:textColor="@color/white"
@@ -54,45 +61,7 @@
                 android:textColorHint="@color/hint_color" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <View
-            android:layout_width="@dimen/_280sdp"
-            android:layout_height="@dimen/_1sdp"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/_15sdp"
-            android:background="@color/streetox_primary_color"
-            app:layout_constraintHorizontal_weight="3" />
 
-
-        <LinearLayout
-            android:id="@+id/do_it_later"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_15sdp"
-            android:layout_marginHorizontal="@dimen/_18sdp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="I'll do it later"
-                android:textSize="@dimen/_15ssp"
-                android:layout_gravity="start|center"
-                android:textColor="@color/white"
-                android:fontFamily="@font/notosanskannada"/>
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
-            <ImageView
-                android:layout_width="@dimen/_20sdp"
-                android:layout_height="@dimen/_20sdp"
-                android:layout_gravity="end|center"
-                android:src="@drawable/right_arrow_ab"/>
-
-        </LinearLayout>
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"

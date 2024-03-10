@@ -111,8 +111,6 @@ class ProfileFragment : Fragment() {
                     withContext(Dispatchers.Main) {
                         loadImageFromRoom(userProfile.profileImageUri)
                     }
-                } else {
-                    Utils.showToast(requireContext(), "User profile not found")
                 }
             }
         }

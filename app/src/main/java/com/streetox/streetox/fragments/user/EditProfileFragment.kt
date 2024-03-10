@@ -24,7 +24,6 @@ import androidx.room.Room
 import com.bumptech.glide.Glide
 import com.facebook.appevents.AppEventsLogger
 import com.facebook.appevents.codeless.internal.ViewHierarchy
-import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
@@ -58,32 +57,36 @@ class EditProfileFragment : Fragment() {
     private lateinit var database: DatabaseReference
     private lateinit var email: String
     private lateinit var name: String
-    private lateinit var User : user
+    private lateinit var User: user
     private lateinit var dob: String
-    private var imageUri : Uri? = null
+    private var imageUri: Uri? = null
     lateinit var db: UserProfileDao.AppDatabase
 
-    private val selectImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        imageUri = uri
-        startCrop(uri)
-    }
-
-    private val takePicture = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val imageBitmap = result.data?.extras?.get("data") as Bitmap?
-            imageBitmap?.let { bitmap ->
-                imageUri = getImageUri(requireContext(), bitmap)
-                startCrop(imageUri)
-            }
-        } else {
-            Toast.makeText(requireContext(), "Failed to capture image", Toast.LENGTH_SHORT).show()
+    private val selectImage =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            imageUri = uri
+            startCrop(uri)
         }
-    }
+
+    private val takePicture =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val imageBitmap = result.data?.extras?.get("data") as Bitmap?
+                imageBitmap?.let { bitmap ->
+                    imageUri = getImageUri(requireContext(), bitmap)
+                    startCrop(imageUri)
+                }
+            } else {
+                Toast.makeText(requireContext(), "Failed to capture image", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
 
     private fun getImageUri(inContext: Context, inImage: Bitmap): Uri {
         val bytes = ByteArrayOutputStream()
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-        val path = MediaStore.Images.Media.insertImage(inContext.contentResolver, inImage, "Title", null)
+        val path =
+            MediaStore.Images.Media.insertImage(inContext.contentResolver, inImage, "Title", null)
         return Uri.parse(path)
     }
 
@@ -121,12 +124,18 @@ class EditProfileFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = FragmentEditProfileBinding.inflate(layoutInflater)
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().getReference("Users")
+
         bottomNavigationView = activity?.findViewById(R.id.bottom_nav_view)
         bottomNavigationView?.visibility = View.GONE
+
         email = auth.currentUser?.email.toString()
         db = Room.databaseBuilder(
             requireContext(),
@@ -153,8 +162,6 @@ class EditProfileFragment : Fragment() {
                     withContext(Dispatchers.Main) {
                         loadImageFromRoom(userProfile.profileImageUri)
                     }
-                } else {
-                    Utils.showToast(requireContext(), "User profile not found")
                 }
             }
         }
@@ -243,7 +250,10 @@ class EditProfileFragment : Fragment() {
 
     private fun takePictureFromCamera() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-            ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.CAMERA
+            ) != PackageManager.PERMISSION_GRANTED
         ) {
             requestPermissions(arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_REQUEST_CODE)
         } else {
@@ -256,13 +266,18 @@ class EditProfileFragment : Fragment() {
         selectImage.launch("image/*")
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 takePictureFromCamera()
             } else {
-                Toast.makeText(requireContext(), "Camera permission denied", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Camera permission denied", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }
@@ -297,7 +312,8 @@ class EditProfileFragment : Fragment() {
                     db.userProfileDao().update(existingProfile)
                 } else {
                     // If the user doesn't have an existing profile, insert a new one
-                    val userProfile = UserProfile(userId = userId, profileImageUri = imageUri.toString())
+                    val userProfile =
+                        UserProfile(userId = userId, profileImageUri = imageUri.toString())
                     db.userProfileDao().insert(userProfile)
                 }
             }
