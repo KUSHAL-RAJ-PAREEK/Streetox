@@ -8,6 +8,7 @@ import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -75,6 +76,22 @@ class ProfileFragment : Fragment() {
         auth = FirebaseAuth.getInstance()
         email = auth.currentUser?.email.toString()
 
+        val uid = auth.currentUser?.uid
+
+        if (uid != null) {
+            GlobalScope.launch(Dispatchers.IO) {
+                val userProfile = db.userProfileDao().getUserProfile(uid)
+                if (userProfile == null || userProfile.profileImageUri.isNullOrEmpty()) {
+                    // Fetch image URI from Firebase Storage and save to Room
+                    fetchImageFromFirebase(uid)
+                } else {
+                    // Load image from Room and set it to the main image view
+                    loadImageFromRoom(userProfile.profileImageUri)
+                }
+            }
+        }
+
+
 
         val pager = binding.profileViewpager
         val tab = binding.profileTabLayout
@@ -86,6 +103,7 @@ class ProfileFragment : Fragment() {
         TabLayoutMediator(tab, pager) { tab, position ->
             tab.text = tabTitle[position]
         }.attach()
+
 
         setUserData()
 
@@ -102,6 +120,20 @@ class ProfileFragment : Fragment() {
         return binding.root
     }
 
+    private fun fetchImageFromFirebase(userId: String) {
+        val storageRef = FirebaseStorage.getInstance().reference.child("profile_images").child("$userId.jpg")
+
+        storageRef.downloadUrl.addOnSuccessListener { uri ->
+            val imageUrl = uri.toString()
+            // Save image URI to Room
+            saveImageToRoom(userId, imageUrl)
+        }.addOnFailureListener { exception ->
+            // Handle failures
+            Log.e("EditProfileFragment", "Failed to fetch image from Firebase: $exception")
+            Utils.showToast(requireContext(), "Failed to fetch image from Firebase")
+        }
+    }
+
     private fun setUserProfile() {
         val uid = auth.currentUser?.uid
         if (uid != null) {
@@ -116,10 +148,34 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    private fun saveImageToRoom(userId: String, imageUrl: String) {
+        GlobalScope.launch(Dispatchers.IO) {
+            val existingProfile = db.userProfileDao().getUserProfile(userId)
+            if (existingProfile != null) {
+                // Update the existing profile image URI
+                existingProfile.profileImageUri = imageUrl
+                // Update the existing profile in the database
+                db.userProfileDao().update(existingProfile)
+            } else {
+                // If the user doesn't have an existing profile, insert a new one
+                val userProfile = UserProfile(userId = userId, profileImageUri = imageUrl)
+                db.userProfileDao().insert(userProfile)
+            }
+            // Load image from Room and set it to the main image view
+            loadImageFromRoom(imageUrl)
+        }
+    }
+
+
+
     private fun loadImageFromRoom(imageUri: String) {
-        Glide.with(requireContext())
-            .load(imageUri)
-            .into(binding.mainImg)
+        GlobalScope.launch(Dispatchers.Main) { // Switch to the main thread
+            if (isAdded) {
+                Glide.with(requireContext())
+                    .load(imageUri)
+                    .into(binding.mainImg)
+            }
+        }
     }
 
 

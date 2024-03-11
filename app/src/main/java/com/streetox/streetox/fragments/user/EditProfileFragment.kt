@@ -141,6 +141,21 @@ class EditProfileFragment : Fragment() {
             requireContext(),
             UserProfileDao.AppDatabase::class.java, "app-database"
         ).build()
+
+        val uid = auth.currentUser?.uid
+        if (uid != null) {
+            GlobalScope.launch(Dispatchers.IO) {
+                val userProfile = db.userProfileDao().getUserProfile(uid)
+                if (userProfile == null || userProfile.profileImageUri.isNullOrEmpty()) {
+                    // Fetch image URI from Firebase Storage and save to Room
+                    fetchImageFromFirebase(uid)
+                } else {
+                    // Load image from Room and set it to the main image view
+                    loadImageFromRoom(userProfile.profileImageUri)
+                }
+            }
+        }
+
         setUserData()
         on_dob_click()
         on_name_click()
@@ -152,6 +167,21 @@ class EditProfileFragment : Fragment() {
         database.keepSynced(true)
         return binding.root
     }
+
+    private fun fetchImageFromFirebase(userId: String) {
+        val storageRef = FirebaseStorage.getInstance().reference.child("profile_images").child("$userId.jpg")
+
+        storageRef.downloadUrl.addOnSuccessListener { uri ->
+            val imageUrl = uri.toString()
+            // Save image URI to Room
+            saveImageToRoom(userId, imageUrl)
+        }.addOnFailureListener { exception ->
+            // Handle failures
+            Log.e("EditProfileFragment", "Failed to fetch image from Firebase: $exception")
+            Utils.showToast(requireContext(), "Failed to fetch image from Firebase")
+        }
+    }
+
 
     private fun setUserProfile() {
         val uid = auth.currentUser?.uid
@@ -168,10 +198,15 @@ class EditProfileFragment : Fragment() {
     }
 
     private fun loadImageFromRoom(imageUri: String) {
-        Glide.with(requireContext())
-            .load(imageUri)
-            .into(binding.mainImg)
+        GlobalScope.launch(Dispatchers.Main) { // Switch to the main thread
+            if (isAdded) {
+                Glide.with(requireContext())
+                    .load(imageUri)
+                    .into(binding.mainImg)
+            }
+        }
     }
+
 
     private fun on_back_btn_click() {
         binding.btnClose.setOnClickListener {
@@ -303,23 +338,47 @@ class EditProfileFragment : Fragment() {
     private fun uploadImage() {
         if (imageUri != null) {
             val userId = auth.currentUser?.uid ?: return
-            GlobalScope.launch(Dispatchers.IO) {
-                val existingProfile = db.userProfileDao().getUserProfile(userId)
-                if (existingProfile != null) {
-                    // Update the existing profile image URI
-                    existingProfile.profileImageUri = imageUri.toString()
-                    // Update the existing profile in the database
-                    db.userProfileDao().update(existingProfile)
+            val storageRef = FirebaseStorage.getInstance().reference.child("profile_images").child("$userId.jpg")
+
+            // Upload image to Firebase Storage
+            val uploadTask = storageRef.putFile(imageUri!!)
+            uploadTask.continueWithTask { task ->
+                if (!task.isSuccessful) {
+                    task.exception?.let {
+                        throw it
+                    }
+                }
+                storageRef.downloadUrl
+            }.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val downloadUri = task.result
+                    // Save image URI to Room
+                    saveImageToRoom(userId, downloadUri.toString())
                 } else {
-                    // If the user doesn't have an existing profile, insert a new one
-                    val userProfile =
-                        UserProfile(userId = userId, profileImageUri = imageUri.toString())
-                    db.userProfileDao().insert(userProfile)
+                    // Handle failures
+                    Utils.showToast(requireContext(), "Failed to upload image")
                 }
             }
-            binding.mainImg.setImageURI(imageUri)
         } else {
             Utils.showToast(requireContext(), "Upload a nice picture")
+        }
+    }
+
+    private fun saveImageToRoom(userId: String, imageUrl: String) {
+        GlobalScope.launch(Dispatchers.IO) {
+            val existingProfile = db.userProfileDao().getUserProfile(userId)
+            if (existingProfile != null) {
+                // Update the existing profile image URI
+                existingProfile.profileImageUri = imageUrl
+                // Update the existing profile in the database
+                db.userProfileDao().update(existingProfile)
+            } else {
+                // If the user doesn't have an existing profile, insert a new one
+                val userProfile = UserProfile(userId = userId, profileImageUri = imageUrl)
+                db.userProfileDao().insert(userProfile)
+            }
+            // Load image from Room and set it to the main image view
+            loadImageFromRoom(imageUrl)
         }
     }
 

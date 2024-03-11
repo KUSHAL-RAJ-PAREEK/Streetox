@@ -78,16 +78,17 @@ class UpdateEmailFragment : Fragment() {
 
     private fun update_data(){
 
-        val User = HashMap<String,String>()
+        val User = HashMap<String,Any>()
         val email = auth.currentUser?.email.toString()
 
 
         User["email"] = email
+        User["verify"] = false
 
         database = FirebaseDatabase.getInstance().getReference("Users")
 
         val key = auth.currentUser?.uid.toString()
-        database.child(key).updateChildren(User as Map<String, String>)
+        database.child(key).updateChildren(User as Map<String, Any>)
 
     }
 

@@ -44,7 +44,7 @@ class VerifyPhone_NumberFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         binding = FragmentVerifyPhoneNumberBinding.inflate(layoutInflater)
         auth = FirebaseAuth.getInstance()
@@ -139,7 +139,8 @@ class VerifyPhone_NumberFragment : Fragment() {
 
     private val onBackInvockedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            startActivity(Intent(requireActivity(), UserMainActivity::class.java))
+            findNavController().navigate(
+                R.id.action_verifyPhone_NumberFragment_to_profileFragment)
         }
     }
 
@@ -190,7 +191,7 @@ class VerifyPhone_NumberFragment : Fragment() {
             }
 
             findNavController().navigate(
-                com.streetox.streetox.R.id.action_phoneNumberFragment_to_otpFragment,
+                com.streetox.streetox.R.id.action_verifyPhone_NumberFragment_to_OTPVerifyFragment,
                 bundle // Pass the bundle when navigating
             )
 

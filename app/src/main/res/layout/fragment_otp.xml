@@ -47,7 +47,7 @@
                 android:id="@+id/edit_msg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Do uou wan to edit "
+                android:text="Do you want to edit "
                 android:textSize="@dimen/_12ssp"
                 android:layout_gravity="start|center"
                 android:textColor="@color/white"

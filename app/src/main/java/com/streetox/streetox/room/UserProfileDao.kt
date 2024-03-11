@@ -20,7 +20,11 @@ interface UserProfileDao {
 @Update
   suspend fun update(userProfile: UserProfile)
 
-@Database(entities = [UserProfile::class], version = 1)
+    @Query("UPDATE user_profiles SET profileImageUri = :imageUri WHERE userId = :userId")
+    suspend fun updateImageUri(userId: String, imageUri: String)
+
+
+    @Database(entities = [UserProfile::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userProfileDao(): UserProfileDao
 

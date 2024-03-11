@@ -67,7 +67,7 @@ class DeliveryFragment : Fragment() {
 
                     if(User.phone_number != null){
                         //check icon
-                        binding.checkerEmail.apply {
+                        binding.checkerPhone.apply {
                             setImageDrawable(drawable)
                             requestLayout()
                         }

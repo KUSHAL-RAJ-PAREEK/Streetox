@@ -137,11 +137,11 @@ class OTPVerifyFragment : Fragment() {
 
         val User = HashMap<String,String>()
 
-        User.put("phone_number",phoneNumber)
+        User["phone_number"] = phoneNumber
 
         val database = FirebaseDatabase.getInstance().getReference("Users")
         val key = auth.currentUser?.uid.toString()
-        database.child(key).child("phone_number").setValue(phoneNumber)
+        database.child(key).updateChildren(User as Map<String,String>)
 
     }
 

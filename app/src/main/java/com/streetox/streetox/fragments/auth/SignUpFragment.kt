@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
@@ -59,6 +58,7 @@ class SignUpFragment : Fragment() {
     ): View? {
         binding = FragmentSignUpBinding.inflate(layoutInflater)
 
+        auth = FirebaseAuth.getInstance()
         // set status bar color
         setstatusBarColor()
 
@@ -130,24 +130,44 @@ class SignUpFragment : Fragment() {
     }
 
     private fun updateUI(account: GoogleSignInAccount) {
-        val credential = GoogleAuthProvider.getCredential(account.idToken,null)
-        auth.signInWithCredential(credential).addOnCompleteListener {
-            database = FirebaseDatabase.getInstance().getReference("Users")
-            if(it.isSuccessful){
-                val email = account.email.toString()
-                val name = account.givenName.toString()
-                val User = user(name,null,email,"",null,null)
-                val key = auth.currentUser?.uid.toString()
-                database.child(key).setValue(User)
-
-                Utils.showToast(requireContext(),"login with google")
-                startActivity(Intent(requireActivity(), UserMainActivity::class.java))
-            }else{
-                Utils.showToast(requireContext(),it.exception.toString())
+        val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+        auth.signInWithCredential(credential).addOnCompleteListener { signInTask ->
+            if (signInTask.isSuccessful) {
+                // Check if user data already exists in the database
+                val userId = auth.currentUser?.uid
+                val database = FirebaseDatabase.getInstance().getReference("Users")
+                userId?.let { uid ->
+                    database.child(uid).get().addOnCompleteListener { databaseTask ->
+                        if (databaseTask.isSuccessful) {
+                            val snapshot = databaseTask.result
+                            if (snapshot != null && snapshot.exists()) {
+                                // User data exists in the database, no need to create a new entry
+                                Utils.showToast(requireContext(), "Welcome back!")
+                                startActivity(Intent(requireActivity(), UserMainActivity::class.java))
+                            } else {
+                                // User data does not exist in the database, create a new entry
+                                val email = account.email.toString()
+                                val name = account.givenName.toString()
+                                val user = user(name, null, email, null, null)
+                                database.child(uid).setValue(user).addOnCompleteListener { databaseWriteTask ->
+                                    if (databaseWriteTask.isSuccessful) {
+                                        Utils.showToast(requireContext(), "Welcome!")
+                                        startActivity(Intent(requireActivity(), UserMainActivity::class.java))
+                                    } else {
+                                        Utils.showToast(requireContext(), "Failed to create user entry in database")
+                                    }
+                                }
+                            }
+                        } else {
+                            Utils.showToast(requireContext(), "Failed to check database for user data")
+                        }
+                    }
+                }
+            } else {
+                Utils.showToast(requireContext(), signInTask.exception.toString())
             }
         }
     }
-
     //signin with facebbok
 
     private fun facebook_signin(){
@@ -179,26 +199,49 @@ class SignUpFragment : Fragment() {
     }
 
     private fun handleFacebookAccessToken(accessToken: AccessToken) {
-        //getting credentials
-        var credential = FacebookAuthProvider.getCredential(accessToken.token)
-        auth.signInWithCredential(credential).addOnFailureListener{ e->
-            Utils.showToast(requireContext(),e.message.toString())
-            Log.e("ERROR_EDMT",e.message.toString())
-        }
-            .addOnSuccessListener { result ->
-                //get email
-                val email = result.user?.email.toString()
-                val name = result.user?.displayName.toString()
-                val phone_number = result.user?.phoneNumber.toString()
+        // Getting credentials
+        val credential = FacebookAuthProvider.getCredential(accessToken.token)
+        auth.signInWithCredential(credential).addOnCompleteListener { signInTask ->
+            if (signInTask.isSuccessful) {
+                // Check if user data already exists in the database
+                val userId = auth.currentUser?.uid
+                val database = FirebaseDatabase.getInstance().getReference("Users")
+                userId?.let { uid ->
+                    database.child(uid).get().addOnCompleteListener { databaseTask ->
+                        if (databaseTask.isSuccessful) {
+                            val snapshot = databaseTask.result
+                            if (snapshot != null && snapshot.exists()) {
+                                // User data exists in the database, no need to create a new entry
+                                Utils.showToast(requireContext(), "Welcome back!")
+                                startActivity(Intent(requireActivity(), UserMainActivity::class.java))
+                            } else {
+                                // User data does not exist in the database, create a new entry
+                                val email = auth.currentUser?.email.toString()
+                                val name = auth.currentUser?.displayName.toString()
+                                val phone_number = auth.currentUser?.phoneNumber.toString()
 
-                val User = user(name,null,email,"",phone_number,null)
-                val key = auth.currentUser?.uid.toString()
-
-                database.child(key).setValue(User)
-                Utils.showToast(requireContext(),"login with facebook")
-                startActivity(Intent(requireActivity(),UserMainActivity::class.java))
+                                val user = user(name, null, email, "", phone_number, null)
+                                database.child(uid).setValue(user).addOnCompleteListener { databaseWriteTask ->
+                                    if (databaseWriteTask.isSuccessful) {
+                                        Utils.showToast(requireContext(), "Welcome!")
+                                        startActivity(Intent(requireActivity(), UserMainActivity::class.java))
+                                    } else {
+                                        Utils.showToast(requireContext(), "Failed to create user entry in database")
+                                    }
+                                }
+                            }
+                        } else {
+                            Utils.showToast(requireContext(), "Failed to check database for user data")
+                        }
+                    }
+                }
+            } else {
+                Utils.showToast(requireContext(), signInTask.exception.toString())
+                Log.e("ERROR_EDMT", signInTask.exception.toString())
             }
+        }
     }
+
 
 
 
