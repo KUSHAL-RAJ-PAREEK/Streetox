@@ -90,6 +90,7 @@ class OtpFragment : Fragment() {
             if (typedOTP.isEmpty()) {
                 Utils.showToast(requireContext(), "Please enter the OTP")
             } else if (typedOTP.length == 6) {
+                binding.btnGo.startAnimation()
                 val credential: PhoneAuthCredential = PhoneAuthProvider.getCredential(
                     OTP, typedOTP
                 )
@@ -140,7 +141,6 @@ class OtpFragment : Fragment() {
     private fun update_data(){
 
         val User = HashMap<String,String>()
-        val email = viewModelEmail.userEmail.value.toString()
 
         User.put("phone_number",phoneNumber)
 

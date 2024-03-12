@@ -7,7 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.actionCodeSettings
+import com.google.firebase.auth.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -26,6 +29,7 @@ class DeliveryFragment : Fragment() {
     private lateinit var database: DatabaseReference
     private lateinit var User : user
     private lateinit var email : String
+    private var flag : Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,6 +43,11 @@ class DeliveryFragment : Fragment() {
 
 
         set_user_email_and_phone_number()
+
+        if(!flag){
+            send_verification_code()
+        }
+
 
         database.keepSynced(true)
 
@@ -57,13 +66,14 @@ class DeliveryFragment : Fragment() {
 
                     User = snapshot.getValue(user::class.java)!!
 
-
-                    binding.checkerEmail.apply {
-                        setImageDrawable(drawable)
-                        requestLayout()
-                    }
-
                     binding.deliveryEmail.text = (User.email)
+
+                    if(User.verify == true){
+                        binding.checkerEmail.apply {
+                            setImageDrawable(drawable)
+                            requestLayout()
+                        }
+                    }
 
                     if(User.phone_number != null){
                         //check icon
@@ -77,14 +87,6 @@ class DeliveryFragment : Fragment() {
                     }
                 }
 
-                private fun verify_phone_number(){
-                    binding.deliveryPhoneNumber.setOnClickListener {
-                        findNavController().navigate(
-                            R.id.action_profileFragment_to_verifyPhone_NumberFragment
-                        )
-                    }
-                }
-
                 override fun onCancelled(error: DatabaseError) {
                     Utils.showToast(requireContext(),"unable to fetch data")
                 }
@@ -92,4 +94,54 @@ class DeliveryFragment : Fragment() {
             })
         }
     }
+
+
+    private fun verify_phone_number(){
+        binding.deliveryPhoneNumber.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_profileFragment_to_verifyPhone_NumberFragment
+            )
+        }
+    }
+
+
+    val actionCodeSettings = actionCodeSettings {
+        // URL you want to redirect back to. The domain (www.example.com) for this
+        // URL must be whitelisted in the Firebase Console.
+        url = "https://street0x.com/email-verification"
+        // This must be true
+        handleCodeInApp = true
+        setIOSBundleId("com.streetox.streetox")
+        setAndroidPackageName(
+            "com.streetox.streetox",
+            true, // installIfNotAvailable
+            null, // minimumVersion
+        )
+    }
+    private fun send_verification_code(){
+        binding.deliveryEmail.setOnClickListener {
+            email_verification()
+        }
+    }
+
+    private fun email_verification(){
+
+        Firebase.auth.sendSignInLinkToEmail(email, actionCodeSettings)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+
+                    flag = true
+                    val database = FirebaseDatabase.getInstance().getReference("Users")
+
+                    val key = auth.currentUser?.uid.toString()
+
+                    database.child(key).child("verify").setValue(true)
+
+                    Utils.showToast(requireContext(),"Email sent.")
+                }
+            }
+
+
+    }
+
 }

@@ -130,7 +130,6 @@ class ProfileFragment : Fragment() {
         }.addOnFailureListener { exception ->
             // Handle failures
             Log.e("EditProfileFragment", "Failed to fetch image from Firebase: $exception")
-            Utils.showToast(requireContext(), "Failed to fetch image from Firebase")
         }
     }
 

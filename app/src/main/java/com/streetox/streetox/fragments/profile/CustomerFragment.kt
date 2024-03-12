@@ -115,7 +115,7 @@ class CustomerFragment : Fragment() {
     val actionCodeSettings = actionCodeSettings {
         // URL you want to redirect back to. The domain (www.example.com) for this
         // URL must be whitelisted in the Firebase Console.
-        url = "https://street0x.com/email-verification"
+        url = "https://streetox.page.link/email-verification"
         // This must be true
         handleCodeInApp = true
         setIOSBundleId("com.streetox.streetox")

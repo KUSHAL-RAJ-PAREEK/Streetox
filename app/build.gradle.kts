@@ -7,6 +7,8 @@ plugins {
 }
 
 android {
+
+    
     namespace = "com.streetox.streetox"
     compileSdk = 34
 
@@ -38,7 +40,14 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
 }
+
+tasks.register<Wrapper>("wrapper") {
+    gradleVersion = "7.2"
+}
+
+tasks.register("prepareKotlinBuildScriptModel"){}
 
 dependencies {
 
