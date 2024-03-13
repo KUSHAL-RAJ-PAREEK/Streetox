@@ -1,8 +1,6 @@
 package com.streetox.streetox.fragments.editprofile
 
-import android.os.Build.VERSION_CODES.R
 import android.os.Bundle
-import android.util.Log
 import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -14,11 +12,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.streetox.streetox.R
 import com.streetox.streetox.Utils
 import com.streetox.streetox.databinding.FragmentUpdateEmailBinding
-import com.streetox.streetox.databinding.FragmentUpdateEmailPasswordBinding
-import com.streetox.streetox.models.user
 import java.util.HashMap
 
 class UpdateEmailFragment : Fragment() {

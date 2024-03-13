@@ -15,9 +15,6 @@ import com.streetox.streetox.Utils.calculateAgeFromDate
 import com.streetox.streetox.databinding.FragmentBirthDateBinding
 import com.streetox.streetox.pickers.DatePickerFragment
 import com.streetox.streetox.viewmodels.Stateviewmodels.StateDobViewModel
-import java.time.LocalDate
-import java.time.Period
-import java.time.format.DateTimeFormatter
 
 
 class BirthDateFragment : Fragment() {

@@ -1,8 +1,6 @@
 package com.streetox.streetox.fragments.user
 
 import android.os.Bundle
-import android.util.Log
-import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +13,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.streetox.streetox.R
 import com.streetox.streetox.Utils
 import com.streetox.streetox.databinding.FragmentChangePasswordBinding
-import com.streetox.streetox.databinding.FragmentProfileBinding
 
 
 class ChangePasswordFragment : Fragment() {

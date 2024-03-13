@@ -8,6 +8,13 @@
     tools:context=".fragments.user.SearchFragment">
 
 
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/mapFragment"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
 
     <View
         android:id="@+id/shadow"
@@ -31,6 +38,16 @@
             android:src="@drawable/minus"
             android:scaleType="centerCrop" />
 
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/search_view"
+                android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/_30sdp"
+                android:layout_marginHorizontal="@dimen/_15sdp"
+                android:hint="search"
+                app:iconifiedByDefault="false"
+                android:elevation="@dimen/_5sdp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_search"/>
 
     </FrameLayout>
 

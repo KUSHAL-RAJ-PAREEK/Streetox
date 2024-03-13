@@ -78,8 +78,8 @@
             android:id="@+id/action_editProfileFragment_to_updateNameFragment"
             app:destination="@id/updateNameFragment" />
         <action
-            android:id="@+id/action_editProfileFragment_to_updateEmailPasswordFragment"
-            app:destination="@id/updateEmailPasswordFragment" />
+            android:id="@+id/action_editProfileFragment_to_updateEmailFragment"
+            app:destination="@id/updateEmailFragment" />
     </fragment>
     <fragment
         android:id="@+id/updateDOBFragment"
@@ -107,16 +107,7 @@
         android:id="@+id/updateEmailPasswordFragment"
         android:name="com.streetox.streetox.fragments.editprofile.UpdateEmailPasswordFragment"
         android:label="fragment_update_email_password"
-        tools:layout="@layout/fragment_update_email_password" >
-        <action
-            android:id="@+id/action_updateEmailPasswordFragment_to_editProfileFragment"
-            app:destination="@id/editProfileFragment"
-            app:popUpTo="@id/editProfileFragment"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_updateEmailPasswordFragment_to_updateEmailFragment"
-            app:destination="@id/updateEmailFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_update_email_password" />
     <fragment
         android:id="@+id/updateEmailFragment"
         android:name="com.streetox.streetox.fragments.editprofile.UpdateEmailFragment"

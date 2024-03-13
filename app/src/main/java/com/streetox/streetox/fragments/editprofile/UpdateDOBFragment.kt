@@ -1,6 +1,5 @@
 package com.streetox.streetox.fragments.editprofile
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -16,7 +15,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.streetox.streetox.R
 import com.streetox.streetox.Utils
 import com.streetox.streetox.Utils.calculateAgeFromDate
-import com.streetox.streetox.databinding.FragmentBirthDateBinding
 import com.streetox.streetox.databinding.FragmentUpdateDOBBinding
 import com.streetox.streetox.pickers.DatePickerFragment
 import com.streetox.streetox.viewmodels.Stateviewmodels.StateDobViewModel

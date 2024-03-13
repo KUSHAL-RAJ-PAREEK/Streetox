@@ -1,6 +1,5 @@
 package com.streetox.streetox.fragments.profile
 
-import android.content.Intent
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.util.Log
@@ -22,8 +21,6 @@ import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.streetox.streetox.R
 import com.streetox.streetox.Utils
-import com.streetox.streetox.activities.UserMainActivity
-import com.streetox.streetox.databinding.FragmentPhoneNumberBinding
 import com.streetox.streetox.databinding.FragmentVerifyPhoneNumberBinding
 import com.streetox.streetox.viewmodels.Stateviewmodels.StatePhoneNumberFragment
 import java.util.concurrent.TimeUnit

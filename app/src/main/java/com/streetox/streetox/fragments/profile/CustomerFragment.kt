@@ -2,7 +2,6 @@ package com.streetox.streetox.fragments.profile
 
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +21,6 @@ import com.streetox.streetox.R
 import com.streetox.streetox.Utils
 import com.streetox.streetox.databinding.FragmentCustomerBinding
 import com.streetox.streetox.models.user
-import java.util.HashMap
 
 
 class CustomerFragment : Fragment() {
@@ -40,13 +38,14 @@ class CustomerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        binding = FragmentCustomerBinding.inflate(layoutInflater)
+        binding = com.streetox.streetox.databinding.FragmentCustomerBinding.inflate(layoutInflater)
         database = FirebaseDatabase.getInstance().getReference("Users")
         auth = FirebaseAuth.getInstance()
         email = auth.currentUser?.email.toString()
 
 
         set_user_email_and_phone_number()
+        is_user_verified()
 
         if(!flag){
             send_verification_code()
@@ -133,17 +132,20 @@ class CustomerFragment : Fragment() {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
 
-                    flag = true
-                    val database = FirebaseDatabase.getInstance().getReference("Users")
-
-                    val key = auth.currentUser?.uid.toString()
-
-                    database.child(key).child("verify").setValue(true)
-
                   Utils.showToast(requireContext(),"Email sent.")
                 }
             }
 
+
+    }
+    private fun is_user_verified(){
+
+        if(auth.currentUser?.isEmailVerified == true){
+            flag = true
+            val database = FirebaseDatabase.getInstance().getReference("Users")
+            val key = auth.currentUser?.uid.toString()
+            database.child(key).child("verify").setValue(true)
+        }
 
     }
 

@@ -6,14 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
-import androidx.navigation.fragment.findNavController
-import com.google.firebase.auth.EmailAuthCredential
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.streetox.streetox.R
 import com.streetox.streetox.Utils
-import com.streetox.streetox.databinding.FragmentUpdateDOBBinding
 import com.streetox.streetox.databinding.FragmentUpdateEmailPasswordBinding
 
 
@@ -43,7 +39,7 @@ class UpdateEmailPasswordFragment : Fragment() {
 
     private fun on_btn_back(){
         binding.btnBack.setOnClickListener{
-            findNavController().navigate(R.id.action_updateEmailPasswordFragment_to_editProfileFragment)
+//            findNavController().navigate(R.id.action_updateEmailPasswordFragment_to_editProfileFragment)
         }
     }
 
@@ -63,7 +59,7 @@ class UpdateEmailPasswordFragment : Fragment() {
                    user.reauthenticate(credential)
                        .addOnCompleteListener { task ->
                            if(task.isSuccessful){
-                               findNavController().navigate(R.id.action_updateEmailPasswordFragment_to_updateEmailFragment)
+//                               findNavController().navigate(R.id.action_updateEmailPasswordFragment_to_updateEmailFragment)
                            }else if(task.exception is FirebaseAuthInvalidCredentialsException){
                                Utils.showToast(requireContext(),"wrong password")
                            }else{

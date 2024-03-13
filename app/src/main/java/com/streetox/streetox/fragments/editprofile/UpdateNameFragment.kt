@@ -13,7 +13,6 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.streetox.streetox.R
 import com.streetox.streetox.Utils
-import com.streetox.streetox.databinding.FragmentUpdateDOBBinding
 import com.streetox.streetox.databinding.FragmentUpdateNameBinding
 import java.util.HashMap
 

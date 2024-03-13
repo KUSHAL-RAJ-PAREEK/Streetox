@@ -18,7 +18,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.streetox.streetox.R
 import com.streetox.streetox.Utils
-import com.streetox.streetox.databinding.FragmentCustomerBinding
 import com.streetox.streetox.databinding.FragmentDeliveryBinding
 import com.streetox.streetox.models.user
 
@@ -43,7 +42,7 @@ class DeliveryFragment : Fragment() {
 
 
         set_user_email_and_phone_number()
-
+        is_user_verified()
         if(!flag){
             send_verification_code()
         }
@@ -130,17 +129,20 @@ class DeliveryFragment : Fragment() {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
 
-                    flag = true
-                    val database = FirebaseDatabase.getInstance().getReference("Users")
-
-                    val key = auth.currentUser?.uid.toString()
-
-                    database.child(key).child("verify").setValue(true)
-
                     Utils.showToast(requireContext(),"Email sent.")
                 }
             }
 
+
+    }
+    private fun is_user_verified(){
+
+        if(auth.currentUser?.isEmailVerified == true){
+            flag = true
+            val database = FirebaseDatabase.getInstance().getReference("Users")
+            val key = auth.currentUser?.uid.toString()
+            database.child(key).child("verify").setValue(true)
+        }
 
     }
 

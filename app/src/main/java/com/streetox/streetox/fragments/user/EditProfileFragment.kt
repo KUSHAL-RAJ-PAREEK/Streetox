@@ -22,8 +22,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.room.Room
 import com.bumptech.glide.Glide
-import com.facebook.appevents.AppEventsLogger
-import com.facebook.appevents.codeless.internal.ViewHierarchy
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
@@ -33,10 +31,8 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.internal.Util
 import com.streetox.streetox.R
 import com.streetox.streetox.Utils
-import com.streetox.streetox.databinding.FragmentChangePasswordBinding
 import com.streetox.streetox.databinding.FragmentEditProfileBinding
 import com.streetox.streetox.models.user
 import com.streetox.streetox.room.UserProfile
@@ -48,7 +44,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
-import java.util.HashMap
 
 class EditProfileFragment : Fragment() {
     private var bottomNavigationView: BottomNavigationView? = null
@@ -318,7 +313,11 @@ class EditProfileFragment : Fragment() {
 
     private fun on_email_click() {
         binding.emailTxt.setOnClickListener {
-            findNavController().navigate(R.id.action_editProfileFragment_to_updateEmailPasswordFragment)
+        if(auth.currentUser?.isEmailVerified == true){
+            findNavController().navigate(R.id.action_editProfileFragment_to_updateEmailFragment)
+        }else{
+            Utils.showToast(requireContext(),"please verify your email")
+        }
         }
     }
 

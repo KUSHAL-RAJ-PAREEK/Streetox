@@ -11,7 +11,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -23,16 +22,11 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.childEvents
 import com.streetox.streetox.R
 import com.streetox.streetox.Utils
 import com.streetox.streetox.activities.UserMainActivity
 import com.streetox.streetox.databinding.FragmentOtpBinding
-import com.streetox.streetox.viewmodels.Stateviewmodels.StateAbbreviationLiveData
-import com.streetox.streetox.viewmodels.Stateviewmodels.StateDobViewModel
-import com.streetox.streetox.viewmodels.Stateviewmodels.StateNameViewModel
 import com.streetox.streetox.viewmodels.Stateviewmodels.StateSignUpViewModel
 import java.util.HashMap
 import java.util.concurrent.TimeUnit
@@ -90,12 +84,13 @@ class OtpFragment : Fragment() {
             if (typedOTP.isEmpty()) {
                 Utils.showToast(requireContext(), "Please enter the OTP")
             } else if (typedOTP.length == 6) {
-                binding.btnGo.startAnimation()
                 val credential: PhoneAuthCredential = PhoneAuthProvider.getCredential(
                     OTP, typedOTP
                 )
+                binding.btnGo.startAnimation()
                 signInWithPhoneAuthCredential(credential)
             } else {
+                binding.btnGo.stopAnimation()
                 Utils.showToast(requireContext(), "Please enter a 6-digit OTP")
             }
         }
@@ -226,12 +221,14 @@ class OtpFragment : Fragment() {
                         } else {
                             Utils.showToast(requireContext(), "Email not found")
                         }
-                        sendtomain() // Proceed to main activity
+
+                    // Proceed to main activity
                         // Update UI or perform further actions
                     } else {
                         // Sign in with phone authentication failed, display error message
                         Log.d("TAG", "signInWithPhoneAuthCredential: ${task.exception}")
                         if (task.exception is FirebaseAuthInvalidCredentialsException) {
+                            binding.btnGo.stopAnimation()
                             // The verification code entered was invalid
                         }
                         // Update UI or handle error case
@@ -255,6 +252,7 @@ class OtpFragment : Fragment() {
                     sendtomain()
                 } else {
                     // Linking failed, display an error message
+                    binding.btnGo.stopAnimation()
                     Log.w("TAG", "linkWithCredential: failure", task.exception)
                     // Handle error message or UI updates
                 }

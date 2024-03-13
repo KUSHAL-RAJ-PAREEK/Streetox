@@ -1,6 +1,5 @@
 package com.streetox.streetox.fragments.profile
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -12,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.FirebaseException
@@ -25,10 +23,7 @@ import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.database.FirebaseDatabase
 import com.streetox.streetox.R
 import com.streetox.streetox.Utils
-import com.streetox.streetox.activities.UserMainActivity
 import com.streetox.streetox.databinding.FragmentOTPVerifyBinding
-import com.streetox.streetox.databinding.FragmentOtpBinding
-import com.streetox.streetox.viewmodels.Stateviewmodels.StateSignUpViewModel
 import java.util.HashMap
 import java.util.concurrent.TimeUnit
 
