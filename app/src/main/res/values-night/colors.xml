@@ -15,4 +15,5 @@
     <color name="pop_up_background_color">#393636</color>
     <color name="edit_profile_text">#C6C6C6</color>
     <color name="edit_profile_button">#BBBBBB</color>
+    <color name="bottom_sheet_color">#6D6D6D</color>
 </resources>

@@ -8,17 +8,11 @@
     tools:context=".fragments.user.SearchFragment">
 
 
-
-    <View
-        android:id="@+id/shadow"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_15sdp"
-        android:background="@drawable/bottom_sheet_top_shadow"
-        app:layout_anchor="@id/bottom_sheet"/>
     <FrameLayout
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_450sdp"
+        android:outlineAmbientShadowColor="@color/bottom_sheet_color"
         android:elevation="@dimen/_20sdp"
         android:background="@drawable/round_bottom_sheet"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
