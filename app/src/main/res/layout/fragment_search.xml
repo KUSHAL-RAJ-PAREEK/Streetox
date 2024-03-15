@@ -12,8 +12,8 @@
         android:id="@+id/mapFragment"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
+        android:layout_height="match_parent"
+        android:elevation="8dp" />
 
 
     <View
@@ -25,7 +25,7 @@
     <FrameLayout
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_450sdp"
+        android:layout_height="match_parent"
         android:elevation="@dimen/_20sdp"
         android:background="@drawable/round_bottom_sheet"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
@@ -38,16 +38,27 @@
             android:src="@drawable/minus"
             android:scaleType="centerCrop" />
 
-            <androidx.appcompat.widget.SearchView
-                android:id="@+id/search_view"
-                android:layout_width="match_parent"
-                android:layout_marginTop="@dimen/_30sdp"
-                android:layout_marginHorizontal="@dimen/_15sdp"
-                android:hint="search"
-                app:iconifiedByDefault="false"
-                android:elevation="@dimen/_5sdp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_search"/>
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/search_view"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:layout_marginHorizontal="@dimen/_15sdp"
+            android:elevation="@dimen/_5sdp"
+            app:iconifiedByDefault="false"
+            app:queryHint="Search"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_search"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/notification_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="@dimen/_4ssp"
+            android:layout_marginHorizontal="@dimen/_15sdp"
+            tools:listitem="@layout/notification_item"
+            android:layout_marginTop="@dimen/_100sdp"/>
+
+
 
     </FrameLayout>
 
