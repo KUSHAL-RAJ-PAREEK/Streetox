@@ -68,12 +68,18 @@ import com.streetox.streetox.Listeners.IOnLoadLocationListener
 
 import com.streetox.streetox.R
 import com.streetox.streetox.Utils
+import com.streetox.streetox.adapters.SearchNotificationAdapter
 import com.streetox.streetox.databinding.FragmentSearchBinding
 
 
 import com.streetox.streetox.models.MyLatLng
 import com.streetox.streetox.models.notification_content
+import com.streetox.streetox.models.user
 import java.io.IOException
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
 import kotlin.random.Random
 
 
@@ -125,6 +131,8 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
 
         notificationRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         notificationRecyclerview.setHasFixedSize(true)
+
+        notificationArrayList = arrayListOf<notification_content>()
 
 
 
@@ -226,7 +234,6 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
     }
 
 
-    private val notificationList = mutableListOf<notification_content>()
 
     private fun retrieveNotificationsWithinRadius(location: LatLng) {
         databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -235,26 +242,30 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
                     val fromLatitude = notificationSnapshot.child("from").child("latitude").getValue(Double::class.java)
                     val fromLongitude = notificationSnapshot.child("from").child("longitude").getValue(Double::class.java)
                     val message = notificationSnapshot.child("message").getValue(String::class.java)
+                    val toLatitude = notificationSnapshot.child("to").child("latitude").getValue(Double::class.java)
+                    val toLongitude = notificationSnapshot.child("to").child("longitude").getValue(Double::class.java)
+
 
                     if (fromLatitude != null && fromLongitude != null && message != null) {
                         val fromLocation = LatLng(fromLatitude, fromLongitude)
+                        val to_location = getLocationName(toLatitude!!, toLongitude!!)
                         val distance = calculateDistance(fromLocation, location)
+                        val user = notification_content(null,null,message,to_location,null)
+
 
                         if (distance <= 1000) { // Check if the notification is within 1km radius
+                            notificationArrayList.add(user!!)
+                            notificationRecyclerview.adapter = SearchNotificationAdapter(notificationArrayList)
+
                             // Store the message globally
                             notificationMessage = message
 
-                            activity?.runOnUiThread {
-                                Utils.showToast(requireContext(), message)
-                                sendNotification(message)
-                            }
-
-                            val notificationDetails = notification_content(fromLocation, null,message)
-                            notificationList.add(notificationDetails)
 
                             // Process the retrieved notification message as needed
                             Log.d("Notification_message", "Retrieved notification message: $message")
                         }
+
+
 
                         // Create notification_content object
                         val notification = notification_content(fromLocation, null, message)
@@ -262,6 +273,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
                         println("Notification: $notification")
                     }
                 }
+
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -272,11 +284,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
 
 
 
-    private fun displayNotifications() {
-        for (notification in notificationList) {
-            displayNotification(notification)
-        }
-    }
+
 
         private fun displayNotification(notification: notification_content) {
 
@@ -286,15 +294,21 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
         }
 
 
-    private fun calculateDistance(from: LatLng, to: LatLng): Double {
-        val R = 6371 // Radius of the Earth in kilometers
-        val latDistance = Math.toRadians(to.latitude - from.latitude)
-        val lonDistance = Math.toRadians(to.longitude - from.longitude)
-        val a = (Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
-                + (Math.cos(Math.toRadians(from.latitude)) * Math.cos(Math.toRadians(to.latitude))
-                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2)))
-        val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-        return R * c * 1000 // Convert to meters
+
+    fun calculateDistance(from: LatLng, to: LatLng): Double {
+        val R = 6371 // Radius of the earth in km
+        val dLat = deg2rad(from.latitude- to.latitude)
+        val dLon = deg2rad(from.longitude - from.longitude)
+        val a =
+            sin(dLat / 2) * sin(dLat / 2) +
+                    cos(deg2rad(from.latitude)) * cos(deg2rad( to.latitude)) *
+                    sin(dLon / 2) * sin(dLon / 2)
+        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+        return R * c // Distance in km
+    }
+
+    fun deg2rad(deg: Double): Double {
+        return deg * (Math.PI / 180)
     }
 
 
@@ -379,7 +393,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
             mMap!!.addMarker(MarkerOptions().position(latLng).title(location))
             mMap!!.animateCamera(CameraUpdateFactory.newLatLng(latLng))
             retrieveNotificationsWithinRadius(latLng)
-            displayNotifications()
+
         }
     }
 
