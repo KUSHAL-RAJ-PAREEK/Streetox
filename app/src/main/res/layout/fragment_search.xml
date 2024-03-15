@@ -52,11 +52,10 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/notification_recyclerview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:elevation="@dimen/_4ssp"
+            android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/_15sdp"
             tools:listitem="@layout/notification_item"
-            android:layout_marginTop="@dimen/_100sdp"/>
+            android:layout_marginTop="@dimen/_85sdp"/>
 
 
 

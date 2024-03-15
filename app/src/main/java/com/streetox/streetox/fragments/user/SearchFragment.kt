@@ -1,12 +1,14 @@
 package com.streetox.streetox.fragments.user
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Rect
 import android.location.Address
@@ -20,12 +22,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.SearchView
 
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.geofire.GeoFire
@@ -52,6 +57,7 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.play.integrity.internal.al
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -119,6 +125,8 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
         savedInstanceState: Bundle?
     ): View? {
 
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+
         binding = FragmentSearchBinding.inflate(layoutInflater)
         auth = FirebaseAuth.getInstance()
 
@@ -137,11 +145,41 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
 
 
 
+
+        //divider
+        val dividerItemDecoration = object : DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL) {
+            override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+                val dividerLeft = parent.paddingLeft
+                val dividerRight = parent.width - parent.paddingRight
+
+                val childCount = parent.childCount
+                for (i in 0 until childCount - 1) { // Iterate over all items except the last one
+                    val child = parent.getChildAt(i)
+                    val params = child.layoutParams as RecyclerView.LayoutParams
+
+                    val dividerTop = child.bottom + params.bottomMargin
+                    val dividerBottom = dividerTop + (drawable?.intrinsicHeight ?: 0)
+
+                    drawable?.setBounds(dividerLeft, dividerTop, dividerRight, dividerBottom)
+                    drawable?.draw(c)
+                }
+            }
+        }
+
+        ResourcesCompat.getDrawable(resources, R.drawable.divider, null)?.let { drawable ->
+            dividerItemDecoration.setDrawable(drawable)
+        }
+
+        binding.notificationRecyclerview.addItemDecoration(dividerItemDecoration)
+
+
+
         // Set the OnQueryTextListener for the SearchView
 
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
             androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
+                clearNotificationList()
                 // This method is called when the user submits the query
                 // Call the searchLocation() function here
                 searchlocation()
@@ -150,9 +188,14 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
-                // This method is called when the text in the SearchView changes
-                // You can perform any live filtering or suggestions here if needed
-                return false
+                if (newText.isEmpty()) {
+                    // Clear the notification list when the search query is empty
+                    clearNotificationList()
+                } else {
+                    // Otherwise, do nothing or perform any other actions if needed
+                }
+                // Return true to indicate that the query has been handled
+                return true
             }
         })
 
@@ -188,6 +231,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
 
         // Set the initial peek height for the bottom sheet
         bottomSheetBehavior.peekHeight = initialPeekHeight
+
 
         // Listen for keyboard visibility changes
         binding.root.viewTreeObserver.addOnGlobalLayoutListener {
@@ -235,6 +279,11 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
 
 
 
+
+
+
+
+
     private fun retrieveNotificationsWithinRadius(location: LatLng) {
         databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -245,15 +294,17 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
                     val toLatitude = notificationSnapshot.child("to").child("latitude").getValue(Double::class.java)
                     val toLongitude = notificationSnapshot.child("to").child("longitude").getValue(Double::class.java)
 
+                    Log.d("locations", "fromlat -> $fromLatitude fromlong -> $fromLongitude loclat -> $location.latitude  loclong -> ${location.longitude}")
 
                     if (fromLatitude != null && fromLongitude != null && message != null) {
                         val fromLocation = LatLng(fromLatitude, fromLongitude)
                         val to_location = getLocationName(toLatitude!!, toLongitude!!)
-                        val distance = calculateDistance(fromLocation, location)
+                        val distance = calculateDistance(fromLocation, location).toInt()
                         val user = notification_content(null,null,message,to_location,null)
 
-
-                        if (distance <= 1000) { // Check if the notification is within 1km radius
+                        Log.d("distance",distance.toString())
+                        if (distance <= 1000) {
+                            Log.d("distance",distance.toString())// Check if the notification is within 1km radius
                             notificationArrayList.add(user!!)
                             notificationRecyclerview.adapter = SearchNotificationAdapter(notificationArrayList)
 
@@ -283,37 +334,24 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
     }
 
 
-
-
-
-        private fun displayNotification(notification: notification_content) {
-
-                sendNotification(notification.message!!)
-            Utils.showToast(requireContext(), notification.message)
-
-        }
-
-
-
-    fun calculateDistance(from: LatLng, to: LatLng): Double {
-        val R = 6371 // Radius of the earth in km
-        val dLat = deg2rad(from.latitude- to.latitude)
-        val dLon = deg2rad(from.longitude - from.longitude)
-        val a =
-            sin(dLat / 2) * sin(dLat / 2) +
-                    cos(deg2rad(from.latitude)) * cos(deg2rad( to.latitude)) *
-                    sin(dLon / 2) * sin(dLon / 2)
-        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
-        return R * c // Distance in km
+    private fun clearNotificationList() {
+        notificationArrayList.clear()
+        notificationRecyclerview.adapter?.notifyDataSetChanged()
+        notificationRecyclerview.removeAllViews()
     }
 
-    fun deg2rad(deg: Double): Double {
-        return deg * (Math.PI / 180)
+
+
+    private  fun calculateDistance(from: LatLng, to: LatLng): Float {
+        val results = FloatArray(1)
+        Location.distanceBetween(from.latitude, from.longitude, to.latitude, to.longitude, results)
+         return results[0]
     }
+
 
 
     private fun exampleUpload() {
-        val from = LatLng(26.9124, 75.7873) // Replace with actual LatLng values
+        val from = LatLng(26.7678,  75.8504) // Replace with actual LatLng values
         val to = LatLng(26.7735871, 75.84249) // ReACplace with actual LatLng values
         val message = "cell from piet market" // Replace with actual message
 
@@ -338,21 +376,21 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
     }
 
     // Method to upload notification content to Firebase
-    private fun uploadNotificationContent(from: LatLng, to: LatLng, message: String?, fromLocationName: String?,toLocationName:String?) {
-        val notificationContent = notification_content(from, to, message,toLocationName,fromLocationName)
-        val notificationId = auth.currentUser?.uid // Generate unique key
-        if (notificationId != null) {
-            databaseReference.child(notificationId).setValue(notificationContent)
-                .addOnSuccessListener {
-                    // Notification content uploaded successfully
-                    Log.d("Firebase", "Notification content uploaded successfully")
-                }
-                .addOnFailureListener { e ->
-                    // Failed to upload notification content
-                    Log.e("Firebase", "Failed to upload notification content: ${e.message}")
-                }
-        }
+    private fun uploadNotificationContent(from: LatLng, to: LatLng, message: String?, fromLocationName: String?, toLocationName: String?) {
+        val notificationContent = notification_content(from, to, message, toLocationName, fromLocationName)
+        val notificationRef = databaseReference.push() // Generate unique key
+
+        notificationRef.setValue(notificationContent)
+            .addOnSuccessListener {
+                // Notification content uploaded successfully
+                Log.d("Firebase", "Notification content uploaded successfully")
+            }
+            .addOnFailureListener { e ->
+                // Failed to upload notification content
+                Log.e("Firebase", "Failed to upload notification content: ${e.message}")
+            }
     }
+
 
 
     private fun adjustBottomSheetPeekHeight() {
@@ -372,8 +410,8 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
         }
 
         bottomSheetBehavior.peekHeight = newPeekHeight
-
     }
+
 
     // search location
     private fun searchlocation() {
@@ -396,7 +434,6 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
 
         }
     }
-
 
 //    private fun zoomOnMap(latLng: LatLng){
 //        val newLatLngZoom = CameraUpdateFactory.newLatLngZoom(latLng,13.5f)

@@ -2,6 +2,7 @@ package com.streetox.streetox.fragments.profile
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,14 +44,13 @@ class CustomerFragment : Fragment() {
         auth = FirebaseAuth.getInstance()
         email = auth.currentUser?.email.toString()
 
+        Log.d("verified", auth.currentUser?.isEmailVerified.toString())
 
         set_user_email_and_phone_number()
-        is_user_verified()
+        send_verification_code()
 
-        if(!flag){
-            send_verification_code()
-        }
 
+        checkUserVerificationStatus()
         database.keepSynced(true)
 
         return binding.root
@@ -58,10 +58,29 @@ class CustomerFragment : Fragment() {
 
 
     private fun send_verification_code(){
-        binding.customerEmail.setOnClickListener {
-            email_verification()
+        if(auth.currentUser?.isEmailVerified  == false){
+            binding.customerEmail.setOnClickListener {
+                sendVerificationEmail()
+            }
         }
     }
+
+
+
+    private fun sendVerificationEmail() {
+        val user = auth.currentUser
+        user?.let {
+            it.sendEmailVerification()
+                .addOnCompleteListener(requireActivity()) { task ->
+                    if (task.isSuccessful) {
+                        Utils.showToast(requireContext(),"Verification email sent ")
+                    } else {
+                        Utils.showToast(requireContext(),"Failed to send verification email.")
+                    }
+                }
+        }
+    }
+
     private fun set_user_email_and_phone_number(){
 
         val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.correct)
@@ -75,7 +94,7 @@ class CustomerFragment : Fragment() {
 
                     binding.customerEmail.text = (User.email)
 
-                    if(User.verify == true){
+                    if(auth.currentUser?.isEmailVerified == true){
                         binding.checkerEmail.apply {
                             setImageDrawable(drawable)
                             requestLayout()
@@ -111,42 +130,22 @@ class CustomerFragment : Fragment() {
     }
 
 
-    val actionCodeSettings = actionCodeSettings {
-        // URL you want to redirect back to. The domain (www.example.com) for this
-        // URL must be whitelisted in the Firebase Console.
-        url = "https://streetox.page.link/email-verification"
-        // This must be true
-        handleCodeInApp = true
-        setIOSBundleId("com.streetox.streetox")
-        setAndroidPackageName(
-            "com.streetox.streetox",
-            true, // installIfNotAvailable
-            null, // minimumVersion
-        )
-    }
 
 
-    private fun email_verification(){
 
-        Firebase.auth.sendSignInLinkToEmail(email, actionCodeSettings)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-
-                  Utils.showToast(requireContext(),"Email sent.")
-                }
+    private fun checkUserVerificationStatus() {
+        val currentUser = auth.currentUser
+        currentUser?.let { user ->
+            if (user.isEmailVerified) {
+                flag = true
+                val database = FirebaseDatabase.getInstance().getReference("Users")
+                val key = user.uid
+                database.child(key).child("verify").setValue(true)
+            } else {
+                flag = false
             }
-
-
-    }
-    private fun is_user_verified(){
-
-        if(auth.currentUser?.isEmailVerified == true){
-            flag = true
-            val database = FirebaseDatabase.getInstance().getReference("Users")
-            val key = auth.currentUser?.uid.toString()
-            database.child(key).child("verify").setValue(true)
         }
-
     }
+
 
 }
