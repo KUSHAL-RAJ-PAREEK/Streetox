@@ -1,7 +1,9 @@
 package com.streetox.streetox
 
 import android.content.Context
+import android.location.Location
 import android.widget.Toast
+import com.google.android.gms.maps.model.LatLng
 import java.time.LocalDate
 import java.time.Period
 import java.time.format.DateTimeFormatter
@@ -24,6 +26,11 @@ object Utils {
     }
 
 
+    public fun calculateDistance(from: LatLng, to: LatLng): Float {
+        val results = FloatArray(1)
+        Location.distanceBetween(from.latitude, from.longitude, to.latitude, to.longitude, results)
+        return results[0]
+    }
    }
 
 

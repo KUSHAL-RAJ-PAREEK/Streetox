@@ -38,11 +38,21 @@ class CustomerFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.correct)
 
         binding = com.streetox.streetox.databinding.FragmentCustomerBinding.inflate(layoutInflater)
         database = FirebaseDatabase.getInstance().getReference("Users")
         auth = FirebaseAuth.getInstance()
         email = auth.currentUser?.email.toString()
+
+
+        if(auth.currentUser?.isEmailVerified == true){
+            binding.checkerEmail.apply {
+                setImageDrawable(drawable)
+                requestLayout()
+            }
+        }
+
 
         Log.d("verified", auth.currentUser?.isEmailVerified.toString())
 
@@ -68,12 +78,18 @@ class CustomerFragment : Fragment() {
 
 
     private fun sendVerificationEmail() {
-        val user = auth.currentUser
-        user?.let {
+        auth.currentUser?.let {
             it.sendEmailVerification()
                 .addOnCompleteListener(requireActivity()) { task ->
                     if (task.isSuccessful) {
                         Utils.showToast(requireContext(),"Verification email sent ")
+                        // Reload user after sending verification email
+                        auth.currentUser?.reload()?.addOnCompleteListener { reloadTask ->
+                            if (reloadTask.isSuccessful) {
+                                // Check verification status after reloading
+                                Log.d("verified", auth.currentUser?.isEmailVerified.toString())
+                            }
+                        }
                     } else {
                         Utils.showToast(requireContext(),"Failed to send verification email.")
                     }
@@ -93,13 +109,6 @@ class CustomerFragment : Fragment() {
                     User = snapshot.getValue(user::class.java)!!
 
                     binding.customerEmail.text = (User.email)
-
-                    if(auth.currentUser?.isEmailVerified == true){
-                        binding.checkerEmail.apply {
-                            setImageDrawable(drawable)
-                            requestLayout()
-                        }
-                    }
 
                     if(User.phone_number != null){
                         //check icon

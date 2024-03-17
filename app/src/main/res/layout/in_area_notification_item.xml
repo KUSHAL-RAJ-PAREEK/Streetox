@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="0dp"
+    android:background="@color/bottom_sheet_color"
+    android:backgroundTint="@color/bottom_sheet_color"
+    android:layout_height="wrap_content">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_8sdp"
+        android:backgroundTint="@color/bottom_sheet_color"
+        android:layout_marginVertical="@dimen/_12sdp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_margin="@dimen/_10sdp"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:src="@drawable/location_placeholder"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="@dimen/_3sdp"
+            android:layout_width="wrap_content"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|start"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/in_area_main_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="main message"
+                android:textSize="@dimen/_15ssp"
+                android:fontFamily="@font/radio_canada"
+                android:textColor="@color/white"/>
+            <TextView
+                android:id="@+id/in_area_to_location"
+                android:layout_marginTop="@dimen/_1sdp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextAppearance.Material3.BodyLarge"
+                android:text="to where"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_11ssp"
+                android:fontFamily= "@font/public_sans"/>
+            <TextView
+                android:id="@+id/in_area_notifiction_time"
+                android:layout_marginTop="@dimen/_1sdp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextAppearance.Material3.BodyLarge"
+                android:text="time"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_11ssp"
+                android:fontFamily= "@font/public_sans"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_10sdp">
+            <ImageView
+                android:id="@+id/circle"
+                android:layout_width="@dimen/_10sdp"
+                android:layout_height="@dimen/_10sdp"
+                android:layout_gravity="right"
+                android:src="@drawable/yellow_circle" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+</androidx.cardview.widget.CardView>

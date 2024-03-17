@@ -45,6 +45,8 @@
             android:layout_marginHorizontal="@dimen/_15sdp"
             android:elevation="@dimen/_5sdp"
             app:iconifiedByDefault="false"
+            android:textColorHint="@color/black"
+            app:voiceIcon="@color/black"
             app:queryHint="Search"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_search"/>
@@ -53,6 +55,8 @@
             android:id="@+id/notification_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/bottom_sheet_color"
+            android:backgroundTint="@color/bottom_sheet_color"
             android:layout_marginHorizontal="@dimen/_15sdp"
             tools:listitem="@layout/notification_item"
             android:layout_marginTop="@dimen/_85sdp"/>

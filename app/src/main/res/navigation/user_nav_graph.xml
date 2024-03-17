@@ -24,7 +24,11 @@
         android:id="@+id/requestFragment"
         android:name="com.streetox.streetox.fragments.user.RequestFragment"
         android:label="fragment_request"
-        tools:layout="@layout/fragment_request" />
+        tools:layout="@layout/fragment_request" >
+        <action
+            android:id="@+id/action_requestFragment_to_locationSearchFragment"
+            app:destination="@id/locationSearchFragment" />
+    </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.streetox.streetox.fragments.user.ProfileFragment"
@@ -147,4 +151,9 @@
             android:id="@+id/action_OTPVerifyFragment_to_verifyPhone_NumberFragment"
             app:destination="@id/verifyPhone_NumberFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/locationSearchFragment"
+        android:name="com.streetox.streetox.maps.LocationSearchFragment"
+        android:label="fragment_location_search"
+        tools:layout="@layout/fragment_location_search" />
 </navigation>

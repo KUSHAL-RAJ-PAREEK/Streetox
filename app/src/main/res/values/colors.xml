@@ -16,4 +16,5 @@
     <color name="edit_profile_text">#C6C6C6</color>
     <color name="edit_profile_button">#BBBBBB</color>
     <color name="bottom_sheet_color">#6D6D6D</color>
+    <color name="divider_color">#939393</color>
 </resources>

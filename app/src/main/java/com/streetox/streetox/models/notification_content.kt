@@ -8,5 +8,6 @@ data class notification_content(
     val to : LatLng? = null,
     val message: String? = null,
     val to_location :String?= null,
-    val from_location:String?= null
+    val from_location:String?= null,
+    val time:String?=null
 )
