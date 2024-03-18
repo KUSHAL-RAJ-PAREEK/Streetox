@@ -23,25 +23,24 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.streetox.streetox.R
-import com.streetox.streetox.databinding.FragmentLocationSearchBinding
-import com.streetox.streetox.viewmodels.Stateviewmodels.StateFromLocation
-import com.streetox.streetox.viewmodels.Stateviewmodels.StateFromlatLong
+import com.streetox.streetox.databinding.FragmentLocationSearchToBinding
+import com.streetox.streetox.viewmodels.Stateviewmodels.StateToLatLong
+import com.streetox.streetox.viewmodels.Stateviewmodels.StateToLocation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.IOException
 
-class LocationSearchFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveListener,
-    GoogleMap.OnCameraIdleListener {
+class LocationSearchToFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraMoveListener, GoogleMap.OnCameraIdleListener {
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1001
     }
 
-    private lateinit var binding: FragmentLocationSearchBinding
-    private val searchQueryViewModel by activityViewModels<StateFromLocation>()
-    private val latLngViewModel by activityViewModels<StateFromlatLong>()
+    private lateinit var binding: FragmentLocationSearchToBinding
     private var fusedLocationProviderClient: FusedLocationProviderClient? = null
+    private val searchQueryViewModel by activityViewModels<StateToLocation>()
+    private val latLngViewModel by activityViewModels<StateToLatLong>()
     private var mGoogleMap: GoogleMap? = null
     private var fragmentContext: Context? = null
     private var bottomNavigationView: BottomNavigationView? = null
@@ -56,14 +55,13 @@ class LocationSearchFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCamer
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentLocationSearchBinding.inflate(inflater, container, false)
+        binding = FragmentLocationSearchToBinding.inflate(inflater, container, false)
 
         bottomNavigationView = activity?.findViewById(R.id.bottom_nav_view)
         bottomNavigationView?.visibility = View.GONE
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        val mapFragment =
-            childFragmentManager.findFragmentById(R.id.location_Search_map) as SupportMapFragment
+        val mapFragment = childFragmentManager.findFragmentById(R.id.location_Search_map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
         // Initialize Fused Location Provider Client
@@ -94,7 +92,7 @@ class LocationSearchFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCamer
         requireActivity().onBackPressedDispatcher.addCallback(requireActivity(), object :
             OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                findNavController().navigate(R.id.action_locationSearchFragment_to_fromFragment)
+                findNavController().navigate(R.id.action_locationSearchToFragment_to_toFragment)
             }
 
         })
@@ -112,7 +110,6 @@ class LocationSearchFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCamer
                 val latitude = markerPosition.latitude
                 val longitude = markerPosition.longitude
 
-
                 val bundle = Bundle().apply {
                     putString("searchQuery", searchQuery)
                     putDouble("latitude", latitude)
@@ -123,7 +120,7 @@ class LocationSearchFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCamer
                 latLngViewModel.setLatitude(latitude)
                 latLngViewModel.setLongitude(longitude)
 
-                findNavController().navigate(R.id.action_locationSearchFragment_to_fromFragment, bundle)
+                findNavController().navigate(R.id.action_locationSearchToFragment_to_toFragment, bundle)
             } else {
                 // Handle the case where the marker position is not available
                 // You may display a message or take other appropriate action
@@ -163,14 +160,10 @@ class LocationSearchFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCamer
             location?.let {
                 val latLng = LatLng(location.latitude, location.longitude)
                 mGoogleMap?.apply {
-                    addMarker(
-                        MarkerOptions().position(latLng).title("Your Location").draggable(
-                            false
-                        )
-                    )
+                    addMarker(MarkerOptions().position(latLng).title("Your Location").draggable(false))
                     animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
-                    setOnCameraMoveListener(this@LocationSearchFragment)
-                    setOnCameraIdleListener(this@LocationSearchFragment)
+                    setOnCameraMoveListener(this@LocationSearchToFragment)
+                    setOnCameraIdleListener(this@LocationSearchToFragment)
                     setOnMapClickListener { binding.searchView.clearFocus() }
                 }
             }
@@ -185,7 +178,6 @@ class LocationSearchFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCamer
     override fun onCameraIdle() {
         binding.imgLocationPinUp?.visibility = View.GONE
         val markerOptions = MarkerOptions().position(mGoogleMap?.cameraPosition!!.target)
-
 
         val customMarkerIcon = BitmapDescriptorFactory.fromResource(R.drawable.search_pin)
         markerOptions.icon(customMarkerIcon)
@@ -215,7 +207,7 @@ class LocationSearchFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCamer
 
     private fun showLocationOnMap(address: Address, query: String) {
         val latLng = LatLng(address.latitude, address.longitude)
-        mGoogleMap?.clear()
+        mGoogleMap?.clear() // Clear previous markers
         mGoogleMap?.addMarker(MarkerOptions().position(latLng).title(query))
         mGoogleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
     }

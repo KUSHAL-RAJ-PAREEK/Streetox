@@ -75,12 +75,48 @@
             <ImageView
                 android:id="@+id/circle"
                 android:layout_width="@dimen/_10sdp"
+                android:visibility="gone"
                 android:layout_height="@dimen/_10sdp"
-                android:layout_gravity="right"
+                android:layout_gravity="right|end"
                 android:src="@drawable/yellow_circle" />
         </LinearLayout>
 
+
+
     </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/_4sdp"
+        android:layout_gravity="end|bottom"
+        android:layout_marginBottom="@dimen/_2sdp"
+        android:layout_marginEnd="@dimen/_2sdp"
+        app:cardElevation="@dimen/_4sdp"
+        app:cardUseCompatPadding="true"
+        app:cardMaxElevation="@dimen/_6sdp"
+        android:backgroundTint="@color/streetox_primary_color">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            android:padding="@dimen/_4sdp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add to oxbox"
+                android:textColor="@color/black"
+                android:fontFamily="@font/radio_canada"
+                style="@style/TextAppearance.Material3.BodyLarge"
+                android:textSize="@dimen/_7ssp"/>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
 
 
 

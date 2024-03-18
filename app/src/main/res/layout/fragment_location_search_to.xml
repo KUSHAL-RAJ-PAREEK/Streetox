@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".maps.LocationSearchToFragment">
+
+    <fragment
+        xmlns:map="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/location_Search_map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        map:mapType="normal"/>
+
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/search_view"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/_30sdp"
+        android:layout_marginHorizontal="@dimen/_15sdp"
+        android:elevation="@dimen/_5sdp"
+        app:iconifiedByDefault="false"
+        android:textColor="@color/black"
+        app:voiceIcon="@color/black"
+        app:queryHint="Search"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_search"/>
+
+    <ImageView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_centerInParent="true"
+        android:id="@+id/imgLocationPinUp"
+        android:src="@drawable/search_pin"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_alignParentEnd="true">
+
+        <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressImageButton
+            android:id="@+id/btn_go"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"
+            android:src="@drawable/right_arrow"
+            android:background="@drawable/round_button" />
+    </LinearLayout>
+
+</RelativeLayout>

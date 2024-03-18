@@ -21,10 +21,10 @@ class RequestFragment : Fragment() {
         
         binding = FragmentRequestBinding.inflate(layoutInflater)
 
-        binding.button.setOnClickListener {
+
             findNavController().navigate(
-                R.id.action_requestFragment_to_locationSearchFragment)
-        }
+                R.id.action_requestFragment_to_fromFragment)
+
         return binding.root
     }
 

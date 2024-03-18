@@ -3,7 +3,8 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".maps.LocationSearchFragment">
 
         <fragment
             xmlns:map="http://schemas.android.com/apk/res-auto"
@@ -11,8 +12,7 @@
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            map:mapType="normal"
-            tools:context=".MapStartedActivity"/>
+            map:mapType="normal" />
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/search_view"
@@ -21,7 +21,7 @@
             android:layout_marginHorizontal="@dimen/_15sdp"
             android:elevation="@dimen/_5sdp"
             app:iconifiedByDefault="false"
-            android:textColorHint="@color/black"
+            android:textColor="@color/black"
             app:voiceIcon="@color/black"
             app:queryHint="Search"
             android:layout_height="wrap_content"
@@ -32,5 +32,22 @@
             android:layout_width="wrap_content"
             android:layout_centerInParent="true"
             android:id="@+id/imgLocationPinUp"
-            android:src="@drawable/user_curr_location_marker"/>
+            android:src="@drawable/search_pin"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
+            android:layout_alignParentEnd="true">
+
+                <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressImageButton
+                    android:id="@+id/btn_go"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:src="@drawable/right_arrow"
+                    android:background="@drawable/round_button" />
+        </LinearLayout>
+
 </RelativeLayout>

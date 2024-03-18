@@ -1,25 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bottom_sheet_color"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.user.NotificationFragment">
 
     <TextView
         android:id="@+id/textViewTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_18sdp"
         android:fontFamily="@font/radio_canada"
         android:text="In-Area notification"
         android:textColor="@color/black"
         android:textSize="@dimen/_16ssp"
         android:textStyle="bold"
-        android:layout_marginTop="@dimen/_18sdp"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_35sdp"
+        android:layout_marginTop="@dimen/_30sdp"
+        android:layout_marginBottom="30dp"
+        app:layout_constraintBottom_toBottomOf="@+id/dividerView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textViewTitle"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints">
+
+        <ImageView
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:src="@drawable/oxbox"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/notification_recyclerview"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textViewTitle"
+            app:layout_constraintTop_toTopOf="parent" />
+    </LinearLayout>
 
     <View
         android:id="@+id/dividerView"
@@ -27,9 +50,9 @@
         android:layout_height="@dimen/_1sdp"
         android:layout_marginTop="@dimen/_12sdp"
         android:background="@color/divider_color"
-        app:layout_constraintTop_toBottomOf="@id/textViewTitle"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/textViewTitle" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/notification_recyclerview"
@@ -37,10 +60,13 @@
         android:layout_height="0dp"
         android:background="@color/bottom_sheet_color"
         android:backgroundTint="@color/bottom_sheet_color"
-        app:layout_constraintTop_toBottomOf="@id/dividerView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:listitem="@layout/in_area_notification_item"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dividerView"
+        tools:listitem="@layout/in_area_notification_item" />
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -18,11 +18,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.SearchView
+import androidx.activity.addCallback
 
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -44,6 +46,7 @@ import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -89,6 +92,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private var initialPeekHeight = 0
     private var fragmentContext: Context? = null
+    private var bottomNavigationView: BottomNavigationView? = null
 
 //    private lateinit var  autocompleteFragment: AutocompleteSupportFragment
 
@@ -102,7 +106,8 @@ override fun onAttach(context: Context) {
         savedInstanceState: Bundle?
     ): View? {
 
-
+        bottomNavigationView = activity?.findViewById(R.id.bottom_nav_view)
+        bottomNavigationView?.visibility = View.VISIBLE
         // FOR SCREEN NOT MOVE UP WITH KEYBOARD
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
@@ -323,6 +328,10 @@ override fun onAttach(context: Context) {
     //calculating distance of notifications (1km area)
 
 
+    override fun onBackPressed() {
+        requireActivity().finish()
+    }
+
 
 
     //example upload
@@ -436,7 +445,7 @@ override fun onAttach(context: Context) {
 
     // search location
     private fun searchlocation() {
-        val customMarkerIcon = BitmapDescriptorFactory.fromResource(R.drawable.search_location_marker)
+        val customMarkerIcon = BitmapDescriptorFactory.fromResource(R.drawable.search_marker)
         val location = binding.searchView.query.toString().trim()
         var addressList: List<Address>? = null
 
@@ -452,6 +461,7 @@ override fun onAttach(context: Context) {
             val latLng = LatLng(address.latitude, address.longitude)
             mMap!!.addMarker(MarkerOptions().position(latLng).title(location))?.setIcon(customMarkerIcon)
             mMap!!.animateCamera(CameraUpdateFactory.newLatLng(latLng))
+            mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
             clearNotificationList()
             retrieveNotificationsWithinRadius(latLng)
 
@@ -513,7 +523,7 @@ override fun onAttach(context: Context) {
 
     // add marker
     private fun addUserMarker() {
-        val customMarkerIcon = BitmapDescriptorFactory.fromResource(R.drawable.user_curr_location_marker)
+        val customMarkerIcon = BitmapDescriptorFactory.fromResource(R.drawable.search_location_marker)
         // Clear previous circles on the map
         mMap?.clear()
         // Check if geoFire, lastLocation, and mMap are not null before proceeding

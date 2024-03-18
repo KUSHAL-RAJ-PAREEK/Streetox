@@ -26,8 +26,8 @@
         android:label="fragment_request"
         tools:layout="@layout/fragment_request" >
         <action
-            android:id="@+id/action_requestFragment_to_locationSearchFragment"
-            app:destination="@id/locationSearchFragment" />
+            android:id="@+id/action_requestFragment_to_fromFragment"
+            app:destination="@id/fromFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -155,5 +155,66 @@
         android:id="@+id/locationSearchFragment"
         android:name="com.streetox.streetox.maps.LocationSearchFragment"
         android:label="fragment_location_search"
-        tools:layout="@layout/fragment_location_search" />
+        tools:layout="@layout/fragment_location_search" >
+        <action
+            android:id="@+id/action_locationSearchFragment_to_fromFragment"
+            app:destination="@id/fromFragment"
+            app:popUpTo="@id/fromFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/fromFragment"
+        android:name="com.streetox.streetox.fragments.raise_request.FromFragment"
+        android:label="fragment_from"
+        tools:layout="@layout/fragment_from" >
+        <action
+            android:id="@+id/action_fromFragment_to_locationSearchFragment"
+            app:destination="@id/locationSearchFragment" />
+        <action
+            android:id="@+id/action_fromFragment_to_searchFragment"
+            app:destination="@id/searchFragment"
+            app:popUpTo="@id/searchFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_fromFragment_to_toFragment"
+            app:destination="@id/toFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/toFragment"
+        android:name="com.streetox.streetox.fragments.raise_request.ToFragment"
+        android:label="fragment_to"
+        tools:layout="@layout/fragment_to" >
+        <action
+            android:id="@+id/action_toFragment_to_locationSearchToFragment"
+            app:destination="@id/locationSearchToFragment" />
+        <action
+            android:id="@+id/action_toFragment_to_fromFragment"
+            app:destination="@id/fromFragment"
+            app:popUpTo="@id/fromFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_toFragment_to_needFragment"
+            app:destination="@id/needFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/locationSearchToFragment"
+        android:name="com.streetox.streetox.maps.LocationSearchToFragment"
+        android:label="fragment_location_search_to"
+        tools:layout="@layout/fragment_location_search_to" >
+        <action
+            android:id="@+id/action_locationSearchToFragment_to_toFragment"
+            app:destination="@id/toFragment"
+            app:popUpTo="@id/toFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/needFragment"
+        android:name="com.streetox.streetox.fragments.raise_request.NeedFragment"
+        android:label="fragment_need"
+        tools:layout="@layout/fragment_need" >
+        <action
+            android:id="@+id/action_needFragment_to_toFragment"
+            app:destination="@id/toFragment"
+            app:popUpTo="@id/toFragment" />
+    </fragment>
 </navigation>
