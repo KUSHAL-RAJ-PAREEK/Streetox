@@ -62,7 +62,7 @@
                 android:text="time"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_11ssp"
-                android:fontFamily= "@font/public_sans"/>
+                android:fontFamily= "@font/radio_canada"/>
 
 
         </LinearLayout>

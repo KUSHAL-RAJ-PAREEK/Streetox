@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/background_color"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.raise_request.DetailInformationFragment">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:id="@+id/btn_back"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_marginStart="@dimen/_18sdp"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:src="@drawable/back_arrow" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_18sdp"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:fontFamily="@font/notosanskannada"
+            android:text="Detailed information about
+your requirement"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_18ssp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_18sdp"
+            android:layout_marginTop="@dimen/_12sdp"
+            app:hintEnabled="false"
+            android:backgroundTint="@color/edit_text_color"
+            app:boxCornerRadiusBottomEnd="@dimen/_16sdp"
+            app:boxCornerRadiusBottomStart="@dimen/_16sdp"
+            app:boxCornerRadiusTopEnd="@dimen/_16sdp"
+            app:endIconMode="clear_text"
+            app:boxCornerRadiusTopStart="@dimen/_16sdp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edt_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/_10sdp"
+                android:textColor="@color/black"
+                android:hint="Eg:- Bring xyz thing from ground floor
+to third floor house no. 311"
+                android:maxLines="5"
+                android:textColorHint="@color/hint_color"
+                android:background="@drawable/edit_text_background"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_18sdp"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/_25sdp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Medical related ?"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_15ssp"
+
+                android:fontFamily="sans-serif"/>
+
+            <RadioGroup
+                android:id="@+id/radio_med"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatRadioButton
+                    android:id="@+id/med_yes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Yes"
+                    android:theme="@style/RadioButtonStyle"
+                    android:paddingStart="@dimen/_5sdp"
+                    android:buttonTint="@color/streetox_primary_color"
+                    android:textSize="@dimen/_13ssp"
+                    android:textColor="@color/white"/>
+
+                <androidx.appcompat.widget.AppCompatRadioButton
+                    android:id="@+id/med_no"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:paddingStart="@dimen/_5sdp"
+                    android:theme="@style/RadioButtonStyle"
+                    android:text="No"
+                    android:buttonTint="@color/streetox_primary_color"
+                    android:textSize="@dimen/_13ssp"
+                    android:textColor="@color/white"
+                    tools:ignore="RtlSymmetry" />
+
+            </RadioGroup>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_18sdp"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/_25sdp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Is Payable ?"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_15ssp"
+
+                android:fontFamily="sans-serif"/>
+
+            <RadioGroup
+                android:id="@+id/radio_pay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatRadioButton
+                    android:id="@+id/pay_yes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Yes"
+                    android:theme="@style/RadioButtonStyle"
+                    android:paddingStart="@dimen/_5sdp"
+                    android:buttonTint="@color/streetox_primary_color"
+                    android:textSize="@dimen/_13ssp"
+                    android:textColor="@color/white"/>
+
+                <RadioButton
+                    android:id="@+id/pay_no"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:paddingStart="@dimen/_5sdp"
+                    android:text="No"
+                    android:theme="@style/RadioButtonStyle"
+                    android:buttonTint="@color/streetox_primary_color"
+                    android:textSize="@dimen/_13ssp"
+                    android:textColor="@color/white"
+                    tools:ignore="RtlSymmetry" />
+
+            </RadioGroup>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/ll_payable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginHorizontal="@dimen/_18sdp"
+            android:layout_marginTop="@dimen/_25sdp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_15ssp"
+                android:text="Could you let me know your opinion\nabout the price of the product?"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:hintEnabled="false"
+                android:backgroundTint="@color/edit_text_color"
+                app:boxCornerRadiusBottomEnd="@dimen/_16sdp"
+                app:boxCornerRadiusBottomStart="@dimen/_16sdp"
+                app:boxCornerRadiusTopEnd="@dimen/_16sdp"
+                app:boxCornerRadiusTopStart="@dimen/_16sdp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/_10sdp"
+                    android:inputType="number"
+                    android:textColor="@color/black"
+                    android:hint="Rs 50"
+                    android:textColorHint="@color/hint_color"
+                    android:background="@drawable/edit_text_background"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:layout_marginBottom="@dimen/_20sdp"
+        android:layout_gravity="bottom|end">
+
+        <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressImageButton
+            android:id="@+id/btn_go"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"
+            android:background="@drawable/round_button"
+            android:visibility="gone"
+            android:src="@drawable/right_arrow" />
+    </LinearLayout>
+
+
+</FrameLayout>

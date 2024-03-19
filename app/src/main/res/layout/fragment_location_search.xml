@@ -19,6 +19,7 @@
             android:layout_width="match_parent"
             android:layout_marginTop="@dimen/_30sdp"
             android:layout_marginHorizontal="@dimen/_15sdp"
+            android:theme="@style/TextAppearance.Material3.SearchView"
             android:elevation="@dimen/_5sdp"
             app:iconifiedByDefault="false"
             android:textColor="@color/black"
@@ -39,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="@dimen/_20sdp"
-            android:layout_marginEnd="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_16sdp"
             android:layout_alignParentEnd="true">
 
                 <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressImageButton

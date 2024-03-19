@@ -113,17 +113,11 @@ class LocationSearchFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCamer
                 val longitude = markerPosition.longitude
 
 
-                val bundle = Bundle().apply {
-                    putString("searchQuery", searchQuery)
-                    putDouble("latitude", latitude)
-                    putDouble("longitude", longitude)
-                }
-
                 searchQueryViewModel.setSearchQuery(searchQuery)
                 latLngViewModel.setLatitude(latitude)
                 latLngViewModel.setLongitude(longitude)
 
-                findNavController().navigate(R.id.action_locationSearchFragment_to_fromFragment, bundle)
+                findNavController().navigate(R.id.action_locationSearchFragment_to_fromFragment)
             } else {
                 // Handle the case where the marker position is not available
                 // You may display a message or take other appropriate action

@@ -203,7 +203,7 @@ class NotificationFragment : Fragment() {
                                 getLocationName(fragmentContext!!, toLatitude!!, toLongitude!!)
                             val distance = calculateDistance(fromLocation, location).toInt()
                             val user =
-                                notification_content(null, null, message, to_location, null, time)
+                                notification_content(null, null, null,message, to_location, null, time)
 
                             Log.d("distance", distance.toString())
                             if (distance <= 2000) {

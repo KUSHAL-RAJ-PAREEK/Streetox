@@ -243,7 +243,6 @@ override fun onAttach(context: Context) {
                         fusedLocationProviderClient =
                             LocationServices.getFusedLocationProviderClient(requireActivity())
                         settingGeoFire()
-                        exampleUpload()
                     } else {
                         // Handle the case where permissions are not granted
                         // You can show a message or take appropriate action here
@@ -295,7 +294,7 @@ override fun onAttach(context: Context) {
                         val fromLocation = LatLng(fromLatitude, fromLongitude)
                         val to_location = getLocationName(toLatitude!!, toLongitude!!)
                         val distance = calculateDistance(fromLocation, location).toInt()
-                        val user = notification_content(null, null, message, to_location, null,null)
+                        val user = notification_content(null,null, null, message, to_location, null,null)
 
                         Log.d("distance", distance.toString())
                         if (distance <= 1000) {
@@ -336,18 +335,7 @@ override fun onAttach(context: Context) {
 
     //example upload
 
-    private fun exampleUpload() {
-        val from = LatLng(26.7678, 75.8504) // Replace with actual LatLng values
-        val to = LatLng(20.3502, 85.8899) // ReACplace with actual LatLng values
-        val message = "cell from piet market" // Replace with actual message
 
-
-        val fromLocationName = getLocationName(from.latitude, from.longitude)
-        val toLocationName = getLocationName(to.latitude, to.longitude)
-
-        uploadNotificationContent(from, to, message, fromLocationName, toLocationName)
-
-    }
 
 
     //changing latitude and longitude into location name with geocoder
@@ -392,28 +380,7 @@ override fun onAttach(context: Context) {
 
 
 
-    // Method to upload notification content to Firebase
-    private fun uploadNotificationContent(
-        from: LatLng,
-        to: LatLng,
-        message: String?,
-        fromLocationName: String?,
-        toLocationName: String?
-    ) {
-        val notificationContent =
-            notification_content(from, to, message, toLocationName, fromLocationName)
-        val notificationRef = databaseReference.push() // Generate unique key
 
-        notificationRef.setValue(notificationContent)
-            .addOnSuccessListener {
-                // Notification content uploaded successfully
-                Log.d("Firebase", "Notification content uploaded successfully")
-            }
-            .addOnFailureListener { e ->
-                // Failed to upload notification content
-                Log.e("Firebase", "Failed to upload notification content: ${e.message}")
-            }
-    }
 
 
 

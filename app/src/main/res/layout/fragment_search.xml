@@ -44,6 +44,7 @@
             android:layout_marginTop="@dimen/_30sdp"
             android:layout_marginHorizontal="@dimen/_15sdp"
             android:elevation="@dimen/_5sdp"
+            android:theme="@style/TextAppearance.Material3.SearchView"
             android:textColor="@color/black"
             app:iconifiedByDefault="false"
             app:voiceIcon="@color/black"

@@ -216,5 +216,47 @@
             android:id="@+id/action_needFragment_to_toFragment"
             app:destination="@id/toFragment"
             app:popUpTo="@id/toFragment" />
+        <action
+            android:id="@+id/action_needFragment_to_locationDetailFragment"
+            app:destination="@id/locationDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/locationDetailFragment"
+        android:name="com.streetox.streetox.fragments.raise_request.LocationDetailFragment"
+        android:label="fragment_location_detail"
+        tools:layout="@layout/fragment_location_detail" >
+        <action
+            android:id="@+id/action_locationDetailFragment_to_needFragment"
+            app:destination="@id/needFragment"
+            app:popUpTo="@id/needFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_locationDetailFragment_to_detailInformationFragment"
+            app:destination="@id/detailInformationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailInformationFragment"
+        android:name="com.streetox.streetox.fragments.raise_request.DetailInformationFragment"
+        android:label="fragment_detail_information"
+        tools:layout="@layout/fragment_detail_information" >
+        <action
+            android:id="@+id/action_detailInformationFragment_to_locationDetailFragment"
+            app:destination="@id/locationDetailFragment"
+            app:popUpTo="@id/locationDetailFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_detailInformationFragment_to_dateAndTimeFragment"
+            app:destination="@id/dateAndTimeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/dateAndTimeFragment"
+        android:name="com.streetox.streetox.fragments.raise_request.DateAndTimeFragment"
+        android:label="fragment_date_and_time"
+        tools:layout="@layout/fragment_date_and_time" >
+        <action
+            android:id="@+id/action_dateAndTimeFragment_to_detailInformationFragment"
+            app:destination="@id/detailInformationFragment"
+            app:popUpTo="@id/detailInformationFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>
