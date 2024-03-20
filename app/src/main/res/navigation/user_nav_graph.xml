@@ -258,5 +258,19 @@
             app:destination="@id/detailInformationFragment"
             app:popUpTo="@id/detailInformationFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_dateAndTimeFragment_to_raisedRequestAnimationFragment"
+            app:destination="@id/raisedRequestAnimationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/raisedRequestAnimationFragment"
+        android:name="com.streetox.streetox.fragments.raise_request.RaisedRequestAnimationFragment"
+        android:label="fragment_raised_request_animation"
+        tools:layout="@layout/fragment_raised_request_animation" >
+        <action
+            android:id="@+id/action_raisedRequestAnimationFragment_to_searchFragment"
+            app:destination="@id/searchFragment"
+            app:popUpTo="@id/searchFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

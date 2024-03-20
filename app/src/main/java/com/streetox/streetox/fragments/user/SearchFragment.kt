@@ -490,7 +490,7 @@ override fun onAttach(context: Context) {
 
     // add marker
     private fun addUserMarker() {
-        val customMarkerIcon = BitmapDescriptorFactory.fromResource(R.drawable.search_location_marker)
+        val customMarkerIcon = BitmapDescriptorFactory.fromResource(R.drawable.curr_user_location)
         // Clear previous circles on the map
         mMap?.clear()
         // Check if geoFire, lastLocation, and mMap are not null before proceeding
