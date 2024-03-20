@@ -26,7 +26,7 @@ class InAreaNotificationAdapter(private val inareanotificationlist : ArrayList<n
 
         holder.in_area_message.text = currentitem.message
         holder.in_area_to_location.text = currentitem.to_location
-        holder.in_area_time.text = currentitem.time
+        holder.in_area_time.text = currentitem.upload_time
     }
 
 

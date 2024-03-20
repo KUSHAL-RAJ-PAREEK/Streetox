@@ -195,15 +195,16 @@ class NotificationFragment : Fragment() {
                             .getValue(Double::class.java)
                         val toLongitude = notificationSnapshot.child("to").child("longitude")
                             .getValue(Double::class.java)
-                        val time = getCurrentTime()
 
+                        val time = notificationSnapshot.child("upload_time").getValue(String::class.java)
                         if (fromLatitude != null && fromLongitude != null && message != null) {
                             val fromLocation = LatLng(fromLatitude, fromLongitude)
                             val to_location =
                                 getLocationName(fragmentContext!!, toLatitude!!, toLongitude!!)
                             val distance = calculateDistance(fromLocation, location).toInt()
                             val user =
-                                notification_content(null, null, null,message, to_location, null, time)
+                                notification_content(null, null, null,message, to_location,null,null,null
+                                ,null,null,null,null,null,time)
 
                             Log.d("distance", distance.toString())
                             if (distance <= 2000) {

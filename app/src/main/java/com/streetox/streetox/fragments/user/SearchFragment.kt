@@ -94,6 +94,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
     private var fragmentContext: Context? = null
     private var bottomNavigationView: BottomNavigationView? = null
 
+    private var searchMarker: Marker? = null
 //    private lateinit var  autocompleteFragment: AutocompleteSupportFragment
 
 override fun onAttach(context: Context) {
@@ -426,9 +427,16 @@ override fun onAttach(context: Context) {
 
             val address = addressList!![0]
             val latLng = LatLng(address.latitude, address.longitude)
-            mMap!!.addMarker(MarkerOptions().position(latLng).title(location))?.setIcon(customMarkerIcon)
+
+            // Remove the old marker if it exists
+            searchMarker?.remove()
+
+            searchMarker = mMap!!.addMarker(MarkerOptions().position(latLng).title(location)
+                .icon(customMarkerIcon))
             mMap!!.animateCamera(CameraUpdateFactory.newLatLng(latLng))
             mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
+
+            // Clear the notification list and retrieve notifications within radius
             clearNotificationList()
             retrieveNotificationsWithinRadius(latLng)
 

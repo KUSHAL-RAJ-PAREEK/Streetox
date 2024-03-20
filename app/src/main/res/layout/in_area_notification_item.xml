@@ -43,16 +43,19 @@
                 android:textSize="@dimen/_15ssp"
                 android:fontFamily="@font/radio_canada"
                 android:textColor="@color/white"/>
-            <TextView
-                android:id="@+id/in_area_to_location"
-                android:layout_marginTop="@dimen/_1sdp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/TextAppearance.Material3.BodyLarge"
-                android:text="to where"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_11ssp"
-                android:fontFamily= "@font/public_sans"/>
+
+
+
+                <TextView
+                    android:id="@+id/in_area_to_location"
+                    android:layout_marginTop="@dimen/_1sdp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="to where"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_11ssp"
+                    android:fontFamily= "@font/public_sans"/>
+
             <TextView
                 android:id="@+id/in_area_notifiction_time"
                 android:layout_marginTop="@dimen/_1sdp"
