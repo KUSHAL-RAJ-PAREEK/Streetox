@@ -14,7 +14,11 @@
         android:id="@+id/notiFragment"
         android:name="com.streetox.streetox.fragments.user.NotificationFragment"
         android:label="fragment_notification"
-        tools:layout="@layout/fragment_notification" />
+        tools:layout="@layout/fragment_notification" >
+        <action
+            android:id="@+id/action_notiFragment_to_oxboxFragment"
+            app:destination="@id/oxboxFragment" />
+    </fragment>
     <fragment
         android:id="@+id/walletFragment"
         android:name="com.streetox.streetox.fragments.user.WalletFragment"
@@ -271,6 +275,17 @@
             android:id="@+id/action_raisedRequestAnimationFragment_to_searchFragment"
             app:destination="@id/searchFragment"
             app:popUpTo="@id/searchFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/oxboxFragment"
+        android:name="com.streetox.streetox.fragments.oxbox.oxboxFragment"
+        android:label="fragment_oxbox"
+        tools:layout="@layout/fragment_oxbox" >
+        <action
+            android:id="@+id/action_oxboxFragment_to_notiFragment"
+            app:destination="@id/notiFragment"
+            app:popUpTo="@id/notiFragment"
             app:popUpToInclusive="true" />
     </fragment>
 </navigation>

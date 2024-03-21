@@ -120,7 +120,7 @@ override fun onAttach(context: Context) {
 
         //RECYCLER VIEW AND LIST INITIALIZE
 
-        notificationRecyclerview = binding.notificationRecyclerview
+        notificationRecyclerview = binding.searchRecyclerview
         notificationRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         notificationRecyclerview.setHasFixedSize(true)
         notificationArrayList = arrayListOf<notification_content>()
@@ -151,7 +151,7 @@ override fun onAttach(context: Context) {
             dividerItemDecoration.setDrawable(drawable)
         }
 
-        binding.notificationRecyclerview.addItemDecoration(dividerItemDecoration)
+        binding.searchRecyclerview.addItemDecoration(dividerItemDecoration)
 
 
 
@@ -290,12 +290,13 @@ override fun onAttach(context: Context) {
                         .getValue(Double::class.java)
                     val toLongitude = notificationSnapshot.child("to").child("longitude")
                         .getValue(Double::class.java)
-
+                    val time = notificationSnapshot.child("upload_time").getValue(String::class.java)
                     if (fromLatitude != null && fromLongitude != null && message != null) {
                         val fromLocation = LatLng(fromLatitude, fromLongitude)
                         val to_location = getLocationName(toLatitude!!, toLongitude!!)
                         val distance = calculateDistance(fromLocation, location).toInt()
-                        val user = notification_content(null,null, null, message, to_location, null,null)
+                        val user =    notification_content(null,null, null, null,message, to_location,null,null,null
+                            ,null,null,null,null,null,time)
 
                         Log.d("distance", distance.toString())
                         if (distance <= 1000) {

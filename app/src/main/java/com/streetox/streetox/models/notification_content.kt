@@ -4,6 +4,7 @@ import android.os.Message
 import com.google.android.gms.maps.model.LatLng
 
 data class notification_content(
+    val noti_id :String?= null,
     val uid :String?= null,
     val from : LatLng? = null,
     val to : LatLng? = null,

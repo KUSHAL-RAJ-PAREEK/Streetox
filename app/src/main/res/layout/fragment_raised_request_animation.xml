@@ -9,15 +9,28 @@
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/raised_request_anim"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="@dimen/_300sdp"
+        android:layout_height="@dimen/_300sdp"
         app:lottie_autoPlay="true"
-        app:lottie_speed="1"
         app:lottie_fileName="raised_request.json"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Request Raised"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_20ssp"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/_80sdp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/raised_request_anim" />
 
 
 

@@ -5,7 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bottom_sheet_color"
-    tools:context=".fragments.user.NotificationFragment">
+    tools:context=".fragments.oxbox.oxboxFragment">
+
+    <ImageView
+        android:id="@+id/btn_back"
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_100sdp"
+        android:src="@drawable/back_arrow"
+        android:layout_marginStart="@dimen/_5sdp"
+        app:layout_constraintBottom_toTopOf="@+id/oxbox_recyclerview"
+        app:layout_constraintEnd_toStartOf="@+id/textViewTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textViewTitle"
@@ -13,37 +25,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_18sdp"
         android:fontFamily="@font/radio_canada"
-        android:text="In-Area notification"
+        android:text="oxbox"
         android:textColor="@color/black"
         android:textSize="@dimen/_16ssp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_35sdp"
-        android:layout_marginTop="@dimen/_30sdp"
-        android:layout_marginBottom="30dp"
-        app:layout_constraintBottom_toBottomOf="@+id/dividerView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textViewTitle"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints">
-
-        <ImageView
-            android:id="@+id/oxbox"
-            android:layout_width="@dimen/_25sdp"
-            android:layout_height="@dimen/_25sdp"
-            android:src="@drawable/oxbox"
-            android:visibility="visible"
-            app:layout_constraintBottom_toTopOf="@+id/notification_recyclerview"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textViewTitle"
-            app:layout_constraintTop_toTopOf="parent" />
-    </LinearLayout>
 
     <View
         android:id="@+id/dividerView"
@@ -56,7 +44,7 @@
         app:layout_constraintTop_toBottomOf="@id/textViewTitle" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/notification_recyclerview"
+        android:id="@+id/oxbox_recyclerview"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/bottom_sheet_color"
@@ -65,7 +53,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/dividerView"
-        tools:listitem="@layout/in_area_notification_item" />
+        tools:listitem="@layout/oxbox_item" />
 
 
 

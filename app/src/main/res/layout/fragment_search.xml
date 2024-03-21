@@ -53,7 +53,7 @@
             android:background="@drawable/bg_search"/>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/notification_recyclerview"
+            android:id="@+id/search_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/bottom_sheet_color"

@@ -13,10 +13,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -120,6 +124,7 @@ class NotificationFragment : Fragment() {
 
         checkpermissions()
 
+        on_oxbox_click()
 
         // Initialize SharedPreferences
         sharedPreferences =
@@ -203,7 +208,7 @@ class NotificationFragment : Fragment() {
                                 getLocationName(fragmentContext!!, toLatitude!!, toLongitude!!)
                             val distance = calculateDistance(fromLocation, location).toInt()
                             val user =
-                                notification_content(null, null, null,message, to_location,null,null,null
+                                notification_content(null,null, null, null,message, to_location,null,null,null
                                 ,null,null,null,null,null,time)
 
                             Log.d("distance", distance.toString())
@@ -215,7 +220,7 @@ class NotificationFragment : Fragment() {
                     }
                     // Set the adapter after fetching all notifications
                     inarearecyclerview.adapter =
-                        InAreaNotificationAdapter(inareanotificationlist)
+                        InAreaNotificationAdapter(inareanotificationlist,binding.oxbox)
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -252,14 +257,24 @@ class NotificationFragment : Fragment() {
                 requireContext().startForegroundService(service)
             }
         }
+
+
     }
 
+
+    private fun on_oxbox_click(){
+        binding.oxbox.setOnClickListener {
+            findNavController().navigate(R.id.action_notiFragment_to_oxboxFragment)
+        }
+    }
 
     private fun clearNotificationList() {
         inareanotificationlist.clear()
         inarearecyclerview.removeAllViews()
         inarearecyclerview.adapter?.notifyDataSetChanged()
     }
+
+
 
 
     private fun getLocationName(context: Context, latitude: Double, longitude: Double): String {
