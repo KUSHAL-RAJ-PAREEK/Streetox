@@ -15,6 +15,12 @@
         android:backgroundTint="@color/bottom_sheet_color"
         android:layout_marginVertical="@dimen/_12sdp"
         android:orientation="horizontal">
+        <TextView
+            android:id="@+id/noti_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="noti_id"
+            android:visibility="gone"/>
 
         <LinearLayout
             android:layout_width="wrap_content"

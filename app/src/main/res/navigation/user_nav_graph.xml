@@ -287,5 +287,19 @@
             app:destination="@id/notiFragment"
             app:popUpTo="@id/notiFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_oxboxFragment_to_orderDetailFragment"
+            app:destination="@id/orderDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/orderDetailFragment"
+        android:name="com.streetox.streetox.fragments.oxbox.OrderDetailFragment"
+        android:label="fragment_order_detail"
+        tools:layout="@layout/fragment_order_detail" >
+        <action
+            android:id="@+id/action_orderDetailFragment_to_oxboxFragment"
+            app:destination="@id/oxboxFragment"
+            app:popUpTo="@id/oxboxFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

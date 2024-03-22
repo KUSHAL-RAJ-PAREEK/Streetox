@@ -11,7 +11,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.play.integrity.internal.f
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -19,14 +18,11 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.streetox.streetox.R
-import com.streetox.streetox.Utils.calculateDistance
-import com.streetox.streetox.adapters.InAreaNotificationAdapter
 import com.streetox.streetox.adapters.OxoboxAdapter
 import com.streetox.streetox.databinding.FragmentOxboxBinding
 import com.streetox.streetox.models.notification_content
 
-
-class oxboxFragment : Fragment() {
+class oxboxFragment : Fragment(), OxoboxAdapter.OnItemClickListener {
 
     private lateinit var binding : FragmentOxboxBinding
 
@@ -52,19 +48,14 @@ class oxboxFragment : Fragment() {
 
         oxboxArrayList = arrayListOf<notification_content>()
 
-
         requireActivity().onBackPressedDispatcher.addCallback(requireActivity(),object :
             OnBackPressedCallback(true){
             override fun handleOnBackPressed() {
                 findNavController().navigate(R.id.action_oxboxFragment_to_notiFragment)
             }
-
         })
 
-
         retrieveNotificationsForUid(auth.currentUser?.uid.toString())
-
-        on_btn_back_click()
 
         return binding.root
     }
@@ -77,41 +68,40 @@ class oxboxFragment : Fragment() {
         databaseReference.child("oxbox").child(uid)
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    // Clear data from list
                     clearNotificationList()
 
-                    // Iterate through child nodes under the user's UID
                     for (notificationSnapshot in dataSnapshot.children) {
-                        // Retrieve notification data
                         val noti_id = notificationSnapshot.child("noti_id").getValue(String::class.java)
                         val message = notificationSnapshot.child("message").getValue(String::class.java)
                         val toLocation = notificationSnapshot.child("to_location").getValue(String::class.java)
                         val uid =notificationSnapshot.child("uid").getValue(String::class.java)
                         val fromLocation = notificationSnapshot.child("from_location").getValue(String::class.java)
-                        val fromLatitude = notificationSnapshot.child("from").child("latitude")
-                            .getValue(Double::class.java)
-                        val fromLongitude = notificationSnapshot.child("from").child("longitude")
-                            .getValue(Double::class.java)
+                        val fromLatitude = notificationSnapshot.child("from").child("latitude").getValue(Double::class.java)
+                        val fromLongitude = notificationSnapshot.child("from").child("longitude").getValue(Double::class.java)
+                        val toLatitude = notificationSnapshot.child("to").child("latitude").getValue(Double::class.java)
+                        val toLongitude = notificationSnapshot.child("to").child("longitude").getValue(Double::class.java)
 
-                        val toLatitude = notificationSnapshot.child("to").child("latitude")
-                            .getValue(Double::class.java)
-                        val toLongitude = notificationSnapshot.child("to").child("longitude")
-                            .getValue(Double::class.java)
+                        val from = LatLng(fromLatitude!!, fromLongitude!!)
+                        val to = LatLng(toLatitude!!,toLongitude!!)
 
-                        // Retrieve other necessary data...
+                        val time = notificationSnapshot.child("time").getValue(String::class.java)
+                        val date = notificationSnapshot.child("date").getValue(String::class.java)
+                        val price = notificationSnapshot.child("price").getValue(String::class.java)
+                        val location_desc = notificationSnapshot.child("location_desc").getValue(String::class.java)
+                        val detail_requrement = notificationSnapshot.child("detail_requrement").getValue(String::class.java)
+                        val ismed = notificationSnapshot.child("ismed").getValue(String::class.java)
+                        val ispayable = notificationSnapshot.child("ispayable").getValue(String::class.java)
+                        val upload_time = notificationSnapshot.child("upload_time").getValue(String::class.java)
 
-                        // Construct notification_content object
-                        val user = notification_content(null,
-                            uid, null, null, message, toLocation, null, null, null,
-                            null, null, null, null, null, null
-                        )
+                        val user = notification_content(noti_id, uid, from, to, message, toLocation, fromLocation, date, time,
+                            price, location_desc, detail_requrement, ismed, ispayable, upload_time)
 
-                        // Add the notification to the list
                         oxboxArrayList.add(user)
                     }
 
-                    // Set the adapter after fetching all notifications
-                    oxboxRecyclerview.adapter = OxoboxAdapter(oxboxArrayList)
+                    oxboxRecyclerview.adapter = OxoboxAdapter(oxboxArrayList).apply {
+                        setOnItemClickListener(this@oxboxFragment)
+                    }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -120,64 +110,28 @@ class oxboxFragment : Fragment() {
             })
     }
 
+    override fun onItemClick(position: Int) {
+        val clickedItem = oxboxArrayList[position]
+        val bundle = Bundle().apply {
+            putString("noti_id", clickedItem.noti_id)
+            putString("message", clickedItem.message)
 
+            putString("uid", clickedItem.uid)
 
-    private fun transfedata(uid: String) {
-        if (!isAdded) {
-            return
+            putDouble("fromLatitude", clickedItem.from!!.latitude)
+            putDouble("fromLongitude", clickedItem.from!!.longitude)
+            putDouble("toLatitude", clickedItem.to!!.latitude)
+            putDouble("toLongitude", clickedItem.to!!.longitude)
+            putString("time", clickedItem.time)
+            putString("date", clickedItem.date)
+            putString("price", clickedItem.price)
+            putString("location_desc", clickedItem.location_desc)
+            putString("detail_requrement", clickedItem.detail_requrement)
+            putString("ismed", clickedItem.ismed)
+            putString("ispayable", clickedItem.ispayable)
+            putString("upload_time", clickedItem.upload_time)
         }
-
-        databaseReference.child("oxbox").child(uid)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    // Clear data from list
-                    clearNotificationList()
-
-                    // Iterate through child nodes under the user's UID
-                    for (notificationSnapshot in dataSnapshot.children) {
-                        // Retrieve notification data
-                        val noti_id =notificationSnapshot.child("noti_id").getValue(String::class.java)
-                        val uid =notificationSnapshot.child("uid").getValue(String::class.java)
-                        val fromLocation = notificationSnapshot.child("from_location").getValue(String::class.java)
-                        val message = notificationSnapshot.child("message").getValue(String::class.java)
-                        val toLocation = notificationSnapshot.child("to_location").getValue(String::class.java)
-
-                        val fromLatitude = notificationSnapshot.child("from").child("latitude")
-                            .getValue(Double::class.java)
-                        val fromLongitude = notificationSnapshot.child("from").child("longitude")
-                            .getValue(Double::class.java)
-
-                        val toLatitude = notificationSnapshot.child("to").child("latitude")
-                            .getValue(Double::class.java)
-                        val toLongitude = notificationSnapshot.child("to").child("longitude")
-                            .getValue(Double::class.java)
-
-                        // Retrieve other necessary data...
-
-                        // Construct notification_content object
-                        val user = notification_content(null,
-                            null, null, null, message, toLocation, null, null, null,
-                            null, null, null, null, null, null
-                        )
-
-                        // Add the notification to the list
-                        oxboxArrayList.add(user)
-                    }
-
-                    // Set the adapter after fetching all notifications
-                    oxboxRecyclerview.adapter = OxoboxAdapter(oxboxArrayList)
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e("Firebase", "Failed to retrieve notifications: ${error.message}")
-                }
-            })
-    }
-
-    private fun on_btn_back_click(){
-        binding.btnBack.setOnClickListener {
-            findNavController().navigate(R.id.action_oxboxFragment_to_notiFragment)
-        }
+        findNavController().navigate(R.id.action_oxboxFragment_to_orderDetailFragment, bundle)
     }
 
 
@@ -187,3 +141,4 @@ class oxboxFragment : Fragment() {
         oxboxRecyclerview.adapter?.notifyDataSetChanged()
     }
 }
+

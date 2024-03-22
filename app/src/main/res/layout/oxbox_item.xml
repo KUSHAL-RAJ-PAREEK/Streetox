@@ -11,6 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clickable="true"
         android:layout_marginHorizontal="@dimen/_8sdp"
         android:backgroundTint="@color/bottom_sheet_color"
         android:layout_marginVertical="@dimen/_12sdp"
@@ -70,27 +71,9 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:layout_marginEnd="@dimen/_10sdp">
-            <ImageView
-                android:id="@+id/circle"
-                android:layout_width="@dimen/_10sdp"
-                android:visibility="gone"
-                android:layout_height="@dimen/_10sdp"
-                android:layout_gravity="right|end"
-                android:src="@drawable/yellow_circle" />
-        </LinearLayout>
-        <TextView
-            android:id="@+id/notification_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"/>
 
         <ImageView
-            android:id="@+id/oxbox_delete"
+            android:id="@+id/delete"
             android:layout_width="@dimen/_15ssp"
             android:layout_gravity="end|top"
             android:layout_marginEnd="@dimen/_2sdp"
@@ -98,7 +81,51 @@
             android:layout_height="@dimen/_15ssp"
             android:src="@drawable/delete"/>
 
+
+
+
+        <TextView
+            android:id="@+id/notification_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
+
+
+
+
     </LinearLayout>
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/btn_click"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/_4sdp"
+        android:layout_gravity="end|bottom"
+        android:layout_marginBottom="@dimen/_2sdp"
+        android:layout_marginEnd="@dimen/_2sdp"
+        app:cardElevation="@dimen/_4sdp"
+        app:cardUseCompatPadding="true"
+        app:cardMaxElevation="@dimen/_6sdp"
+        android:backgroundTint="@color/streetox_primary_color">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            android:padding="@dimen/_4sdp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Details"
+                android:textColor="@color/black"
+                android:fontFamily="@font/radio_canada"
+                style="@style/TextAppearance.Material3.BodyLarge"
+                android:textSize="@dimen/_7ssp"/>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
 
 </androidx.cardview.widget.CardView>
