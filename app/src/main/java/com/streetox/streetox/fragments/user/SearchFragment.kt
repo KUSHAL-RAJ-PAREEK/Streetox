@@ -3,6 +3,8 @@ package com.streetox.streetox.fragments.user
 import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Canvas
 import android.graphics.Rect
@@ -18,19 +20,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.SearchView
-import androidx.activity.addCallback
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.geofire.GeoFire
 import com.firebase.geofire.GeoLocation
-import com.firebase.geofire.GeoQuery
 import com.firebase.geofire.GeoQueryDataEventListener
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -66,10 +67,14 @@ import com.streetox.streetox.Utils
 import com.streetox.streetox.Utils.calculateDistance
 import com.streetox.streetox.adapters.SearchNotificationAdapter
 import com.streetox.streetox.databinding.FragmentSearchBinding
+import com.streetox.streetox.models.LocationEvent
 
 
 import com.streetox.streetox.models.MyLatLng
 import com.streetox.streetox.models.notification_content
+import com.streetox.streetox.service.LocationService
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import java.io.IOException
 
 
@@ -95,12 +100,69 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
     private var bottomNavigationView: BottomNavigationView? = null
 
     private var searchMarker: Marker? = null
-//    private lateinit var  autocompleteFragment: AutocompleteSupportFragment
+// private lateinit var autocompleteFragment: AutocompleteSupportFragment
 
-override fun onAttach(context: Context) {
-    super.onAttach(context)
-    fragmentContext = context
-}
+    private lateinit var markerdatabaseReference: DatabaseReference
+//for inarea marker
+
+    // SharedPreferences keys
+    private val PREFS_NAME = "LocationPrefs"
+    private val KEY_LATITUDE = "latitude"
+    private val KEY_LONGITUDE = "longitude"
+
+    // SharedPreferences instance
+    private lateinit var sharedPreferences: SharedPreferences
+
+
+    private var service: Intent? = null
+
+    private var userLatitude: Double? = null
+    private var userLongitude: Double? = null
+
+
+
+    private val backgroundLocation =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+            if (it) {
+
+            }
+        }
+
+
+    private val locationPermissions =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+            when {
+                it.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        if (ActivityCompat.checkSelfPermission(
+                                requireContext(),
+                                Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                            ) != PackageManager.PERMISSION_GRANTED
+                        ) {
+                            backgroundLocation.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                        }
+                    }
+                }
+
+                it.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
+
+                }
+
+            }
+        }
+
+    override fun onStart() {
+        super.onStart()
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this)
+        }
+    }
+
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        fragmentContext = context
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -109,7 +171,7 @@ override fun onAttach(context: Context) {
 
         bottomNavigationView = activity?.findViewById(R.id.bottom_nav_view)
         bottomNavigationView?.visibility = View.VISIBLE
-        // FOR SCREEN NOT MOVE UP WITH KEYBOARD
+// FOR SCREEN NOT MOVE UP WITH KEYBOARD
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
 
@@ -117,15 +179,21 @@ override fun onAttach(context: Context) {
         auth = FirebaseAuth.getInstance()
         databaseReference = FirebaseDatabase.getInstance().getReference("notifications")
 
+        service = Intent(requireContext(), LocationService::class.java)
 
-        //RECYCLER VIEW AND LIST INITIALIZE
+
+// Initialize SharedPreferences
+        sharedPreferences =
+            requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+
+//RECYCLER VIEW AND LIST INITIALIZE
 
         notificationRecyclerview = binding.searchRecyclerview
         notificationRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         notificationRecyclerview.setHasFixedSize(true)
         notificationArrayList = arrayListOf<notification_content>()
 
-        // DIVIDER FOR RECYCLER VIEW
+// DIVIDER FOR RECYCLER VIEW
 
         val dividerItemDecoration =
             object : DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL) {
@@ -155,80 +223,80 @@ override fun onAttach(context: Context) {
 
 
 
-        // SET THE ON QUERY CHANGE TEXT LISTENER ON SEARCH VIEW
+// SET THE ON QUERY CHANGE TEXT LISTENER ON SEARCH VIEW
 
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
             androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 clearNotificationList()
-                // This method is called when the user submits the query
-                // Call the searchLocation() function here
+// This method is called when the user submits the query
+// Call the searchLocation() function here
                 searchlocation()
-                // Return true to indicate that the query has been handled
+// Return true to indicate that the query has been handled
                 return true
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
                 if (newText.isEmpty()) {
 
-                    // Clear the notification list when the search query is empty
+// Clear the notification list when the search query is empty
                     clearNotificationList()
                 } else {
-                    // Otherwise, do nothing or perform any other actions if needed
+// Otherwise, do nothing or perform any other actions if needed
                 }
-                // Return true to indicate that the query has been handled
+// Return true to indicate that the query has been handled
                 return true
             }
         })
 
 
-        //uses places api rest we are jot using it right now
-//        Places.initialize(requireContext(),getString(R.string.google_map_api_key))
+//uses places api rest we are jot using it right now
+// Places.initialize(requireContext(),getString(R.string.google_map_api_key))
 //
-//        autocompleteFragment =
-//            childFragmentManager.findFragmentById(R.id.autoComplete_fragment) as AutocompleteSupportFragment
+// autocompleteFragment =
+// childFragmentManager.findFragmentById(R.id.autoComplete_fragment) as AutocompleteSupportFragment
 //
-//        autocompleteFragment.setPlaceFields(listOf(Place.Field.ID,Place.Field.ADDRESS,Place.Field.LAT_LNG))
+// autocompleteFragment.setPlaceFields(listOf(Place.Field.ID,Place.Field.ADDRESS,Place.Field.LAT_LNG))
 //
-//        autocompleteFragment.setOnPlaceSelectedListener(object:PlaceSelectionListener{
-//            override fun onError(p0: Status) {
-//              Utils.showToast(requireContext(),p0.toString())
-//                Log.d("apikeyerror", p0.toString())
-//            }
+// autocompleteFragment.setOnPlaceSelectedListener(object:PlaceSelectionListener{
+// override fun onError(p0: Status) {
+// Utils.showToast(requireContext(),p0.toString())
+// Log.d("apikeyerror", p0.toString())
+// }
 //
-//            override fun onPlaceSelected(place: Place) {
-////               val add = place.address
-////                val id = place.id
-//                val latlng = place.latLng
-//                zoomOnMap(latlng)
-//            }
+// override fun onPlaceSelected(place: Place) {
+//// val add = place.address
+//// val id = place.id
+// val latlng = place.latLng
+// zoomOnMap(latlng)
+// }
 //
-//        })
+// })
 
-        // BEHAVIOUR OF BOTTOM SHEET
+// BEHAVIOUR OF BOTTOM SHEET
         bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
         initialPeekHeight =
             resources.getDimensionPixelSize(com.intuit.sdp.R.dimen._250sdp) // Set your initial peek height here
 
 
-        // SET THE PEEK HEIGHT OF BOTTOM SHEET
+// SET THE PEEK HEIGHT OF BOTTOM SHEET
         bottomSheetBehavior.peekHeight = initialPeekHeight
 
 
-        // LISTEN KEYBOARD VISIBILITY CHANGE
+// LISTEN KEYBOARD VISIBILITY CHANGE
 
         binding.root.viewTreeObserver.addOnGlobalLayoutListener {
             adjustBottomSheetPeekHeight()
         }
 
 
-        //SHOWING MAP
+//SHOWING MAP
         val mapFragment =
             childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
 
-        // REQUEST FOR LOCATION
+// REQUEST FOR LOCATION
 
         Dexter.withActivity(requireContext() as Activity?)
             .withPermissions(
@@ -238,15 +306,15 @@ override fun onAttach(context: Context) {
             .withListener(object : MultiplePermissionsListener {
                 override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
                     if (report != null && report.areAllPermissionsGranted()) {
-                        // All permissions granted, proceed with location-related tasks
+// All permissions granted, proceed with location-related tasks
                         buildLocationRequest()
                         buildLocationCallBack()
                         fusedLocationProviderClient =
                             LocationServices.getFusedLocationProviderClient(requireActivity())
                         settingGeoFire()
                     } else {
-                        // Handle the case where permissions are not granted
-                        // You can show a message or take appropriate action here
+// Handle the case where permissions are not granted
+// You can show a message or take appropriate action here
                         Utils.showToast(
                             requireContext(),
                             "Permissions are required for this feature"
@@ -258,27 +326,38 @@ override fun onAttach(context: Context) {
                     permissions: MutableList<PermissionRequest>?,
                     token: PermissionToken?
                 ) {
-                    // Handle the case where permission rationale should be shown
-                    // You can show a message or explanation to the user here
-                    // In this case, the rationale is not shown, so you can simply proceed
+// Handle the case where permission rationale should be shown
+// You can show a message or explanation to the user here
+// In this case, the rationale is not shown, so you can simply proceed
                     token?.continuePermissionRequest()
                 }
             }).check()
 
         databaseReference.keepSynced(false)
 
+
+        checkpermissions()
+
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this)
+        }
+
+        retrieveNotificationsWithinUserRadius()
         return binding.root
     }
 
 
-    //   NOTIFICATION RELATED ALL CODE
 
-    // retrieving Notification of searched place into map
+
+
+// NOTIFICATION RELATED ALL CODE
+
+// retrieving Notification of searched place into map
 
     private fun retrieveNotificationsWithinRadius(location: LatLng) {
         databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                //clear data from list
+//clear data from list
                 notificationArrayList.clear()
                 for (notificationSnapshot in dataSnapshot.children) {
                     val fromLatitude = notificationSnapshot.child("from").child("latitude")
@@ -295,18 +374,18 @@ override fun onAttach(context: Context) {
                         val fromLocation = LatLng(fromLatitude, fromLongitude)
                         val to_location = getLocationName(toLatitude!!, toLongitude!!)
                         val distance = calculateDistance(fromLocation, location).toInt()
-                        val user =    notification_content(null,null, null, null,message, to_location,null,null,null
+                        val user = notification_content(null,null, null, null,message, to_location,null,null,null
                             ,null,null,null,null,null,time)
 
                         Log.d("distance", distance.toString())
                         if (distance <= 1000) {
-                           // Check if the notification is within 1km radius
+// Check if the notification is within 1km radius
                             notificationArrayList.add(user!!)
 
                         }
                     }
                 }
-                // Set the adapter after fetching all notifications
+// Set the adapter after fetching all notifications
                 notificationRecyclerview.adapter =
                     SearchNotificationAdapter(notificationArrayList)
             }
@@ -317,7 +396,7 @@ override fun onAttach(context: Context) {
         })
     }
 
-    //clearing list for new area notification
+//clearing list for new area notification
 
     private fun clearNotificationList() {
         notificationArrayList.clear()
@@ -326,7 +405,7 @@ override fun onAttach(context: Context) {
     }
 
 
-    //calculating distance of notifications (1km area)
+//calculating distance of notifications (1km area)
 
 
     override fun onBackPressed() {
@@ -335,12 +414,66 @@ override fun onAttach(context: Context) {
 
 
 
-    //example upload
+//aet markers
+
+    private fun retrieveNotificationsWithinUserRadius() {
+        if (!isAdded || lastLocation == null) {
+            return
+        }
+
+        markerdatabaseReference = FirebaseDatabase.getInstance().getReference("notifications")
+
+        val savedLocation = retrieveLocationFromSharedPreferences()
+
+
+
+        savedLocation?.let { location ->
+            markerdatabaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    for (notificationSnapshot in dataSnapshot.children) {
+                        val fromLatitude = notificationSnapshot.child("from").child("latitude")
+                            .getValue(Double::class.java)
+                        val fromLongitude = notificationSnapshot.child("from").child("longitude")
+                            .getValue(Double::class.java)
+
+                        if (fromLatitude != null && fromLongitude != null && lastLocation != null) {
+                            val fromLocation = LatLng(fromLatitude, fromLongitude)
+                            val distance = calculateDistance(
+                                fromLocation,
+                                location
+                            )
+                            Log.d("distance", distance.toString())
+                            if (distance <= 2000) {
+                                addNotificationMarker(fromLocation)
+                            }
+                        }
+                    }
+// Set the adapter after fetching all notifications
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("Firebase", "Failed to retrieve notifications: ${error.message}")
+                }
+            })
+        }
+    }
 
 
 
 
-    //changing latitude and longitude into location name with geocoder
+    private fun addNotificationMarker(location: LatLng) {
+        val customMarkerIcon = BitmapDescriptorFactory.fromResource(R.drawable.hand_up)
+// Add marker for the notification at the given location
+        mMap?.addMarker(
+            MarkerOptions()
+                .position(location)
+                .icon(customMarkerIcon)
+                .title("request")
+        )
+
+    }
+
+//changing latitude and longitude into location name with geocoder
 
     private fun getLocationName(latitude: Double, longitude: Double): String {
         val geocoder = Geocoder(fragmentContext!!)
@@ -357,18 +490,18 @@ override fun onAttach(context: Context) {
                 val countryName = address.countryName ?: ""
                 val postalCode = address.postalCode ?: ""
 
-                // Concatenate the address components to form the complete address
+// Concatenate the address components to form the complete address
                 val fullAddress = StringBuilder()
 
                 if (buildingName.isNotBlank()) fullAddress.append("$buildingName, ")
-              //  if (subBuildingName.isNotBlank()) fullAddress.append("$subBuildingName, ")
-              //  if (thoroughfare.isNotBlank()) fullAddress.append("$thoroughfare, ")
-              //  if (subLocality.isNotBlank()) fullAddress.append("$subLocality, ")
+// if (subBuildingName.isNotBlank()) fullAddress.append("$subBuildingName, ")
+// if (thoroughfare.isNotBlank()) fullAddress.append("$thoroughfare, ")
+// if (subLocality.isNotBlank()) fullAddress.append("$subLocality, ")
                 if (locality.isNotBlank()) fullAddress.append("$locality, ")
                 if (adminArea.isNotBlank()) fullAddress.append("$adminArea")
 
-             //   if (postalCode.isNotBlank()) fullAddress.append("$postalCode, ")
-             //   if (countryName.isNotBlank()) fullAddress.append(countryName)
+// if (postalCode.isNotBlank()) fullAddress.append("$postalCode, ")
+// if (countryName.isNotBlank()) fullAddress.append(countryName)
 
                 Log.d("nameaddress",fullAddress.toString())
                 return fullAddress.toString()
@@ -386,7 +519,7 @@ override fun onAttach(context: Context) {
 
 
 
-    // ADJUSTING BOTTOM SHEET HEIGHT WITH KEYBOARD
+// ADJUSTING BOTTOM SHEET HEIGHT WITH KEYBOARD
 
     private fun adjustBottomSheetPeekHeight() {
         val rect = Rect()
@@ -394,8 +527,8 @@ override fun onAttach(context: Context) {
         val screenHeight = binding.root.height
         val keyboardHeight = screenHeight - rect.bottom
 
-        // Reduce the adjustment to make the bottom sheet move slightly less up
-        val adjustmentFactor = 0.6 // Adjust this factor as needed
+// Reduce the adjustment to make the bottom sheet move slightly less up
+        val adjustmentFactor = 0.5 // Adjust this factor as needed
         val adjustedKeyboardHeight = (keyboardHeight * adjustmentFactor).toInt()
 
         val newPeekHeight = if (adjustedKeyboardHeight > screenHeight * 0.15) {
@@ -410,7 +543,7 @@ override fun onAttach(context: Context) {
 
 
 
-    //MAP RELATED CODE
+//MAP RELATED CODE
 
     // search location
     private fun searchlocation() {
@@ -429,7 +562,7 @@ override fun onAttach(context: Context) {
             val address = addressList!![0]
             val latLng = LatLng(address.latitude, address.longitude)
 
-            // Remove the old marker if it exists
+// Remove the old marker if it exists
             searchMarker?.remove()
 
             searchMarker = mMap!!.addMarker(MarkerOptions().position(latLng).title(location)
@@ -437,17 +570,17 @@ override fun onAttach(context: Context) {
             mMap!!.animateCamera(CameraUpdateFactory.newLatLng(latLng))
             mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
 
-            // Clear the notification list and retrieve notifications within radius
+// Clear the notification list and retrieve notifications within radius
             clearNotificationList()
             retrieveNotificationsWithinRadius(latLng)
 
         }
     }
 
-//    private fun zoomOnMap(latLng: LatLng){
-//        val newLatLngZoom = CameraUpdateFactory.newLatLngZoom(latLng,13.5f)
-//        mMap?.animateCamera(newLatLngZoom)
-//    }
+// private fun zoomOnMap(latLng: LatLng){
+// val newLatLngZoom = CameraUpdateFactory.newLatLngZoom(latLng,13.5f)
+// mMap?.animateCamera(newLatLngZoom)
+// }
 
 
 
@@ -455,7 +588,7 @@ override fun onAttach(context: Context) {
     override fun onMapReady(googlemap: GoogleMap) {
         mMap = googlemap
 
-  //      mMap?.isMyLocationEnabled = true
+// mMap?.isMyLocationEnabled = true
 
         if (fusedLocationProviderClient != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -500,24 +633,24 @@ override fun onAttach(context: Context) {
     // add marker
     private fun addUserMarker() {
         val customMarkerIcon = BitmapDescriptorFactory.fromResource(R.drawable.curr_user_location)
-        // Clear previous circles on the map
+// Clear previous circles on the map
         mMap?.clear()
-        // Check if geoFire, lastLocation, and mMap are not null before proceeding
+// Check if geoFire, lastLocation, and mMap are not null before proceeding
         if (geoFire != null && lastLocation != null && mMap != null) {
             geoFire!!.setLocation(
                 auth.currentUser?.uid,
                 GeoLocation(lastLocation!!.latitude, lastLocation!!.longitude)
             ) { key, error ->
                 if (error != null) {
-                    // Handle error if setting location fails
+// Handle error if setting location fails
                     Log.e("TAG", "Error setting location: $error")
                     return@setLocation
                 }
-                // Remove existing marker if present
+// Remove existing marker if present
                 if (currentMarker != null) {
                     currentMarker!!.remove()
                 }
-                // Add new marker
+// Add new marker
                 currentMarker = mMap!!.addMarker(
                     MarkerOptions()
                         .position(LatLng(lastLocation!!.latitude, lastLocation!!.longitude))
@@ -525,7 +658,7 @@ override fun onAttach(context: Context) {
                         .title("you")
                 )
 
-                // Add circle around the user's location
+// Add circle around the user's location
                 val circleOptions = CircleOptions()
                     .center(LatLng(lastLocation!!.latitude, lastLocation!!.longitude))
                     .radius(2000.0) // Set the radius here (in meters)
@@ -535,25 +668,27 @@ override fun onAttach(context: Context) {
 
                 mMap!!.addCircle(circleOptions)
 
-                // Animate camera to focus on the new marker's position
+// Animate camera to focus on the new marker's position
                 mMap!!.animateCamera(
                     CameraUpdateFactory.newLatLngZoom(
                         currentMarker!!.position,
                         16.5f
                     )
                 )
+                retrieveNotificationsWithinUserRadius()
             }
+
         } else {
-            // Handle the case where geoFire, lastLocation, or mMap is null
+// Handle the case where geoFire, lastLocation, or mMap is null
             Log.e("TAG", "geoFire, lastLocation, or mMap is null")
         }
     }
 
 
 
-    //building location
+//building location
 
-    //caring things -> map change location, the location change seconds,etc
+//caring things -> map change location, the location change seconds,etc
 
     private fun buildLocationRequest() {
         locationRequest = LocationRequest()
@@ -563,17 +698,17 @@ override fun onAttach(context: Context) {
         locationRequest!!.smallestDisplacement = 10f
     }
 
-    // IMPLEMENTED METHODS NECESSARY
+// IMPLEMENTED METHODS NECESSARY
 
     override fun onLocationLoadSuccess(latLngs: List<MyLatLng>) {
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+// Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment =
             childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
-        //clear map and data again
+//clear map and data again
         if (mMap != null) {
             mMap!!.clear()
-            //Add again user Marker
+//Add again user Marker
             addUserMarker()
         }
     }
@@ -584,12 +719,73 @@ override fun onAttach(context: Context) {
     override fun onDataMoved(p0: DataSnapshot?, p1: GeoLocation?) {}
     override fun onDataChanged(p0: DataSnapshot?, p1: GeoLocation?) {}
     override fun onGeoQueryReady() {}
+
     override fun onGeoQueryError(error: DatabaseError?) {}
 
 
-//    override fun onStop() {
-//        fusedLocationProviderClient!!.removeLocationUpdates(locationCallback!!)
-//        super.onStop()
-//    }
+
+    private fun retrieveLocationFromSharedPreferences(): LatLng? {
+// Retrieve latitude and longitude from SharedPreferences
+        val latitude = sharedPreferences.getFloat(KEY_LATITUDE, 0f)
+        val longitude = sharedPreferences.getFloat(KEY_LONGITUDE, 0f)
+
+// Check if latitude and longitude are valid
+        return if (latitude != 0f && longitude != 0f) {
+            LatLng(latitude.toDouble(), longitude.toDouble())
+        } else {
+            null
+        }
+    }
+
+    private fun saveLocationInSharedPreferences(location: LatLng) {
+// Save latitude and longitude in SharedPreferences
+        sharedPreferences.edit().apply {
+            putFloat(KEY_LATITUDE, location.latitude.toFloat())
+            putFloat(KEY_LONGITUDE, location.longitude.toFloat())
+            apply()
+        }
+    }
+
+
+    @Subscribe
+    fun receiveLocationEvent(locationEvent: LocationEvent) {
+
+        val latlong = LatLng(locationEvent.latitude!!, locationEvent.longitude!!)
+        Log.d("newlatlong", "${locationEvent.latitude!!} ${locationEvent.longitude!!}")
+        saveLocationInSharedPreferences(latlong)
+        retrieveNotificationsWithinUserRadius()
+    }
+
+    private fun checkpermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                locationPermissions.launch(
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    )
+                )
+            } else {
+// Start the service using startForegroundService() method
+                requireContext().startForegroundService(service)
+            }
+        }
+
+
+    }
+
+
+// override fun onStop() {
+// fusedLocationProviderClient!!.removeLocationUpdates(locationCallback!!)
+// super.onStop()
+// }
 
 }

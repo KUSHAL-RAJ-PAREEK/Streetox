@@ -122,7 +122,7 @@
                 android:textColor="@color/black"
                 android:fontFamily="@font/radio_canada"
                 style="@style/TextAppearance.Material3.BodyLarge"
-                android:textSize="@dimen/_7ssp"/>
+                android:textSize="@dimen/_8ssp"/>
 
         </LinearLayout>
 

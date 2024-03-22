@@ -205,9 +205,10 @@ class NotificationFragment : Fragment() {
                         val noti_id = notificationSnapshot.child("noti_id").getValue(String::class.java)
                         if (fromLatitude != null && fromLongitude != null && message != null) {
                             val fromLocation = LatLng(fromLatitude, fromLongitude)
+
                             val to_location =
                                 getLocationName(fragmentContext!!, toLatitude!!, toLongitude!!)
-                            val distance = calculateDistance(fromLocation, location).toInt()
+                            val distance = calculateDistance(fromLocation, location)
                             val user =
                                 notification_content(noti_id,null, null, null,message, to_location,null,null,null
                                 ,null,null,null,null,null,time)

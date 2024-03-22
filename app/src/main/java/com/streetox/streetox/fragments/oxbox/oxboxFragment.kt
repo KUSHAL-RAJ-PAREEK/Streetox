@@ -57,7 +57,16 @@ class oxboxFragment : Fragment(), OxoboxAdapter.OnItemClickListener {
 
         retrieveNotificationsForUid(auth.currentUser?.uid.toString())
 
+        on_back_btn_click()
+
         return binding.root
+    }
+
+
+    private fun on_back_btn_click(){
+        binding.btnBack.setOnClickListener {
+            findNavController().navigate(R.id.action_oxboxFragment_to_notiFragment)
+        }
     }
 
     private fun retrieveNotificationsForUid(uid: String) {
@@ -102,6 +111,8 @@ class oxboxFragment : Fragment(), OxoboxAdapter.OnItemClickListener {
                     oxboxRecyclerview.adapter = OxoboxAdapter(oxboxArrayList).apply {
                         setOnItemClickListener(this@oxboxFragment)
                     }
+
+                    OxoboxAdapter(oxboxArrayList).updateData()
                 }
 
                 override fun onCancelled(error: DatabaseError) {
