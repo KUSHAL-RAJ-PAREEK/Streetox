@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import android.widget.SearchView
 import androidx.activity.OnBackPressedCallback
 import androidx.core.app.ActivityCompat
@@ -129,6 +130,16 @@ class LocationSearchFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCamer
 
     override fun onMapReady(googleMap: GoogleMap) {
         mGoogleMap = googleMap
+
+
+        mGoogleMap?.isMyLocationEnabled = true
+
+        val locationButton = (view?.findViewById<View>(Integer.parseInt("1"))?.parent as View).findViewById<View>(Integer.parseInt("2"))
+        val rlp =  locationButton.getLayoutParams() as RelativeLayout.LayoutParams
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE)
+        rlp.setMargins(0, 250, 10, 0)
+
+        mGoogleMap!!.getUiSettings().setCompassEnabled(false)
 
         // Check for location permission
         if (ActivityCompat.checkSelfPermission(

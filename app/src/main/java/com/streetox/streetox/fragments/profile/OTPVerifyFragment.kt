@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.core.widget.addTextChangedListener
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -45,6 +46,8 @@ class OTPVerifyFragment : Fragment() {
     ): View? {
         auth = FirebaseAuth.getInstance()
         binding = FragmentOTPVerifyBinding.inflate(layoutInflater)
+
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
         bottomNavigationView = activity?.findViewById(R.id.bottom_nav_view)
         bottomNavigationView?.visibility = View.GONE

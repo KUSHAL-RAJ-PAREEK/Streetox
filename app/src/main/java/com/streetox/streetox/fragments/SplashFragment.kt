@@ -50,7 +50,7 @@ class SplashFragment : Fragment() {
                 requireActivity().finish()
             }else{
                 findNavController().navigate(R.id.action_splashFragment_to_signinLoginChooseFragment)
-                requireActivity().finish()
+
             }
         },3000)
 

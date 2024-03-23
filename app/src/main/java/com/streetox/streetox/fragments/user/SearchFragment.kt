@@ -122,7 +122,6 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
     private var userLongitude: Double? = null
 
 
-
     private val backgroundLocation =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             if (it) {
@@ -132,9 +131,9 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
 
 
     private val locationPermissions =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             when {
-                it.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
+                permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         if (ActivityCompat.checkSelfPermission(
                                 requireContext(),
@@ -146,12 +145,12 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
                     }
                 }
 
-                it.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
-
+                permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true -> {
+                    // Permission granted for fine location
                 }
-
             }
         }
+
 
     override fun onStart() {
         super.onStart()
@@ -233,7 +232,6 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
         })
 
 
-
 // SET THE ON QUERY CHANGE TEXT LISTENER ON SEARCH VIEW
 
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
@@ -302,23 +300,31 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
 
 // REQUEST FOR LOCATION
 
-        Dexter.withActivity(requireContext() as Activity?)
+//        checkpermissions()
+
+        // Use Dexter to request permissions
+        Dexter.withActivity(requireActivity())
             .withPermissions(
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             )
             .withListener(object : MultiplePermissionsListener {
-                override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
-                    if (report != null && report.areAllPermissionsGranted()) {
-// All permissions granted, proceed with location-related tasks
+                override fun onPermissionsChecked(report: MultiplePermissionsReport) {
+                    if (report.areAllPermissionsGranted()) {
+                        // All permissions granted, proceed with location-related tasks
                         buildLocationRequest()
                         buildLocationCallBack()
                         fusedLocationProviderClient =
                             LocationServices.getFusedLocationProviderClient(requireActivity())
                         settingGeoFire()
+                        requireContext().startForegroundService(service)
+                        // Initialize the map
+                        val mapFragment =
+                            childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
+                        mapFragment.getMapAsync(this@SearchFragment)
                     } else {
-// Handle the case where permissions are not granted
-// You can show a message or take appropriate action here
+                        // Handle the case where permissions are not granted
+                        // You can show a message or take appropriate action here
                         Utils.showToast(
                             requireContext(),
                             "Permissions are required for this feature"
@@ -327,25 +333,26 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
                 }
 
                 override fun onPermissionRationaleShouldBeShown(
-                    permissions: MutableList<PermissionRequest>?,
-                    token: PermissionToken?
+                    permissions: MutableList<PermissionRequest>,
+                    token: PermissionToken
                 ) {
-// Handle the case where permission rationale should be shown
-// You can show a message or explanation to the user here
-// In this case, the rationale is not shown, so you can simply proceed
-                    token?.continuePermissionRequest()
+                    // Handle the case where permission rationale should be shown
+                    // You can show a message or explanation to the user here
+                    // In this case, the rationale is not shown, so you can simply proceed
+                    token.continuePermissionRequest()
                 }
             }).check()
 
 
-        checkpermissions()
+
+
+
 
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this)
         }
 
         retrieveNotificationsWithinUserRadius()
-
 
         return binding.root
     }
@@ -367,13 +374,29 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
                         .getValue(Double::class.java)
                     val toLongitude = notificationSnapshot.child("to").child("longitude")
                         .getValue(Double::class.java)
-                    val time = notificationSnapshot.child("upload_time").getValue(String::class.java)
+                    val time =
+                        notificationSnapshot.child("upload_time").getValue(String::class.java)
                     if (fromLatitude != null && fromLongitude != null && message != null) {
                         val fromLocation = LatLng(fromLatitude, fromLongitude)
                         val to_location = getLocationName(toLatitude!!, toLongitude!!)
                         val distance = calculateDistance(fromLocation, location).toInt()
-                        val user = notification_content(null,null, null, null,message, to_location,null,null,null
-                            ,null,null,null,null,null,time)
+                        val user = notification_content(
+                            null,
+                            null,
+                            null,
+                            null,
+                            message,
+                            to_location,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            time
+                        )
 
                         Log.d("distance", distance.toString())
                         if (distance <= 1000) {
@@ -403,7 +426,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
     }
 
 
-//showing marker in 2km range (2km area)
+    //showing marker in 2km range (2km area)
     private fun retrieveNotificationsWithinUserRadius() {
         if (!isAdded || lastLocation == null) {
             return
@@ -445,8 +468,6 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
             })
         }
     }
-
-
 
 
     private fun addNotificationMarker(location: LatLng) {
@@ -491,7 +512,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
 // if (postalCode.isNotBlank()) fullAddress.append("$postalCode, ")
 // if (countryName.isNotBlank()) fullAddress.append(countryName)
 
-                Log.d("nameaddress",fullAddress.toString())
+                Log.d("nameaddress", fullAddress.toString())
                 return fullAddress.toString()
             }
         } catch (e: IOException) {
@@ -499,18 +520,6 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
         }
         return ""
     }
-
-
-
-
-
-
-
-
-// ADJUSTING BOTTOM SHEET HEIGHT WITH KEYBOARD
-
-
-
 
 
 //MAP RELATED CODE
@@ -521,7 +530,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
         val location = binding.searchView.query.toString().trim()
         var addressList: List<Address>? = null
 
-        if (location.isNotEmpty()){
+        if (location.isNotEmpty()) {
             val geoCoder = Geocoder(requireContext())
             try {
                 addressList = geoCoder.getFromLocationName(location, 1)
@@ -535,8 +544,10 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
 // Remove the old marker if it exists
             searchMarker?.remove()
 
-            searchMarker = mMap!!.addMarker(MarkerOptions().position(latLng).title(location)
-                .icon(customMarkerIcon))
+            searchMarker = mMap!!.addMarker(
+                MarkerOptions().position(latLng).title(location)
+                    .icon(customMarkerIcon)
+            )
             mMap!!.animateCamera(CameraUpdateFactory.newLatLng(latLng))
             mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
 
@@ -547,18 +558,20 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
         }
     }
 
+
 // private fun zoomOnMap(latLng: LatLng){
 // val newLatLngZoom = CameraUpdateFactory.newLatLngZoom(latLng,13.5f)
 // mMap?.animateCamera(newLatLngZoom)
 // }
 
-
-
     // on map ready
     override fun onMapReady(googlemap: GoogleMap) {
         mMap = googlemap
 
-// mMap?.isMyLocationEnabled = true
+        val indiaLatLng = LatLng(20.5937, 78.9629) // Coordinates for India
+        val zoomLevel = 4.5f // Adjust zoom level as needed
+
+        mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(indiaLatLng, zoomLevel))
 
         if (fusedLocationProviderClient != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -566,15 +579,26 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
                         requireContext(),
                         Manifest.permission.ACCESS_FINE_LOCATION
                     ) != PackageManager.PERMISSION_GRANTED
-                )
+                ) {
+                    // Permission not granted, return
                     return
+                }
             }
             fusedLocationProviderClient!!.requestLocationUpdates(
                 locationRequest,
                 locationCallback!!,
                 Looper.myLooper()
             )
+        }
 
+// Check if location permission is granted before enabling "My Location" feature
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            // Permission granted, enable "My Location" feature
+            mMap?.isMyLocationEnabled = true
         }
     }
 
@@ -642,7 +666,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
                 mMap!!.animateCamera(
                     CameraUpdateFactory.newLatLngZoom(
                         currentMarker!!.position,
-                        16.5f
+                        13.7f
                     )
                 )
                 retrieveNotificationsWithinUserRadius()
@@ -653,7 +677,6 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
             Log.e("TAG", "geoFire, lastLocation, or mMap is null")
         }
     }
-
 
 
 //building location
@@ -693,7 +716,6 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
     override fun onGeoQueryError(error: DatabaseError?) {}
 
 
-
     private fun retrieveLocationFromSharedPreferences(): LatLng? {
 // Retrieve latitude and longitude from SharedPreferences
         val latitude = sharedPreferences.getFloat(KEY_LATITUDE, 0f)
@@ -726,6 +748,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
         retrieveNotificationsWithinUserRadius()
     }
 
+
     private fun checkpermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (ActivityCompat.checkSelfPermission(
@@ -744,12 +767,10 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
                     )
                 )
             } else {
-// Start the service using startForegroundService() method
+                // Permissions already granted, start the service
                 requireContext().startForegroundService(service)
             }
         }
-
-
     }
 
 
