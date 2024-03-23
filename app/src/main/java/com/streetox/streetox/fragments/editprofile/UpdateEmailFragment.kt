@@ -55,12 +55,12 @@ class UpdateEmailFragment : Fragment() {
                 Utils.showToast(requireContext(), "Please enter a valid email address")
             } else {
                 auth.currentUser?.let { user ->
-                    user.updateEmail(email)
+                    user.verifyBeforeUpdateEmail(email)
                         .addOnCompleteListener { task->
                             if(task.isSuccessful){
                                 update_data()
                                 findNavController().navigate(com.streetox.streetox.R.id.action_updateEmailFragment_to_editProfileFragment)
-                                Utils.showToast(requireContext(), "email updated")
+                                Utils.showToast(requireContext(), "please verify your email")
                             } else {
                                 val errorMessage = task.exception?.message ?: "Something went wrong"
                                 Utils.showToast(requireContext(), errorMessage)
@@ -74,7 +74,7 @@ class UpdateEmailFragment : Fragment() {
     private fun update_data(){
 
         val User = HashMap<String,Any>()
-        val email = auth.currentUser?.email.toString()
+        val email = binding.userEmail.text.toString()
 
 
         User["email"] = email

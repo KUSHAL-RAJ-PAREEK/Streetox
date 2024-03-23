@@ -38,38 +38,36 @@
             android:layout_gravity="center|start"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/main_message"
-                android:layout_width="@dimen/_50sdp"
-                android:layout_height="wrap_content"
+            <androidx.cardview.widget.CardView
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="@dimen/_21sdp"
                 android:background="#DDDDDD"
-                android:textSize="@dimen/_15ssp"
+                app:cardCornerRadius="@dimen/_5sdp"
                 android:fontFamily="@font/radio_canada"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white"
+                android:textSize="@dimen/_15ssp" />
 
-
-
-            <TextView
-                android:id="@+id/to_location"
+            <androidx.cardview.widget.CardView
                 android:layout_marginTop="@dimen/_1sdp"
-                android:layout_width="@dimen/_40sdp"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="@dimen/_15sdp"
                 android:maxWidth="@dimen/_200sdp"
                 android:background="#DDDDDD"
+                app:cardCornerRadius="@dimen/_5sdp"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_11ssp"
                 android:fontFamily= "@font/public_sans"/>
 
-            <TextView
-                android:id="@+id/main_time"
-                android:layout_marginTop="@dimen/_1sdp"
-                android:layout_width="@dimen/_20sdp"
-                android:background="#DDDDDD"
-                android:layout_height="wrap_content"
+            <androidx.cardview.widget.CardView
                 style="@style/TextAppearance.Material3.BodyLarge"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_1sdp"
+                android:layout_marginBottom="@dimen/_2sdp"
+                android:background="#DDDDDD"
+                app:cardCornerRadius="@dimen/_5sdp"
+                android:fontFamily="@font/radio_canada"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_11ssp"
-                android:fontFamily= "@font/radio_canada"/>
+                android:textSize="@dimen/_11ssp" />
 
 
         </LinearLayout>
