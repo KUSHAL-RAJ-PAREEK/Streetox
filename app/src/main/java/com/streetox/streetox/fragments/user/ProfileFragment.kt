@@ -105,7 +105,6 @@ class ProfileFragment : Fragment() {
 
         logout()
 
-        database.keepSynced(true)
         return binding.root
     }
 

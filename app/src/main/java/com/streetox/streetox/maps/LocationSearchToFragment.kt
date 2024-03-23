@@ -177,7 +177,7 @@ class LocationSearchToFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCam
         val markerOptions = MarkerOptions().position(mGoogleMap?.cameraPosition!!.target)
 
         val customMarkerIcon = BitmapDescriptorFactory.fromResource(R.drawable.search_pin)
-        markerOptions.icon(customMarkerIcon)
+        markerOptions.icon(null)
         val marker = mGoogleMap?.addMarker(markerOptions)
         val markerLatLng = marker?.position
         val latitude = markerLatLng?.latitude

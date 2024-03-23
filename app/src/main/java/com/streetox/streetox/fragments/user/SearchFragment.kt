@@ -20,6 +20,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.SearchView
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 
@@ -27,6 +28,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -222,6 +224,15 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
         binding.searchRecyclerview.addItemDecoration(dividerItemDecoration)
 
 
+        requireActivity().onBackPressedDispatcher.addCallback(requireActivity(), object :
+            OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                requireActivity().finish()
+            }
+
+        })
+
+
 
 // SET THE ON QUERY CHANGE TEXT LISTENER ON SEARCH VIEW
 
@@ -326,8 +337,6 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
                 }
             }).check()
 
-        databaseReference.keepSynced(false)
-
 
         checkpermissions()
 
@@ -394,17 +403,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
     }
 
 
-//calculating distance of notifications (1km area)
-
-
-    override fun onBackPressed() {
-        requireActivity().finish()
-    }
-
-
-
-//aet markers
-
+//showing marker in 2km range (2km area)
     private fun retrieveNotificationsWithinUserRadius() {
         if (!isAdded || lastLocation == null) {
             return

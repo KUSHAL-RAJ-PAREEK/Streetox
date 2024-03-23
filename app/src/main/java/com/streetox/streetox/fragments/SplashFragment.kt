@@ -47,9 +47,10 @@ class SplashFragment : Fragment() {
             val user = auth.currentUser
             if(user != null){
                 startActivity(Intent(requireActivity(), UserMainActivity::class.java))
+                requireActivity().finish()
             }else{
                 findNavController().navigate(R.id.action_splashFragment_to_signinLoginChooseFragment)
-
+                requireActivity().finish()
             }
         },3000)
 
