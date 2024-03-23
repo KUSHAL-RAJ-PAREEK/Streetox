@@ -137,4 +137,7 @@ dependencies {
     implementation("org.greenrobot:eventbus:3.3.1")
 
     implementation("com.airbnb.android:lottie:6.1.0")
+
+    //shimmer effect
+    implementation("com.facebook.shimmer:shimmer:0.5.0@aar")
 }

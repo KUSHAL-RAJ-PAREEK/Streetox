@@ -1,5 +1,6 @@
 package com.streetox.streetox.fragments.oxbox
 
+import android.graphics.Canvas
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -7,10 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -31,6 +35,7 @@ class oxboxFragment : Fragment(), OxoboxAdapter.OnItemClickListener {
 
     private lateinit var oxboxRecyclerview : RecyclerView
     private lateinit var oxboxArrayList : ArrayList<notification_content>
+    private var bottomNavigationView: BottomNavigationView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,6 +43,8 @@ class oxboxFragment : Fragment(), OxoboxAdapter.OnItemClickListener {
     ): View? {
 
         binding = FragmentOxboxBinding.inflate(layoutInflater)
+        bottomNavigationView = activity?.findViewById(R.id.bottom_nav_view)
+        bottomNavigationView?.visibility = View.GONE
 
         auth = FirebaseAuth.getInstance()
         databaseReference = FirebaseDatabase.getInstance().getReference()
@@ -55,6 +62,49 @@ class oxboxFragment : Fragment(), OxoboxAdapter.OnItemClickListener {
             }
         })
 
+
+
+        val dividerItemDecoration =
+            object : DividerItemDecoration(
+                requireContext(),
+                DividerItemDecoration.VERTICAL
+            ) {
+                override fun onDraw(
+                    c: Canvas,
+                    parent: RecyclerView,
+                    state: RecyclerView.State
+                ) {
+                    val dividerLeft = parent.paddingLeft
+                    val dividerRight = parent.width - parent.paddingRight
+
+                    val childCount = parent.childCount
+                    for (i in 0 until childCount - 1) { // Iterate over all items except the last one
+                        val child = parent.getChildAt(i)
+                        val params = child.layoutParams as RecyclerView.LayoutParams
+
+                        val dividerTop = child.bottom + params.bottomMargin
+                        val dividerBottom =
+                            dividerTop + (drawable?.intrinsicHeight ?: 0)
+
+                        drawable?.setBounds(
+                            dividerLeft,
+                            dividerTop,
+                            dividerRight,
+                            dividerBottom
+                        )
+                        drawable?.draw(c)
+                    }
+                }
+            }
+
+        ResourcesCompat.getDrawable(resources, R.drawable.in_area_divider, null)?.let { drawable ->
+            dividerItemDecoration.setDrawable(drawable)
+        }
+
+        binding.oxboxRecyclerview.addItemDecoration(dividerItemDecoration)
+
+
+
         retrieveNotificationsForUid(auth.currentUser?.uid.toString())
 
         on_back_btn_click()
@@ -70,6 +120,7 @@ class oxboxFragment : Fragment(), OxoboxAdapter.OnItemClickListener {
     }
 
     private fun retrieveNotificationsForUid(uid: String) {
+        binding.oxboxShimmerView.visibility = View.VISIBLE
         if (!isAdded) {
             return
         }
@@ -106,6 +157,7 @@ class oxboxFragment : Fragment(), OxoboxAdapter.OnItemClickListener {
                             price, location_desc, detail_requrement, ismed, ispayable, upload_time)
 
                         oxboxArrayList.add(user)
+                        binding.oxboxShimmerView.visibility = View.GONE
                     }
 
                     oxboxRecyclerview.adapter = OxoboxAdapter(oxboxArrayList).apply {
@@ -113,6 +165,7 @@ class oxboxFragment : Fragment(), OxoboxAdapter.OnItemClickListener {
                     }
 
                     OxoboxAdapter(oxboxArrayList).updateData()
+                    updateEmptyStateVisibility()
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -120,6 +173,19 @@ class oxboxFragment : Fragment(), OxoboxAdapter.OnItemClickListener {
                 }
             })
     }
+
+    private fun updateEmptyStateVisibility() {
+        if (oxboxArrayList.isEmpty()) {
+            binding.waitingPandaAnim.visibility = View.VISIBLE
+            binding.noRequestAddedText.visibility = View.VISIBLE
+            binding.oxboxShimmerView.visibility = View.GONE
+        } else {
+            binding.waitingPandaAnim.visibility = View.GONE
+            binding.noRequestAddedText.visibility = View.GONE
+        }
+    }
+
+
 
     override fun onItemClick(position: Int) {
         val clickedItem = oxboxArrayList[position]

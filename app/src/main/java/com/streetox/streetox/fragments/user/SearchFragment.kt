@@ -276,18 +276,11 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
 // BEHAVIOUR OF BOTTOM SHEET
         bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
         initialPeekHeight =
-            resources.getDimensionPixelSize(com.intuit.sdp.R.dimen._250sdp) // Set your initial peek height here
+            resources.getDimensionPixelSize(com.intuit.sdp.R.dimen._30sdp) // Set your initial peek height here
 
 
 // SET THE PEEK HEIGHT OF BOTTOM SHEET
         bottomSheetBehavior.peekHeight = initialPeekHeight
-
-
-// LISTEN KEYBOARD VISIBILITY CHANGE
-
-        binding.root.viewTreeObserver.addOnGlobalLayoutListener {
-            adjustBottomSheetPeekHeight()
-        }
 
 
 //SHOWING MAP
@@ -343,14 +336,10 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
         }
 
         retrieveNotificationsWithinUserRadius()
+
+
         return binding.root
     }
-
-
-
-
-
-// NOTIFICATION RELATED ALL CODE
 
 // retrieving Notification of searched place into map
 
@@ -521,24 +510,6 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
 
 // ADJUSTING BOTTOM SHEET HEIGHT WITH KEYBOARD
 
-    private fun adjustBottomSheetPeekHeight() {
-        val rect = Rect()
-        binding.root.getWindowVisibleDisplayFrame(rect)
-        val screenHeight = binding.root.height
-        val keyboardHeight = screenHeight - rect.bottom
-
-// Reduce the adjustment to make the bottom sheet move slightly less up
-        val adjustmentFactor = 0.5 // Adjust this factor as needed
-        val adjustedKeyboardHeight = (keyboardHeight * adjustmentFactor).toInt()
-
-        val newPeekHeight = if (adjustedKeyboardHeight > screenHeight * 0.15) {
-            initialPeekHeight + adjustedKeyboardHeight
-        } else {
-            initialPeekHeight
-        }
-
-        bottomSheetBehavior.peekHeight = newPeekHeight
-    }
 
 
 

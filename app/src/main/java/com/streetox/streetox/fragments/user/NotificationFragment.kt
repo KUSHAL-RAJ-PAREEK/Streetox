@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -62,6 +63,7 @@ class NotificationFragment : Fragment() {
 
     // SharedPreferences instance
     private lateinit var sharedPreferences: SharedPreferences
+    private var bottomNavigationView: BottomNavigationView? = null
 
 
     private var service: Intent? = null
@@ -112,6 +114,11 @@ class NotificationFragment : Fragment() {
     ): View? {
 
         binding = FragmentNotificationBinding.inflate(layoutInflater)
+
+
+        bottomNavigationView = activity?.findViewById(R.id.bottom_nav_view)
+        bottomNavigationView?.visibility = View.VISIBLE
+
         auth = FirebaseAuth.getInstance()
         databaseReference = FirebaseDatabase.getInstance().getReference("notifications")
 
@@ -121,6 +128,9 @@ class NotificationFragment : Fragment() {
         inarearecyclerview.layoutManager = LinearLayoutManager(requireContext())
         inarearecyclerview.setHasFixedSize(true)
         inareanotificationlist = arrayListOf<notification_content>()
+
+
+
 
         checkpermissions()
 
@@ -179,6 +189,7 @@ class NotificationFragment : Fragment() {
     }
 
     private fun retrieveNotificationsWithinRadius() {
+        binding.inareaShimmerView.visibility = View.VISIBLE
         if (!isAdded) {
             return
         }
@@ -217,12 +228,14 @@ class NotificationFragment : Fragment() {
                             if (distance <= 2000) {
                                 // Check if the notification is within 1km radius
                                 inareanotificationlist.add(user!!)
+                                binding.inareaShimmerView.visibility = View.GONE
                             }
                         }
                     }
                     // Set the adapter after fetching all notifications
                     inarearecyclerview.adapter =
                         InAreaNotificationAdapter(inareanotificationlist,binding.oxbox)
+                    updateEmptyStateVisibility()
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -261,6 +274,17 @@ class NotificationFragment : Fragment() {
         }
 
 
+    }
+
+    private fun updateEmptyStateVisibility() {
+        if (inareanotificationlist.isEmpty()) {
+            binding.pandaAnim.visibility = View.VISIBLE
+            binding.noRequestFoundText.visibility = View.VISIBLE
+            binding.inareaShimmerView.visibility = View.GONE
+        } else {
+            binding.pandaAnim.visibility = View.GONE
+            binding.noRequestFoundText.visibility = View.GONE
+        }
     }
 
 
