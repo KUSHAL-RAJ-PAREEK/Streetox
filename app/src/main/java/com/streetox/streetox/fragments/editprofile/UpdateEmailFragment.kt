@@ -6,12 +6,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.core.widget.addTextChangedListener
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.streetox.streetox.R
 import com.streetox.streetox.Utils
 import com.streetox.streetox.databinding.FragmentUpdateEmailBinding
 import java.util.HashMap
@@ -40,6 +42,14 @@ class UpdateEmailFragment : Fragment() {
         on_btn_go_click()
 
         on_btn_back_click()
+
+        requireActivity().onBackPressedDispatcher.addCallback(requireActivity(),object :
+            OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                findNavController().navigate(com.streetox.streetox.R.id.action_updateEmailFragment_to_editProfileFragment)
+            }
+        })
+
 
         return binding.root
     }

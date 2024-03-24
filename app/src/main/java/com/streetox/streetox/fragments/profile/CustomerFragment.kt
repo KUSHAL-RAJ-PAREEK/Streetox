@@ -56,12 +56,13 @@ class CustomerFragment : Fragment() {
 
         Log.d("verified", auth.currentUser?.isEmailVerified.toString())
 
+        checkUserVerificationStatus()
+
         set_user_email_and_phone_number()
         send_verification_code()
 
 
-        checkUserVerificationStatus()
-        database.keepSynced(true)
+
 
         return binding.root
     }

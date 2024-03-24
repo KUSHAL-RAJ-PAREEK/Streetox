@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.core.widget.addTextChangedListener
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -45,6 +46,15 @@ class UpdateNameFragment : Fragment() {
         OnGobtnClick()
 
         onBackButtonClick()
+
+        requireActivity().onBackPressedDispatcher.addCallback(requireActivity(),object :
+            OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                findNavController().navigate(R.id.action_updateNameFragment_to_editProfileFragment)
+            }
+        })
+
+
 
         return binding.root
     }

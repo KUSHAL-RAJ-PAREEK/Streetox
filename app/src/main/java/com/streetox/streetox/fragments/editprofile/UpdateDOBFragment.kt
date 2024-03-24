@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -52,6 +53,12 @@ class UpdateDOBFragment : Fragment() {
 
         binding.dobTxt.addTextChangedListener { show_btn_go() }
 
+        requireActivity().onBackPressedDispatcher.addCallback(requireActivity(),object :
+            OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                findNavController().navigate(R.id.action_updateDOBFragment_to_editProfileFragment)
+            }
+        })
 
 
         return binding.root
