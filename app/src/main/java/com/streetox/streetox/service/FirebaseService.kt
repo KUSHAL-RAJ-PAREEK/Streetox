@@ -21,6 +21,7 @@ import kotlin.random.Random
 
 private const val CHANNEL_ID = "streetox_channel"
 
+
 class FirebaseService : FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
@@ -41,7 +42,7 @@ class FirebaseService : FirebaseMessagingService() {
             FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE)
 
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle(message.data["title"])
+            .setContentTitle("streetox")
             .setContentText(message.data["message"])
             .setSmallIcon(R.drawable.so_trans_logo)
             .setAutoCancel(true)

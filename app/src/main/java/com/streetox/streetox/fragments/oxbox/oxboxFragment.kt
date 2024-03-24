@@ -152,9 +152,11 @@ class oxboxFragment : Fragment(), OxoboxAdapter.OnItemClickListener {
                         val ismed = notificationSnapshot.child("ismed").getValue(String::class.java)
                         val ispayable = notificationSnapshot.child("ispayable").getValue(String::class.java)
                         val upload_time = notificationSnapshot.child("upload_time").getValue(String::class.java)
+                        val fcmToken = notificationSnapshot.child("fcm_token").getValue(String::class.java)
 
+                        Log.d("fcmmm",fcmToken.toString())
                         val user = notification_content(noti_id, uid, from, to, message, toLocation, fromLocation, date, time,
-                            price, location_desc, detail_requrement, ismed, ispayable, upload_time)
+                            price, location_desc, detail_requrement, ismed, ispayable, upload_time,fcmToken)
 
                         oxboxArrayList.add(user)
                         binding.oxboxShimmerView.visibility = View.GONE

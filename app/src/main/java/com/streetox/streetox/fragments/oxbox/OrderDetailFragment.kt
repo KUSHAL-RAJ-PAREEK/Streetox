@@ -9,13 +9,13 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.streetox.streetox.R
 import com.streetox.streetox.databinding.FragmentOrderDetailBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
 
 class OrderDetailFragment : Fragment() {
 
@@ -36,7 +36,6 @@ class OrderDetailFragment : Fragment() {
         setting_text()
         btn_back_click()
         on_btn_Accept_click()
-
 
 
         requireActivity().onBackPressedDispatcher.addCallback(requireActivity(),object :
@@ -62,7 +61,7 @@ class OrderDetailFragment : Fragment() {
         binding.acceptBtn.setOnClickListener {
             val title = "streetox"
             val message = arguments?.getString("message").toString()
-            val fcmToken = arguments?.getString("fcmToken").toString()
+            val fcmToken = arguments?.getString("fcmToken")
             Log.d("fcm",fcmToken.toString())
 
             if (fcmToken != null) {

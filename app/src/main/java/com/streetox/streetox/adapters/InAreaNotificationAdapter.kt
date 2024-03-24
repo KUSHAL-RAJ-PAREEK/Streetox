@@ -72,6 +72,7 @@ class InAreaNotificationAdapter(private val inareanotificationlist: ArrayList<no
                     val ispayable = dataSnapshot.child("ispayable").getValue(String::class.java)
                     val upload_time = dataSnapshot.child("upload_time").getValue(String::class.java)
 
+                    val fcm_toekn = dataSnapshot.child("fcm_token").getValue(String::class.java)
                     // Create LatLng objects for "from" and "to" coordinates
                     val fromLatLng = LatLng(fromLatitude ?: 0.0, fromLongitude ?: 0.0)
                     val toLatLng = LatLng(toLatitude ?: 0.0, toLongitude ?: 0.0)
@@ -92,7 +93,8 @@ class InAreaNotificationAdapter(private val inareanotificationlist: ArrayList<no
                         detail_requrement,
                         ismed,
                         ispayable,
-                        upload_time
+                        upload_time,
+                        fcm_toekn
                     )
 
                     // Log the notificationContent
