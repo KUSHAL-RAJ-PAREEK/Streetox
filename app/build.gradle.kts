@@ -60,6 +60,7 @@ dependencies {
     implementation("androidx.room:room-common:2.6.1")
     implementation("com.android.car.ui:car-ui-lib:2.6.0")
     implementation("com.google.firebase:firebase-crashlytics-buildtools:2.9.9")
+    implementation("androidx.datastore:datastore-core-android:1.1.0-beta02")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -140,4 +141,14 @@ dependencies {
 
     //shimmer effect
     implementation("com.facebook.shimmer:shimmer:0.5.0@aar")
+    implementation("com.google.firebase:firebase-messaging:23.4.1")
+    implementation("com.squareup.retrofit2:retrofit:2.6.2")
+    implementation("com.squareup.retrofit2:converter-gson:2.6.0")
+    implementation("com.squareup.retrofit2:converter-simplexml:2.1.0")
+    implementation("com.squareup.retrofit2:adapter-rxjava:2.1.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable-jvm:0.3.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
+
+
+
 }

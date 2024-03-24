@@ -1,8 +1,10 @@
 package com.streetox.streetox.fragments.auth
 
 
+import android.media.MediaPlayer.OnCompletionListener
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,9 +13,11 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.streetox.streetox.R
 import com.streetox.streetox.Utils
 import com.streetox.streetox.databinding.FragmentSignUpPasswordBinding
@@ -87,7 +91,8 @@ class SignUpPasswordFragment : Fragment() {
                     binding.btnGo.startAnimation()
                     auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            savedata()
+                            //saving data
+                            get_fcm_token()
                             Utils.showToast(requireContext(),"Registration Successful")
                             findNavController().navigate(R.id.action_signUpPasswordFragment_to_phoneNumberFragment)
                         } else {
@@ -102,7 +107,7 @@ class SignUpPasswordFragment : Fragment() {
 
     //moving data to firebase
 
-    private fun savedata(){
+    private fun savedata(fcmToken: String?){
 
         val email = viewModelEmail.userEmail.value.toString()
         val name = viewModelname.firstName.value.toString() +" "+ viewModelname.lastName.value.toString()
@@ -111,7 +116,7 @@ class SignUpPasswordFragment : Fragment() {
         val pass = binding.password.text.toString()
 
         database = FirebaseDatabase.getInstance().getReference("Users")
-        val User = user(name,dob,email,pass,null,abb)
+        val User = user(name,dob,email,pass,null,abb,null,fcmToken)
         val key = auth.currentUser?.uid.toString()
         database.child(key).setValue(User)
     }
@@ -136,6 +141,21 @@ class SignUpPasswordFragment : Fragment() {
         }
         return null // Password meets all conditions
     }
+
+
+    private fun get_fcm_token() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val fcmToken = task.result
+                Log.d("FCM_TOKEN", fcmToken ?: "Token is null")
+                savedata(fcmToken)
+            } else {
+                Log.e("FCM_TOKEN", "Failed to get FCM token: ${task.exception}")
+                // Handle failure to retrieve FCM token
+            }
+        })
+    }
+
 
     // On Back button click
     private fun onBackButtonClick() {

@@ -207,6 +207,7 @@ class oxboxFragment : Fragment(), OxoboxAdapter.OnItemClickListener {
             putString("ismed", clickedItem.ismed)
             putString("ispayable", clickedItem.ispayable)
             putString("upload_time", clickedItem.upload_time)
+            putString("fcmToken",clickedItem.fcm_token)
         }
         findNavController().navigate(R.id.action_oxboxFragment_to_orderDetailFragment, bundle)
     }

@@ -7,5 +7,6 @@ data class user(
     val password: String? = "",
     val phone_number: String? = null,
     val abb: String? = null,
-    val verify: Boolean? = null
+    val verify: Boolean? = null,
+    val fcmToken:String? = null
 )

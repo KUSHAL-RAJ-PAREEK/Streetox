@@ -18,6 +18,7 @@ data class notification_content(
     val detail_requrement : String ?= null,
     val ismed :String ?= null,
     val ispayable :String?= null,
-    val upload_time : String?= null
+    val upload_time : String?= null,
+    val fcm_token : String?= null
 
 )

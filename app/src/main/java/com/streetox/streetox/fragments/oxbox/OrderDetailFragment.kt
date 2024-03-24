@@ -1,20 +1,29 @@
 package com.streetox.streetox.fragments.oxbox
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.auth.FirebaseAuth
+import com.google.gson.Gson
 import com.streetox.streetox.R
 import com.streetox.streetox.databinding.FragmentOrderDetailBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class OrderDetailFragment : Fragment() {
 
 
     private lateinit var binding : FragmentOrderDetailBinding
+    private lateinit var auth: FirebaseAuth
+
+  val TAG = "OrderDetailFragment"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -22,9 +31,12 @@ class OrderDetailFragment : Fragment() {
     ): View? {
 
         binding = FragmentOrderDetailBinding.inflate(layoutInflater)
+        auth = FirebaseAuth.getInstance()
 
         setting_text()
         btn_back_click()
+        on_btn_Accept_click()
+
 
 
         requireActivity().onBackPressedDispatcher.addCallback(requireActivity(),object :
@@ -33,6 +45,7 @@ class OrderDetailFragment : Fragment() {
                 findNavController().navigate(R.id.action_orderDetailFragment_to_oxboxFragment)
             }
         })
+
 
         return binding.root
     }
@@ -43,6 +56,26 @@ class OrderDetailFragment : Fragment() {
             findNavController().navigate(R.id.action_orderDetailFragment_to_oxboxFragment)
         }
     }
+
+
+    private fun on_btn_Accept_click(){
+        binding.acceptBtn.setOnClickListener {
+            val title = "streetox"
+            val message = arguments?.getString("message").toString()
+            val fcmToken = arguments?.getString("fcmToken").toString()
+            Log.d("fcm",fcmToken.toString())
+
+            if (fcmToken != null) {
+                PushNotification(NotificationData(title,message), fcmToken).also {
+                    sendNotification(it)
+                }
+            }else{
+                Log.d("fcm","null")
+            }
+
+        }
+    }
+
 
     private fun setting_text(){
         // Retrieve data from the bundle
@@ -81,6 +114,20 @@ class OrderDetailFragment : Fragment() {
         binding.price.setText(price)
         binding.medical.setText(ismed)
         binding.detailRequirement.setText(detail_requrement)
+    }
+
+
+    private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {
+        try {
+            val response = RetrofitInstance.api.postNotification(notification)
+            if(response.isSuccessful){
+                Log.d(TAG,"Response : ${Gson().toJson(response)}")
+            }else{
+                Log.d(TAG,response.errorBody().toString())
+            }
+        }catch (e : Exception){
+            Log.d(TAG,e.toString())
+        }
     }
 
 }

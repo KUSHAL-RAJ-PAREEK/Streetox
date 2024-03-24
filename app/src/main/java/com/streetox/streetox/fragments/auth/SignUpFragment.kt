@@ -23,12 +23,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.streetox.streetox.R
 import com.streetox.streetox.Utils
 import com.streetox.streetox.activities.UserMainActivity
@@ -73,6 +75,34 @@ class SignUpFragment : Fragment() {
         remove_fb_button_logo_and_color()
 
         return binding.root
+    }
+
+
+
+    private fun get_fcm_token(account: GoogleSignInAccount) {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val fcmToken = task.result
+                Log.d("FCM_TOKEN", fcmToken ?: "Token is null")
+                updateUI(account,fcmToken)
+            } else {
+                Log.e("FCM_TOKEN", "Failed to get FCM token: ${task.exception}")
+                // Handle failure to retrieve FCM token
+            }
+        })
+    }
+
+    private fun get_fcm_tokenfb(accessToken: AccessToken) {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val fcmToken = task.result
+                Log.d("FCM_TOKEN", fcmToken ?: "Token is null")
+                handleFacebookAccessToken(accessToken,fcmToken)
+            } else {
+                Log.e("FCM_TOKEN", "Failed to get FCM token: ${task.exception}")
+                // Handle failure to retrieve FCM token
+            }
+        })
     }
 
     // on login text click
@@ -122,14 +152,14 @@ class SignUpFragment : Fragment() {
         if(task.isSuccessful){
             val account : GoogleSignInAccount? = task.result
             if(account != null){
-                updateUI(account)
+             get_fcm_token(account)
             }
         }else{
             Utils.showToast(requireContext(),task.exception.toString())
         }
     }
 
-    private fun updateUI(account: GoogleSignInAccount) {
+    private fun updateUI(account: GoogleSignInAccount,fcmToken:String) {
         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
         auth.signInWithCredential(credential).addOnCompleteListener { signInTask ->
             if (signInTask.isSuccessful) {
@@ -148,7 +178,7 @@ class SignUpFragment : Fragment() {
                                 // User data does not exist in the database, create a new entry
                                 val email = account.email.toString()
                                 val name = account.givenName.toString()
-                                val user = user(name, null, email, null, null)
+                                val user = user(name, null, email, null, null,null,null,fcmToken)
                                 database.child(uid).setValue(user).addOnCompleteListener { databaseWriteTask ->
                                     if (databaseWriteTask.isSuccessful) {
                                         Utils.showToast(requireContext(), "Welcome!")
@@ -190,7 +220,7 @@ class SignUpFragment : Fragment() {
                 }
 
                 override fun onSuccess(result: LoginResult) {
-                    handleFacebookAccessToken(result.accessToken)
+                    get_fcm_tokenfb(result.accessToken)
                 }
 
             })
@@ -198,7 +228,7 @@ class SignUpFragment : Fragment() {
 
     }
 
-    private fun handleFacebookAccessToken(accessToken: AccessToken) {
+    private fun handleFacebookAccessToken(accessToken: AccessToken,fcmToekn:String) {
         // Getting credentials
         val credential = FacebookAuthProvider.getCredential(accessToken.token)
         auth.signInWithCredential(credential).addOnCompleteListener { signInTask ->
@@ -220,7 +250,7 @@ class SignUpFragment : Fragment() {
                                 val name = auth.currentUser?.displayName.toString()
                                 val phone_number = auth.currentUser?.phoneNumber.toString()
 
-                                val user = user(name, null, email, "", phone_number, null)
+                                val user = user(name, null, email, "", phone_number, null,null,fcmToekn)
                                 database.child(uid).setValue(user).addOnCompleteListener { databaseWriteTask ->
                                     if (databaseWriteTask.isSuccessful) {
                                         Utils.showToast(requireContext(), "Welcome!")
