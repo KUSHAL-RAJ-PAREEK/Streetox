@@ -10,8 +10,15 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.streetox.streetox.R
@@ -24,11 +31,38 @@ private const val CHANNEL_ID = "streetox_channel"
 
 class FirebaseService : FirebaseMessagingService() {
 
+    private lateinit var databaseReference: DatabaseReference
+    private lateinit var auth: FirebaseAuth
+
+
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
 
+        auth = FirebaseAuth.getInstance()
+        databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(auth.currentUser!!.uid)
 
-        val intent = Intent(this,UserMainActivity::class.java)
+        databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val  fcmToken = dataSnapshot.child("fcmToken").getValue(String::class.java)
+                fcmToken?.let { Log.d("toekens", it) }
+                notification(message,fcmToken.toString())
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle the error
+            }
+        })
+
+
+
+    }
+
+    private fun notification(message: RemoteMessage,fcmToken:String){
+        val intent = Intent(this, UserMainActivity::class.java).apply {
+            putExtra("fromNotification", true)
+            putExtra("fcmToken", fcmToken)
+        }
+
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notificationID = Random.nextInt()
 
@@ -42,7 +76,7 @@ class FirebaseService : FirebaseMessagingService() {
             FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE)
 
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("streetox")
+            .setContentTitle(message.data["title"])
             .setContentText(message.data["message"])
             .setSmallIcon(R.drawable.so_trans_logo)
             .setAutoCancel(true)

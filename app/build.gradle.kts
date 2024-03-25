@@ -9,7 +9,7 @@ plugins {
 
 android {
 
-    
+
     namespace = "com.streetox.streetox"
     compileSdk = 34
     buildToolsVersion = "34.0.0"
@@ -42,11 +42,15 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    
 
 }
 
+
 tasks.register<Wrapper>("wrapper") {
     gradleVersion = "7.2"
+
+
 }
 
 tasks.register("prepareKotlinBuildScriptModel"){}
@@ -141,13 +145,18 @@ dependencies {
 
     //shimmer effect
     implementation("com.facebook.shimmer:shimmer:0.5.0@aar")
+
+    //notification
     implementation("com.google.firebase:firebase-messaging:23.4.1")
     implementation("com.squareup.retrofit2:retrofit:2.6.2")
     implementation("com.squareup.retrofit2:converter-gson:2.6.0")
     implementation("com.squareup.retrofit2:converter-simplexml:2.1.0")
     implementation("com.squareup.retrofit2:adapter-rxjava:2.1.0")
+
+    //coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable-jvm:0.3.4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
+
 
 
 

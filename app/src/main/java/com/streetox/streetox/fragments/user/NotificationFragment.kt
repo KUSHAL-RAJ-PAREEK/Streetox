@@ -32,13 +32,20 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.gson.Gson
 import com.streetox.streetox.R
 import com.streetox.streetox.Utils.calculateDistance
 import com.streetox.streetox.adapters.InAreaNotificationAdapter
 import com.streetox.streetox.databinding.FragmentNotificationBinding
+import com.streetox.streetox.fragments.oxbox.NotificationData
+import com.streetox.streetox.fragments.oxbox.PushNotification
+import com.streetox.streetox.fragments.oxbox.RetrofitInstance
 import com.streetox.streetox.models.LocationEvent
 import com.streetox.streetox.models.notification_content
 import com.streetox.streetox.service.LocationService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import java.io.IOException
@@ -70,6 +77,8 @@ class NotificationFragment : Fragment() {
 
     private var userLatitude: Double? = null
     private var userLongitude: Double? = null
+    val TAG = "NotificationFragment"
+
 
     override fun onStart() {
         super.onStart()
@@ -220,6 +229,9 @@ class NotificationFragment : Fragment() {
                             val to_location =
                                 getLocationName(fragmentContext!!, toLatitude!!, toLongitude!!)
                             val distance = calculateDistance(fromLocation, location)
+
+                            val fcmToken = notificationSnapshot.child("fcm_token").getValue(String::class.java)
+
                             val user =
                                 notification_content(noti_id,null, null, null,message, to_location,null,null,null
                                 ,null,null,null,null,null,time)
@@ -229,6 +241,15 @@ class NotificationFragment : Fragment() {
                                 // Check if the notification is within 1km radius
                                 inareanotificationlist.add(user!!)
                                 binding.inareaShimmerView.visibility = View.GONE
+
+                                if (fcmToken != null) {
+                                    PushNotification(
+                                        NotificationData("streetox", message),
+                                        fcmToken
+                                    ).also {
+                                        sendNotification(it)
+                                    }
+                                }
                             }
                         }
                     }
@@ -244,6 +265,20 @@ class NotificationFragment : Fragment() {
             })
         }
     }
+
+    private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {
+        try {
+            val response = RetrofitInstance.api.postNotification(notification)
+            if(response.isSuccessful){
+                Log.d(TAG,"Response : ${Gson().toJson(response)}")
+            }else{
+                Log.d(TAG,response.errorBody().toString())
+            }
+        }catch (e : Exception){
+            Log.d(TAG,e.toString())
+        }
+    }
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
