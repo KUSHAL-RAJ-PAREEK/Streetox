@@ -11,6 +11,7 @@
         android:id="@+id/raised_request_anim"
         android:layout_width="@dimen/_300sdp"
         android:layout_height="@dimen/_300sdp"
+        app:lottie_repeatCount="-1"
         app:lottie_autoPlay="true"
         app:lottie_fileName="raised_request.json"
         app:layout_constraintBottom_toBottomOf="parent"

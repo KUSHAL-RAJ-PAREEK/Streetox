@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.RadioGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
@@ -16,9 +15,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.streetox.streetox.R
 import com.streetox.streetox.Utils
 import com.streetox.streetox.databinding.FragmentDetailInformationBinding
-import com.streetox.streetox.databinding.FragmentNeedBinding
 import com.streetox.streetox.viewmodels.Stateviewmodels.StateDescription
-import com.streetox.streetox.viewmodels.Stateviewmodels.StateNeed
 
 
 class DetailInformationFragment : Fragment() {
@@ -144,7 +141,7 @@ class DetailInformationFragment : Fragment() {
 
             Log.d("med&pay", "$isPayable  $medicalRelated")
 
-            findNavController().navigate(R.id.action_detailInformationFragment_to_dateAndTimeFragment,bundle)
+            findNavController().navigate(R.id.action_detailInformationFragment_to_acceptFragment,bundle)
         }
     }
 

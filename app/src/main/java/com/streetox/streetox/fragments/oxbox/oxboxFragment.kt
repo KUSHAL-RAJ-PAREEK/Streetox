@@ -196,7 +196,8 @@ class oxboxFragment : Fragment(), OxoboxAdapter.OnItemClickListener {
             putString("message", clickedItem.message)
 
             putString("uid", clickedItem.uid)
-
+            putString("toLocation", clickedItem.to_location)
+            putString("fromLocation", clickedItem.from_location)
             putDouble("fromLatitude", clickedItem.from!!.latitude)
             putDouble("fromLongitude", clickedItem.from!!.longitude)
             putDouble("toLatitude", clickedItem.to!!.latitude)

@@ -242,14 +242,6 @@ class NotificationFragment : Fragment() {
                                 inareanotificationlist.add(user!!)
                                 binding.inareaShimmerView.visibility = View.GONE
 
-                                if (fcmToken != null) {
-                                    PushNotification(
-                                        NotificationData("streetox", message),
-                                        fcmToken
-                                    ).also {
-                                        sendNotification(it)
-                                    }
-                                }
                             }
                         }
                     }
@@ -266,18 +258,6 @@ class NotificationFragment : Fragment() {
         }
     }
 
-    private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {
-        try {
-            val response = RetrofitInstance.api.postNotification(notification)
-            if(response.isSuccessful){
-                Log.d(TAG,"Response : ${Gson().toJson(response)}")
-            }else{
-                Log.d(TAG,response.errorBody().toString())
-            }
-        }catch (e : Exception){
-            Log.d(TAG,e.toString())
-        }
-    }
 
 
     override fun onAttach(context: Context) {

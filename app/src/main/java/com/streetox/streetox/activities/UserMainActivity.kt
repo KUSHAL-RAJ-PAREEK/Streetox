@@ -2,19 +2,18 @@ package com.streetox.streetox.activities
 
 import android.app.Dialog
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Button
-import androidx.fragment.app.DialogFragment
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.database.FirebaseDatabase
 import com.streetox.streetox.R
+import com.streetox.streetox.fragments.user.NotificationFragment
 
 class UserMainActivity : AppCompatActivity(){
     private lateinit var navController: NavController
@@ -34,6 +33,12 @@ class UserMainActivity : AppCompatActivity(){
             Log.d("useractvity",fcmToken.toString())
             // Show the dialog if the activity was started from a notification
             showCustomDialogBox()
+        }
+        if (intent.hasExtra("AreaNotification")) {
+            val fcmToken = intent.getStringExtra("fcmToken")
+            Log.d("useractvity",fcmToken.toString())
+            val intent = Intent(this, NotificationFragment::class.java)
+            startActivity(intent)
         }
     }
 

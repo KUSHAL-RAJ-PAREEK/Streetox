@@ -65,7 +65,7 @@ class OrderDetailFragment : Fragment() {
             Log.d("fcm",fcmToken.toString())
 
             if (fcmToken != null) {
-                PushNotification(NotificationData(title,message), fcmToken).also {
+                PushNotification(NotificationData(title,message,"acceptNoti"), fcmToken).also {
                     sendNotification(it)
                 }
             }else{
@@ -88,15 +88,12 @@ class OrderDetailFragment : Fragment() {
         val fromLongitude = args.getDouble("fromLongitude")
         val toLatitude = args.getDouble("toLatitude")
         val toLongitude = args.getDouble("toLongitude")
-        val time = args.getString("time")
-        val date = args.getString("date")
         val price = args.getString("price")
         val location_desc = args.getString("location_desc")
         val detail_requrement = args.getString("detail_requrement")
         val ismed = args.getString("ismed")
         val ispayable = args.getString("ispayable")
 
-        val dateTimeString = "$date $time"
 
         binding.payable.visibility = if (ispayable == "Yes") {
             View.VISIBLE
@@ -109,7 +106,6 @@ class OrderDetailFragment : Fragment() {
         binding.toLocation.setText(toLocation)
         binding.fromLocation.setText(fromLocation)
         binding.address.setText(location_desc)
-        binding.dateTime.setText(dateTimeString)
         binding.price.setText(price)
         binding.medical.setText(ismed)
         binding.detailRequirement.setText(detail_requrement)

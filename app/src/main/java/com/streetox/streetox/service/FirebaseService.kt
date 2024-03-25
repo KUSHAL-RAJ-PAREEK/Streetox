@@ -58,9 +58,28 @@ class FirebaseService : FirebaseMessagingService() {
     }
 
     private fun notification(message: RemoteMessage,fcmToken:String){
-        val intent = Intent(this, UserMainActivity::class.java).apply {
-            putExtra("fromNotification", true)
-            putExtra("fcmToken", fcmToken)
+        val intent: Intent = when (message.data["notificationType"]) {
+            "acceptNoti" -> {
+                // Create an intent for the first type of notification
+                Intent(this, UserMainActivity::class.java).apply {
+                    putExtra("fromNotification", true)
+                    putExtra("fcmToken", fcmToken)
+                }
+            }
+
+            "areaNoti" -> {
+                // Create an intent for the second type of notification
+                Intent(this, UserMainActivity::class.java).apply {
+                    putExtra("AreaNotification", true)
+                    putExtra("fcmToken", fcmToken)
+                }
+            }else -> {
+                Intent(this, UserMainActivity::class.java).apply {
+                    putExtra("AreaNotification", true)
+                    putExtra("fcmToken", fcmToken)
+
+                }
+            }
         }
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

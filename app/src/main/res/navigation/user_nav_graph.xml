@@ -249,21 +249,21 @@
             app:popUpTo="@id/locationDetailFragment"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_detailInformationFragment_to_dateAndTimeFragment"
-            app:destination="@id/dateAndTimeFragment" />
+            android:id="@+id/action_detailInformationFragment_to_acceptFragment"
+            app:destination="@id/AcceptFragment" />
     </fragment>
     <fragment
-        android:id="@+id/dateAndTimeFragment"
-        android:name="com.streetox.streetox.fragments.raise_request.DateAndTimeFragment"
-        android:label="fragment_date_and_time"
-        tools:layout="@layout/fragment_date_and_time" >
+        android:id="@+id/AcceptFragment"
+        android:name="com.streetox.streetox.fragments.raise_request.AcceptFragment"
+        android:label="fragment_accept"
+        tools:layout="@layout/fragment_accept">
         <action
-            android:id="@+id/action_dateAndTimeFragment_to_detailInformationFragment"
+            android:id="@+id/action_acceptFragment_to_detailInformationFragment"
             app:destination="@id/detailInformationFragment"
             app:popUpTo="@id/detailInformationFragment"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_dateAndTimeFragment_to_raisedRequestAnimationFragment"
+            android:id="@+id/action_acceptFragment_to_raisedRequestAnimationFragment"
             app:destination="@id/raisedRequestAnimationFragment" />
     </fragment>
     <fragment

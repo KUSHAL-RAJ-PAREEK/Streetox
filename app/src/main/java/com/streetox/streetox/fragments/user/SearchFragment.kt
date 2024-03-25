@@ -434,39 +434,35 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
 
         markerdatabaseReference = FirebaseDatabase.getInstance().getReference("notifications")
 
-        val savedLocation = retrieveLocationFromSharedPreferences()
 
+        markerdatabaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (notificationSnapshot in dataSnapshot.children) {
+                    val fromLatitude = notificationSnapshot.child("from").child("latitude")
+                        .getValue(Double::class.java)
+                    val fromLongitude = notificationSnapshot.child("from").child("longitude")
+                        .getValue(Double::class.java)
 
-
-        savedLocation?.let { location ->
-            markerdatabaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    for (notificationSnapshot in dataSnapshot.children) {
-                        val fromLatitude = notificationSnapshot.child("from").child("latitude")
-                            .getValue(Double::class.java)
-                        val fromLongitude = notificationSnapshot.child("from").child("longitude")
-                            .getValue(Double::class.java)
-
-                        if (fromLatitude != null && fromLongitude != null && lastLocation != null) {
-                            val fromLocation = LatLng(fromLatitude, fromLongitude)
-                            val distance = calculateDistance(
-                                fromLocation,
-                                location
-                            )
-                            Log.d("distance", distance.toString())
-                            if (distance <= 2000) {
-                                addNotificationMarker(fromLocation)
-                            }
+                    if (fromLatitude != null && fromLongitude != null && lastLocation != null) {
+                        val fromLocation = LatLng(fromLatitude, fromLongitude)
+                        val distance = calculateDistance(
+                            fromLocation,
+                            LatLng(lastLocation!!.latitude,lastLocation!!.longitude)
+                        )
+                        Log.d("distance", distance.toString())
+                        if (distance <= 2000) {
+                            addNotificationMarker(fromLocation)
                         }
                     }
+                }
 // Set the adapter after fetching all notifications
-                }
+            }
 
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e("Firebase", "Failed to retrieve notifications: ${error.message}")
-                }
-            })
-        }
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("Firebase", "Failed to retrieve notifications: ${error.message}")
+            }
+        })
+
     }
 
 

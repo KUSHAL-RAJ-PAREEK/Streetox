@@ -182,45 +182,6 @@
                     android:text="address detail"/>
             </LinearLayout>
 
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_18sdp"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Before"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_15ssp"
-                    android:layout_marginEnd="@dimen/_2sdp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_26sdp"
-                    android:text=":- "
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_15ssp"
-                    android:layout_marginEnd="@dimen/_2sdp"/>
-
-
-
-                <TextView
-                    android:id="@+id/date_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/_14ssp"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/manrope"
-                    android:text="date time"/>
-            </LinearLayout>
-
-
-
             <LinearLayout
                 android:id="@+id/payable"
                 android:layout_width="wrap_content"
