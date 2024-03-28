@@ -140,9 +140,6 @@ class NotificationFragment : Fragment() {
 
 
 
-
-        checkpermissions()
-
         on_oxbox_click()
 
         // Initialize SharedPreferences
@@ -194,7 +191,73 @@ class NotificationFragment : Fragment() {
 
         binding.notificationRecyclerview.addItemDecoration(dividerItemDecoration)
 
+        on_refresh()
+
         return binding.root
+    }
+
+    private fun retrieveNotificationsWithinRadiusrefresh() {
+        binding.inareaShimmerView.visibility = View.VISIBLE
+        binding.notificationRecyclerview.visibility = View.GONE
+        if (!isAdded) {
+            return
+        }
+
+        val savedLocation = retrieveLocationFromSharedPreferences()
+        savedLocation?.let { location ->
+            databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    //clear data from list
+                    clearNotificationList()
+                    for (notificationSnapshot in dataSnapshot.children) {
+                        val fromLatitude = notificationSnapshot.child("from").child("latitude")
+                            .getValue(Double::class.java)
+                        val fromLongitude = notificationSnapshot.child("from").child("longitude")
+                            .getValue(Double::class.java)
+                        val message =
+                            notificationSnapshot.child("message").getValue(String::class.java)
+                        val toLatitude = notificationSnapshot.child("to").child("latitude")
+                            .getValue(Double::class.java)
+                        val toLongitude = notificationSnapshot.child("to").child("longitude")
+                            .getValue(Double::class.java)
+
+                        val time = notificationSnapshot.child("upload_time").getValue(String::class.java)
+                        val noti_id = notificationSnapshot.child("noti_id").getValue(String::class.java)
+
+                        val uid = notificationSnapshot.child("uid").getValue(String::class.java)
+                        if (fromLatitude != null && fromLongitude != null && message != null) {
+                            val fromLocation = LatLng(fromLatitude, fromLongitude)
+
+                            val to_location =
+                                getLocationName(fragmentContext!!, toLatitude!!, toLongitude!!)
+                            val distance = calculateDistance(fromLocation, location)
+
+                            val fcmToken = notificationSnapshot.child("fcm_token").getValue(String::class.java)
+
+                            val user =
+                                notification_content(noti_id,null, null, null,message, to_location,null,null,null
+                                    ,null,null,null,null,null,time)
+
+                            Log.d("distance", distance.toString())
+                            if (distance <= 2000 && uid != auth.currentUser!!.uid) {
+                                // Check if the notification is within 1km radius
+                                inareanotificationlist.add(0, user!!)
+                                binding.inareaShimmerView.visibility = View.GONE
+                                binding.notificationRecyclerview.visibility = View.VISIBLE
+                            }
+                        }
+                    }
+                    // Set the adapter after fetching all notifications
+                    inarearecyclerview.adapter =
+                        InAreaNotificationAdapter(inareanotificationlist,binding.oxbox)
+                    updateEmptyStateVisibility()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("Firebase", "Failed to retrieve notifications: ${error.message}")
+                }
+            })
+        }
     }
 
     private fun retrieveNotificationsWithinRadius() {
@@ -223,6 +286,8 @@ class NotificationFragment : Fragment() {
 
                         val time = notificationSnapshot.child("upload_time").getValue(String::class.java)
                         val noti_id = notificationSnapshot.child("noti_id").getValue(String::class.java)
+
+                        val uid = notificationSnapshot.child("uid").getValue(String::class.java)
                         if (fromLatitude != null && fromLongitude != null && message != null) {
                             val fromLocation = LatLng(fromLatitude, fromLongitude)
 
@@ -237,9 +302,9 @@ class NotificationFragment : Fragment() {
                                 ,null,null,null,null,null,time)
 
                             Log.d("distance", distance.toString())
-                            if (distance <= 2000) {
+                            if (distance <= 2000 && uid != auth.currentUser!!.uid) {
                                 // Check if the notification is within 1km radius
-                                inareanotificationlist.add(user!!)
+                                inareanotificationlist.add(0, user!!)
                                 binding.inareaShimmerView.visibility = View.GONE
 
                             }
@@ -265,31 +330,7 @@ class NotificationFragment : Fragment() {
         fragmentContext = context
     }
 
-    private fun checkpermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (ActivityCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                locationPermissions.launch(
-                    arrayOf(
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                    )
-                )
-            } else {
-                // Start the service using startForegroundService() method
-                requireContext().startForegroundService(service)
-            }
-        }
 
-
-    }
 
     private fun updateEmptyStateVisibility() {
         if (inareanotificationlist.isEmpty()) {
@@ -302,6 +343,12 @@ class NotificationFragment : Fragment() {
         }
     }
 
+    private fun on_refresh(){
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            retrieveNotificationsWithinRadiusrefresh()
+            binding.swipeRefreshLayout.isRefreshing = false
+        }
+    }
 
     private fun on_oxbox_click(){
         binding.oxbox.setOnClickListener {
@@ -392,7 +439,5 @@ class NotificationFragment : Fragment() {
         val latlong = LatLng(locationEvent.latitude!!, locationEvent.longitude!!)
         Log.d("newlatlong", "${locationEvent.latitude!!}   ${locationEvent.longitude!!}")
         saveLocationInSharedPreferences(latlong)
-        clearNotificationList() // Clear old list before retrieving new notifications
-        retrieveNotificationsWithinRadius()
     }
 }

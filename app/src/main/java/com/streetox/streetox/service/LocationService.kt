@@ -9,7 +9,6 @@ import android.content.Intent
 import android.location.Location
 import android.os.Build
 import android.os.IBinder
-import android.util.CloseGuard
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -52,7 +51,7 @@ class LocationService : Service() {
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         locationRequest =
-            LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 500).setIntervalMillis(500).setMinUpdateDistanceMeters(100f)
+            LocationRequest.Builder(Priority.PRIORITY_LOW_POWER, 500).setIntervalMillis(500).setMinUpdateDistanceMeters(2f)
                 .build()
 
         locationCallback = object : LocationCallback(){
@@ -65,11 +64,14 @@ class LocationService : Service() {
                 onNewLocation(locationResult)
             }
         }
+
         notificationManager = this.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             val notificationChannel = NotificationChannel(CHANNEL_ID,"locations",NotificationManager.IMPORTANCE_HIGH)
             notificationManager?.createNotificationChannel(notificationChannel)
         }
+
+        startForeground(NOTIFICATION_ID,getNotification())
     }
 
 
@@ -99,7 +101,7 @@ class LocationService : Service() {
     private fun onNewLocation(locationResult: LocationResult) {
         location = locationResult.lastLocation
 
-         databaseReference = FirebaseDatabase.getInstance().reference
+        databaseReference = FirebaseDatabase.getInstance().reference
         auth = FirebaseAuth.getInstance()
 
         val userId = auth.currentUser!!.uid
@@ -130,16 +132,14 @@ class LocationService : Service() {
             longitude = location?.longitude
         ))
 
-        startForeground(NOTIFICATION_ID,getNotification())
     }
 
     fun getNotification(): Notification{
         val notidication = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("")
-            .setContentText("")
-            .setContentTitle("")
             .setSmallIcon(R.mipmap.ic_launcher)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentTitle("")
+            .setContentText("")
             .setOngoing(true)
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             notidication.setChannelId(CHANNEL_ID)

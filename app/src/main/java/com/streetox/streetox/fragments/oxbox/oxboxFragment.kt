@@ -9,6 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.res.ResourcesCompat
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +28,8 @@ import com.streetox.streetox.R
 import com.streetox.streetox.adapters.OxoboxAdapter
 import com.streetox.streetox.databinding.FragmentOxboxBinding
 import com.streetox.streetox.models.notification_content
+import com.streetox.streetox.viewmodels.Stateviewmodels.OrderDetailViewModel
+import com.streetox.streetox.viewmodels.Stateviewmodels.StateNameViewModel
 
 class oxboxFragment : Fragment(), OxoboxAdapter.OnItemClickListener {
 
@@ -36,6 +41,8 @@ class oxboxFragment : Fragment(), OxoboxAdapter.OnItemClickListener {
     private lateinit var oxboxRecyclerview : RecyclerView
     private lateinit var oxboxArrayList : ArrayList<notification_content>
     private var bottomNavigationView: BottomNavigationView? = null
+
+    private val viewModel: OrderDetailViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,6 +59,7 @@ class oxboxFragment : Fragment(), OxoboxAdapter.OnItemClickListener {
         oxboxRecyclerview = binding.oxboxRecyclerview
         oxboxRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         oxboxRecyclerview.setHasFixedSize(true)
+
 
         oxboxArrayList = arrayListOf<notification_content>()
 
@@ -158,7 +166,7 @@ class oxboxFragment : Fragment(), OxoboxAdapter.OnItemClickListener {
                         val user = notification_content(noti_id, uid, from, to, message, toLocation, fromLocation, date, time,
                             price, location_desc, detail_requrement, ismed, ispayable, upload_time,fcmToken)
 
-                        oxboxArrayList.add(user)
+                        oxboxArrayList.add(0,user)
                         binding.oxboxShimmerView.visibility = View.GONE
                     }
 
@@ -191,28 +199,28 @@ class oxboxFragment : Fragment(), OxoboxAdapter.OnItemClickListener {
 
     override fun onItemClick(position: Int) {
         val clickedItem = oxboxArrayList[position]
-        val bundle = Bundle().apply {
-            putString("noti_id", clickedItem.noti_id)
-            putString("message", clickedItem.message)
 
-            putString("uid", clickedItem.uid)
-            putString("toLocation", clickedItem.to_location)
-            putString("fromLocation", clickedItem.from_location)
-            putDouble("fromLatitude", clickedItem.from!!.latitude)
-            putDouble("fromLongitude", clickedItem.from!!.longitude)
-            putDouble("toLatitude", clickedItem.to!!.latitude)
-            putDouble("toLongitude", clickedItem.to!!.longitude)
-            putString("time", clickedItem.time)
-            putString("date", clickedItem.date)
-            putString("price", clickedItem.price)
-            putString("location_desc", clickedItem.location_desc)
-            putString("detail_requrement", clickedItem.detail_requrement)
-            putString("ismed", clickedItem.ismed)
-            putString("ispayable", clickedItem.ispayable)
-            putString("upload_time", clickedItem.upload_time)
-            putString("fcmToken",clickedItem.fcm_token)
+        viewModel.apply {
+            setNotiId(clickedItem.uid!!)
+            setMessage(clickedItem.message!!)
+            setToLocation( clickedItem.to_location!!)
+            setToLatitude(clickedItem.to!!.latitude)
+            setToLongitude(clickedItem.to!!.longitude)
+            setFromLocation(clickedItem.from_location!!)
+            setFromLatitude(clickedItem.from!!.latitude)
+            setFromLongitude(clickedItem.from!!.longitude)
+            setPrice(clickedItem.price!!)
+            setLocationDesc(clickedItem.location_desc!!)
+            setDetailRequirement(clickedItem.detail_requrement!!)
+            setIsMed(clickedItem.ismed!!)
+            setIsPayable(clickedItem.ispayable!!)
+            setFcmToken(clickedItem.fcm_token!!)
         }
-        findNavController().navigate(R.id.action_oxboxFragment_to_orderDetailFragment, bundle)
+
+        Log.d("hello",viewModel.message.value.toString())
+
+
+        findNavController().navigate(R.id.action_oxboxFragment_to_orderDetailFragment)
     }
 
 

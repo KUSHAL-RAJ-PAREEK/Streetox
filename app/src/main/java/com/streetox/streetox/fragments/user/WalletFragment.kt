@@ -5,17 +5,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.streetox.streetox.R
+import com.streetox.streetox.databinding.FragmentPolylineCostumerBinding
+import com.streetox.streetox.databinding.FragmentWalletBinding
 
 
 class WalletFragment : Fragment() {
+
+    private lateinit var binding: FragmentWalletBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_wallet, container, false)
+
+        binding = FragmentWalletBinding.inflate(layoutInflater)
+
+
+        binding.btnClick.setOnClickListener {
+            findNavController().navigate(R.id.action_walletFragment_to_mapCostumerFragment)
+        }
+
+        return binding.root
     }
 
 

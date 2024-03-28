@@ -42,7 +42,7 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    
+
 
 }
 
@@ -65,6 +65,7 @@ dependencies {
     implementation("com.android.car.ui:car-ui-lib:2.6.0")
     implementation("com.google.firebase:firebase-crashlytics-buildtools:2.9.9")
     implementation("androidx.datastore:datastore-core-android:1.1.0-beta02")
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -158,6 +159,18 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
 
 
+    implementation("io.reactivex.rxjava3:rxjava:3.1.5")
+    implementation("io.reactivex.rxjava3:rxandroid:3.0.2")
+    implementation("com.squareup.retrofit2:converter-scalars:2.1.0")
 
+    implementation("io.reactivex.rxjava2:rxandroid:2.1.1")
 
+    implementation("io.reactivex.rxjava2:rxkotlin:2.4.0")
+
+implementation("com.squareup.retrofit2:adapter-rxjava:2.9.0")
+
+    implementation("io.reactivex.rxjava2:rxjava:2.2.21")
+
+    implementation("com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 }

@@ -7,12 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.streetox.streetox.R
 import com.streetox.streetox.databinding.FragmentOrderDetailBinding
+import com.streetox.streetox.viewmodels.Stateviewmodels.OrderDetailViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,7 +26,10 @@ class OrderDetailFragment : Fragment() {
     private lateinit var binding : FragmentOrderDetailBinding
     private lateinit var auth: FirebaseAuth
 
-  val TAG = "OrderDetailFragment"
+    private val viewModel: OrderDetailViewModel by activityViewModels()
+
+
+    val TAG = "OrderDetailFragment"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,9 +39,49 @@ class OrderDetailFragment : Fragment() {
         binding = FragmentOrderDetailBinding.inflate(layoutInflater)
         auth = FirebaseAuth.getInstance()
 
+
+        viewModel.notiId.observe(viewLifecycleOwner) { notiId ->
+            binding.notiId.text = notiId
+            Log.d(TAG, "NotiId: $notiId")
+        }
+        viewModel.message.observe(viewLifecycleOwner) { message ->
+            binding.message.text = message
+            Log.d(TAG, "Message: $message")
+        }
+        viewModel.toLocation.observe(viewLifecycleOwner) { toLocation ->
+            binding.toLocation.text = toLocation
+            Log.d(TAG, "To Location: $toLocation")
+        }
+        viewModel.fromLocation.observe(viewLifecycleOwner) { fromLocation ->
+            binding.fromLocation.text = fromLocation
+            Log.d(TAG, "From Location: $fromLocation")
+        }
+        viewModel.price.observe(viewLifecycleOwner) { price ->
+            binding.price.text = price
+            Log.d(TAG, "Price: $price")
+        }
+        viewModel.locationDesc.observe(viewLifecycleOwner) { locationDesc ->
+            binding.address.text = locationDesc
+            Log.d(TAG, "Location Description: $locationDesc")
+        }
+        viewModel.detailRequirement.observe(viewLifecycleOwner) { detailRequirement ->
+            binding.detailRequirement.text = detailRequirement
+            Log.d(TAG, "Detail Requirement: $detailRequirement")
+        }
+        viewModel.isMed.observe(viewLifecycleOwner) { isMed ->
+            binding.medical.text = isMed
+            Log.d(TAG, "Is Medical: $isMed")
+        }
+        viewModel.isPayable.observe(viewLifecycleOwner) { isPayable ->
+            binding.payable.visibility = if (isPayable == "Yes") View.VISIBLE else View.GONE
+            Log.d(TAG, "Is Payable: $isPayable")
+        }
+
+
         setting_text()
         btn_back_click()
         on_btn_Accept_click()
+
 
 
         requireActivity().onBackPressedDispatcher.addCallback(requireActivity(),object :
@@ -44,6 +90,8 @@ class OrderDetailFragment : Fragment() {
                 findNavController().navigate(R.id.action_orderDetailFragment_to_oxboxFragment)
             }
         })
+
+        on_direction_click()
 
 
         return binding.root
@@ -57,59 +105,36 @@ class OrderDetailFragment : Fragment() {
     }
 
 
-    private fun on_btn_Accept_click(){
+    private fun on_btn_Accept_click() {
         binding.acceptBtn.setOnClickListener {
-            val title = "streetox"
-            val message = arguments?.getString("message").toString()
-            val fcmToken = arguments?.getString("fcmToken")
-            Log.d("fcm",fcmToken.toString())
+            val title = "Your request has been accepted"
+            val message = viewModel.message.value ?: ""
+            val fcmToken = viewModel.fcmToken.value
+            Log.d("fcm", fcmToken ?: "FCM token is null")
 
-            if (fcmToken != null) {
-                PushNotification(NotificationData(title,message,"acceptNoti"), fcmToken).also {
+            fcmToken?.let { token ->
+                PushNotification(NotificationData(title, message, "acceptNoti"), token).also {
                     sendNotification(it)
                 }
-            }else{
-                Log.d("fcm","null")
-            }
-
+            } ?: Log.d("fcm", "FCM token is null")
         }
     }
 
 
-    private fun setting_text(){
-        // Retrieve data from the bundle
-        val args = arguments
 
-        val noti_id = args!!.getString("noti_id")
-        val message = args.getString("message")
-        val toLocation = args.getString("toLocation")
-        val fromLocation = args.getString("fromLocation")
-        val fromLatitude = args.getDouble("fromLatitude")
-        val fromLongitude = args.getDouble("fromLongitude")
-        val toLatitude = args.getDouble("toLatitude")
-        val toLongitude = args.getDouble("toLongitude")
-        val price = args.getString("price")
-        val location_desc = args.getString("location_desc")
-        val detail_requrement = args.getString("detail_requrement")
-        val ismed = args.getString("ismed")
-        val ispayable = args.getString("ispayable")
-
-
-        binding.payable.visibility = if (ispayable == "Yes") {
-            View.VISIBLE
-        } else {
-            View.GONE
+    private fun on_direction_click(){
+        binding.direction.setOnClickListener {
+            findNavController().navigate(R.id.action_orderDetailFragment_to_directionFragment)
         }
-
-        binding.notiId.setText(noti_id)
-        binding.message.setText(message)
-        binding.toLocation.setText(toLocation)
-        binding.fromLocation.setText(fromLocation)
-        binding.address.setText(location_desc)
-        binding.price.setText(price)
-        binding.medical.setText(ismed)
-        binding.detailRequirement.setText(detail_requrement)
     }
+
+
+    private fun setting_text() {
+
+
+    }
+
+
 
 
     private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {

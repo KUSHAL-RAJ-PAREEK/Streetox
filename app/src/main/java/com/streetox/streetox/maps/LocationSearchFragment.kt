@@ -132,12 +132,12 @@ class LocationSearchFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCamer
         mGoogleMap = googleMap
 
 
-        mGoogleMap?.isMyLocationEnabled = true
-
-        val locationButton = (view?.findViewById<View>(Integer.parseInt("1"))?.parent as View).findViewById<View>(Integer.parseInt("2"))
-        val rlp =  locationButton.getLayoutParams() as RelativeLayout.LayoutParams
-        rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE)
-        rlp.setMargins(0, 250, 10, 0)
+//        mGoogleMap?.isMyLocationEnabled = true
+//
+//        val locationButton = (view?.findViewById<View>(Integer.parseInt("1"))?.parent as View).findViewById<View>(Integer.parseInt("2"))
+//        val rlp =  locationButton.getLayoutParams() as RelativeLayout.LayoutParams
+//        rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE)
+//        rlp.setMargins(0, 250, 10, 0)
 
         mGoogleMap!!.getUiSettings().setCompassEnabled(false)
 

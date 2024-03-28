@@ -55,18 +55,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewTitle" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/notification_recyclerview"
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/bottom_sheet_color"
-        android:backgroundTint="@color/bottom_sheet_color"
+      app:swipeRefreshLayoutProgressSpinnerBackgroundColor="@color/streetox_primary_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/dividerView"
-        tools:listitem="@layout/in_area_notification_item" />
-    
+
+        app:layout_constraintTop_toBottomOf="@+id/dividerView">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/notification_recyclerview"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/bottom_sheet_color"
+            android:backgroundTint="@color/bottom_sheet_color"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dividerView"
+            tools:listitem="@layout/in_area_notification_item" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
     <com.facebook.shimmer.ShimmerFrameLayout
         android:id="@+id/inarea_shimmer_view"
         android:layout_width="0dp"
@@ -74,38 +89,46 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/dividerView">
+        app:layout_constraintTop_toTopOf="@+id/dividerView">
 
-     <LinearLayout
-         android:layout_width="match_parent"
-         android:layout_height="match_parent"
-         android:orientation="vertical">
-         <include layout="@layout/notification_item_shimmer"/>
-         <include layout="@layout/notification_item_shimmer"/>
-         <include layout="@layout/notification_item_shimmer"/>
-         <include layout="@layout/notification_item_shimmer"/>
-         <include layout="@layout/notification_item_shimmer"/>
-         <include layout="@layout/notification_item_shimmer"/>
-         <include layout="@layout/notification_item_shimmer"/>
-         <include layout="@layout/notification_item_shimmer"/>
-     </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <include layout="@layout/notification_item_shimmer" />
+
+            <include layout="@layout/notification_item_shimmer" />
+
+            <include layout="@layout/notification_item_shimmer" />
+
+            <include layout="@layout/notification_item_shimmer" />
+
+            <include layout="@layout/notification_item_shimmer" />
+
+            <include layout="@layout/notification_item_shimmer" />
+
+            <include layout="@layout/notification_item_shimmer" />
+
+            <include layout="@layout/notification_item_shimmer" />
+        </LinearLayout>
 
     </com.facebook.shimmer.ShimmerFrameLayout>
 
 
 
-       <com.airbnb.lottie.LottieAnimationView
-           android:id="@+id/panda_anim"
-           android:layout_width="@dimen/_250sdp"
-           android:layout_height="@dimen/_250sdp"
-           app:lottie_autoPlay="true"
-           android:visibility="gone"
-          app:lottie_repeatCount="-1"
-           app:lottie_fileName="panda_flying.json"
-           app:layout_constraintBottom_toBottomOf="parent"
-           app:layout_constraintEnd_toEndOf="parent"
-           app:layout_constraintStart_toStartOf="parent"
-           app:layout_constraintTop_toTopOf="parent" />
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/panda_anim"
+        android:layout_width="@dimen/_250sdp"
+        android:layout_height="@dimen/_250sdp"
+        app:lottie_autoPlay="true"
+        android:visibility="gone"
+        app:lottie_repeatCount="-1"
+        app:lottie_fileName="panda_flying.json"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/no_request_found_text"

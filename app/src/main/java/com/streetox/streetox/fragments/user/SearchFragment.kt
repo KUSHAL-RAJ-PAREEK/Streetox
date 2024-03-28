@@ -300,7 +300,6 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
 
 // REQUEST FOR LOCATION
 
-//        checkpermissions()
 
         // Use Dexter to request permissions
         Dexter.withActivity(requireActivity())
@@ -317,7 +316,6 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
                         fusedLocationProviderClient =
                             LocationServices.getFusedLocationProviderClient(requireActivity())
                         settingGeoFire()
-                        requireContext().startForegroundService(service)
                         // Initialize the map
                         val mapFragment =
                             childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
@@ -745,29 +743,6 @@ class SearchFragment : Fragment(), OnMapReadyCallback, IOnLoadLocationListener,
     }
 
 
-    private fun checkpermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (ActivityCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                locationPermissions.launch(
-                    arrayOf(
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                    )
-                )
-            } else {
-                // Permissions already granted, start the service
-                requireContext().startForegroundService(service)
-            }
-        }
-    }
 
 
 // override fun onStop() {

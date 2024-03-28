@@ -141,7 +141,7 @@ class DetailInformationFragment : Fragment() {
 
             Log.d("med&pay", "$isPayable  $medicalRelated")
 
-            findNavController().navigate(R.id.action_detailInformationFragment_to_acceptFragment,bundle)
+            findNavController().navigate(R.id.action_detailInformationFragment_to_raise_requestFragment,bundle)
         }
     }
 

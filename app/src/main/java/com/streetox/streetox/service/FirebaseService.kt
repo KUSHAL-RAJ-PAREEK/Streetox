@@ -22,6 +22,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.streetox.streetox.R
+import com.streetox.streetox.activities.MainActivity
 import com.streetox.streetox.activities.UserMainActivity
 import kotlin.random.Random
 
@@ -61,7 +62,7 @@ class FirebaseService : FirebaseMessagingService() {
         val intent: Intent = when (message.data["notificationType"]) {
             "acceptNoti" -> {
                 // Create an intent for the first type of notification
-                Intent(this, UserMainActivity::class.java).apply {
+                Intent(this, MainActivity::class.java).apply {
                     putExtra("fromNotification", true)
                     putExtra("fcmToken", fcmToken)
                 }
@@ -69,7 +70,7 @@ class FirebaseService : FirebaseMessagingService() {
 
             "areaNoti" -> {
                 // Create an intent for the second type of notification
-                Intent(this, UserMainActivity::class.java).apply {
+                Intent(this, MainActivity::class.java).apply {
                     putExtra("AreaNotification", true)
                     putExtra("fcmToken", fcmToken)
                 }

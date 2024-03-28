@@ -1,10 +1,12 @@
 package com.streetox.streetox.activities
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.util.Base64
 import android.util.Log
 import android.view.View
@@ -13,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import com.streetox.streetox.R
+import com.streetox.streetox.fragments.user.NotificationFragment
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
@@ -27,6 +30,42 @@ class MainActivity : AppCompatActivity() {
         facebook_login()
         // statusbar changing function
         setStatusBarColor()
+
+
+
+        if (intent.hasExtra("fromNotification")) {
+            val fcmToken = intent.getStringExtra("fcmToken")
+            Log.d("useractvity",fcmToken.toString())
+
+            Handler().postDelayed({
+
+                val intent = Intent(this, UserMainActivity::class.java)
+
+                intent.putExtra("fromNotification", true)
+                intent.putExtra("fcmToken", fcmToken)
+                startActivity(intent)
+                finish() // Finish the current activity to prevent going back to it
+            }, 3000)
+        }
+
+        if (intent.hasExtra("AreaNotification")) {
+            val fcmToken = intent.getStringExtra("fcmToken")
+
+            Handler().postDelayed({
+                val bundle = Bundle().apply {
+                    putString("fcmToken", fcmToken)
+                }
+                val notificationFragment = NotificationFragment()
+                notificationFragment.arguments = bundle
+                // Navigate to the fragment (assuming your fragment container is R.id.fragment_container)
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.notiFragment, notificationFragment)
+                    .commit()
+
+            }, 3000)
+        }
+
+
     }
 
     private fun facebook_login(){
@@ -73,5 +112,8 @@ class MainActivity : AppCompatActivity() {
                 decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             }
         }
+
+
     }
+
 }
