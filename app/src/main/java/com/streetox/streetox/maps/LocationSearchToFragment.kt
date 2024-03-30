@@ -3,6 +3,7 @@ package com.streetox.streetox.maps
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
@@ -137,6 +138,21 @@ class LocationSearchToFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCam
 //        val rlp =  locationButton.getLayoutParams() as RelativeLayout.LayoutParams
 //        rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE)
 //        rlp.setMargins(0, 250, 10, 0)
+
+
+        try {
+            val success = mGoogleMap!!.setMapStyle(
+                MapStyleOptions.loadRawResourceStyle(
+                    requireContext(),
+                    R.raw.streetox_dark_with_label
+                )
+            )
+            if (!success) {
+                Log.d("polymapcostmer", "Failed to load map style")
+            }
+        } catch (ex: Resources.NotFoundException) {
+            Log.d("polymapcostmer", "Not found json string for map style")
+        }
 
 
         mGoogleMap!!.getUiSettings().setCompassEnabled(false)

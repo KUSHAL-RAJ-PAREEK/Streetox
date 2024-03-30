@@ -3,6 +3,7 @@ package com.streetox.streetox.maps
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
@@ -139,6 +140,22 @@ class LocationSearchFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCamer
 //        rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE)
 //        rlp.setMargins(0, 250, 10, 0)
 
+
+        try {
+            val success = mGoogleMap!!.setMapStyle(
+                MapStyleOptions.loadRawResourceStyle(
+                    requireContext(),
+                    R.raw.streetox_dark_with_label
+                )
+            )
+            if (!success) {
+                Log.d("polymapcostmer", "Failed to load map style")
+            }
+        } catch (ex: Resources.NotFoundException) {
+            Log.d("polymapcostmer", "Not found json string for map style")
+        }
+
+
         mGoogleMap!!.getUiSettings().setCompassEnabled(false)
 
         // Check for location permission
@@ -209,7 +226,7 @@ class LocationSearchFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCamer
             try {
                 val addressList = geoCoder.getFromLocationName(query, 1)
                 if (addressList!!.isNotEmpty()) {
-                    return@withContext addressList?.get(0)
+                    return@withContext addressList!![0]
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -224,6 +241,7 @@ class LocationSearchFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCamer
         mGoogleMap?.addMarker(MarkerOptions().position(latLng).title(query))
         mGoogleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
     }
+
 
     private fun getLocationName(latitude: Double, longitude: Double): String {
         val geocoder = Geocoder(fragmentContext!!)

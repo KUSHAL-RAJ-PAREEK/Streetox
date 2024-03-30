@@ -24,16 +24,15 @@ import com.google.android.gms.maps.model.PolylineOptions
 import com.streetox.streetox.R
 import com.streetox.streetox.Utils
 import com.streetox.streetox.databinding.FragmentPolylineCostumerBinding
-import io.reactivex.disposables.CompositeDisposable
 import org.json.JSONObject
 
 class PolylineCostumerFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var binding: FragmentPolylineCostumerBinding
-    private var mGoogleMap: GoogleMap? = null
-    private var deliveryMarker: Marker? = null
-    private lateinit var iGoogleAPI: IGoogleAPI
-    private val compositeDisposable = CompositeDisposable()
+//    private var mGoogleMap: GoogleMap? = null
+//    private var deliveryMarker: Marker? = null
+//    private lateinit var iGoogleAPI: IGoogleAPI
+//    private val compositeDisposable = CompositeDisposable()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

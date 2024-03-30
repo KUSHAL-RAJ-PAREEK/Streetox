@@ -1,20 +1,18 @@
 package com.streetox.streetox.maps
 
+import android.animation.ValueAnimator
 import android.content.res.Resources
 import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Path
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.Dot
+import com.google.android.gms.maps.model.Dash
 import com.google.android.gms.maps.model.Gap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
@@ -28,39 +26,41 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.streetox.streetox.R
-import com.streetox.streetox.databinding.FragmentMapCostumerBinding
+import com.streetox.streetox.databinding.ActivityMapCostumerBinding
 
-class MapCostumerFragment : Fragment(), OnMapReadyCallback {
+class MapCostumerActivity : AppCompatActivity(), OnMapReadyCallback {
 
-    // Declare variables
-    private lateinit var binding: FragmentMapCostumerBinding
+    private lateinit var binding: ActivityMapCostumerBinding
     private var mGoogleMap: GoogleMap? = null
     private lateinit var userLocationRef: DatabaseReference
     private var userMarker: Marker? = null
-    private lateinit var auth : FirebaseAuth
+    private lateinit var auth: FirebaseAuth
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentMapCostumerBinding.inflate(layoutInflater)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityMapCostumerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         val mapFragment =
-            childFragmentManager.findFragmentById(R.id.map_costumer_Fragment) as SupportMapFragment
+            supportFragmentManager.findFragmentById(R.id.map_costumer_Fragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
         auth = FirebaseAuth.getInstance()
-        userLocationRef = FirebaseDatabase.getInstance().getReference("currentLocation").child(auth.currentUser!!.uid)
-        return binding.root
+        userLocationRef = FirebaseDatabase.getInstance().getReference("currentLocation")
+            .child(auth.currentUser!!.uid)
+
+
     }
+
 
     override fun onMapReady(googleMap: GoogleMap) {
         mGoogleMap = googleMap
-        mGoogleMap!!.uiSettings.isZoomControlsEnabled = true
 
         try {
             val success = mGoogleMap!!.setMapStyle(
                 MapStyleOptions.loadRawResourceStyle(
-                    requireContext(),
-                    R.raw.streetox_dark_with_label
+                   this@MapCostumerActivity,
+                    R.raw.streetox_light_with_label
                 )
             )
             if (!success) {
@@ -70,9 +70,7 @@ class MapCostumerFragment : Fragment(), OnMapReadyCallback {
             Log.d("polymapcostmer", "Not found json string for map style")
         }
 
-        // Fixed locations (example)
-        val fixedLocation1 = LatLng(20.5937, 78.9629)
-        val fixedLocation2 = LatLng(21.5937, 79.9629)
+        val fixedLocation = LatLng(20.5937, 78.9629)
 
         userLocationRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -87,76 +85,78 @@ class MapCostumerFragment : Fragment(), OnMapReadyCallback {
 
                     val newLocation = LatLng(latitude, longitude)
 
-                    // Update user marker position or create a new one if it doesn't exist
+                    val myCustomColor = ContextCompat.getColor(this@MapCostumerActivity, R.color.cardview_tracking)
 
+
+//                    val markerOptions = MarkerOptions().position(newLocation).title("User Location")
+//                    userMarker = mGoogleMap?.addMarker(markerOptions)
+
+
+                    if (userMarker == null) {
                         val markerOptions = MarkerOptions().position(newLocation).title("User Location")
                         userMarker = mGoogleMap?.addMarker(markerOptions)
+                    } else {
 
+                        changePositionSmoothly(userMarker, newLocation)
+                    }
 
-                    // Draw polyline passing through three locations
-                    drawCurvedArrow(newLocation, fixedLocation1, 5, Color.YELLOW, 5f)
+                    drawStraightLine(newLocation, fixedLocation, myCustomColor, 5f)
 
-                    // Optionally, move the camera to focus on the user's current location
                     mGoogleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(newLocation, 15f))
                 }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                // Handle errors here
+
             }
         })
 
 
     }
 
-    private fun drawCurvedArrow(
+    private fun drawStraightLine(
         markerPosition: LatLng,
         fixedLocation: LatLng,
-        curveRadius: Int,
         color: Int,
         lineWidth: Float
     ) {
-        val midX = (markerPosition.latitude + fixedLocation.latitude) / 2
-        val midY = (markerPosition.longitude + fixedLocation.longitude) / 2
+        val points = listOf(markerPosition, fixedLocation)
 
-        val xDiff = midX - markerPosition.latitude
-        val yDiff = midY - markerPosition.longitude
-
-        val angle = (Math.atan2(yDiff, xDiff) * (180 / Math.PI)) - 90
-        val angleRadians = Math.toRadians(angle)
-        val pointX = (midX + curveRadius * Math.cos(angleRadians))
-        val pointY = (midY + curveRadius * Math.sin(angleRadians))
-
-        val path = Path()
-        path.moveTo(markerPosition.latitude.toFloat(), markerPosition.longitude.toFloat())
-        path.cubicTo(
-            markerPosition.latitude.toFloat(),
-            markerPosition.longitude.toFloat(),
-            pointX.toFloat(),
-            pointY.toFloat(),
-            fixedLocation.latitude.toFloat(),
-            fixedLocation.longitude.toFloat()
-        )
-
-        val points = ArrayList<LatLng>()
-        val step = 0.01
-        var t = 0.0
-        while (t <= 1.0) {
-            val x = (1 - t) * (1 - t) * markerPosition.latitude + 2 * (1 - t) * t * pointX + t * t * fixedLocation.latitude
-            val y = (1 - t) * (1 - t) * markerPosition.longitude + 2 * (1 - t) * t * pointY + t * t * fixedLocation.longitude
-            points.add(LatLng(x, y))
-            t += step
-        }
-
-        // Create PolylineOptions with a dotted pattern
+        // Create PolylineOptions for the dashed line
         val polylineOptions = PolylineOptions()
             .addAll(points)
             .width(lineWidth)
             .color(color)
-            .pattern(arrayListOf(Dot(), Gap(10f))) // Adjust the gap value for the dotted pattern
+            .pattern(listOf(Dash(20f), Gap(10f))) // Set the pattern for the dashed line
 
         // Add the polyline to the map
         mGoogleMap?.addPolyline(polylineOptions)
     }
+
+
+    fun changePositionSmoothly(marker: Marker?, newLatLng: LatLng) {
+        if (marker == null) {
+            return
+        }
+
+        val markerOptions = MarkerOptions().position(newLatLng).title("User Location")
+        userMarker = mGoogleMap?.addMarker(markerOptions)
+
+        val animation = ValueAnimator.ofFloat(0f, 100f)
+        var previousStep = 0f
+        val deltaLatitude = newLatLng.latitude - marker.position.latitude
+        val deltaLongitude = newLatLng.longitude - marker.position.longitude
+
+        animation.duration = 1500
+
+        animation.addUpdateListener { animation ->
+            val deltaStep = animation.animatedValue as Float - previousStep
+            previousStep = animation.animatedValue as Float
+            marker.position = LatLng(marker.position.latitude + deltaLatitude * deltaStep * 1 / 100, marker.position.longitude + deltaStep * deltaLongitude * 1 / 100)
+        }
+        animation.start()
+    }
+
+
 
 }

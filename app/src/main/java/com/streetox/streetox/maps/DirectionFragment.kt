@@ -1,6 +1,7 @@
 package com.streetox.streetox.maps
 
 import android.annotation.SuppressLint
+import android.content.res.Resources
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -15,9 +17,13 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.Dash
+import com.google.android.gms.maps.model.Gap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolylineOptions
 import com.streetox.streetox.R
 import com.streetox.streetox.databinding.FragmentDirectionBinding
 import com.streetox.streetox.databinding.FragmentSearchBinding
@@ -83,6 +89,22 @@ fromLongitude = fromlong
         mGoogleMap?.isMyLocationEnabled = true
 
 
+        try {
+            val success = mGoogleMap!!.setMapStyle(
+                MapStyleOptions.loadRawResourceStyle(
+                    requireContext(),
+                    R.raw.streetox_dark_with_label
+                )
+            )
+            if (!success) {
+                Log.d("polymapcostmer", "Failed to load map style")
+            }
+        } catch (ex: Resources.NotFoundException) {
+            Log.d("polymapcostmer", "Not found json string for map style")
+        }
+
+
+        val myCustomColor = ContextCompat.getColor(requireContext(), R.color.streetox_primary_color)
 
         arguments?.let { args ->
             fromLatitude = args.getDouble("fromLatitude")
@@ -95,6 +117,16 @@ fromLongitude = fromlong
             .position(LatLng(fromLatitude, fromLongitude))
             .title("destition")
             .icon(customMarkerIcon))
+
+        val polylineOptions = PolylineOptions()
+            .add(LatLng(fromLatitude, fromLongitude))
+            .add(LatLng(toLatitude, toLongitude))
+            .color(myCustomColor)
+            .width(10f)
+            .pattern(listOf(Dash(20f), Gap(10f)))
+
+        mGoogleMap?.addPolyline(polylineOptions)
+
 
         val customMarkerIcon2 = BitmapDescriptorFactory.fromResource(R.drawable.destination_marker)
         mGoogleMap?.addMarker(MarkerOptions()

@@ -6,6 +6,40 @@
     android:layout_height="match_parent"
     tools:context=".activities.UserMainActivity">
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/accepted_request"
+        android:visibility="gone"
+        android:layout_width="@dimen/_200sdp"
+        android:layout_height="@dimen/_20sdp"
+        app:cardCornerRadius="@dimen/_20sdp"
+        android:backgroundTint="@color/cardview_tracking"
+        android:layout_marginTop="@dimen/_20sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" >
+
+        <ImageView
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:src="@drawable/delivery"
+            android:layout_gravity="center|start"
+            android:layout_marginStart="@dimen/_10sdp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Your accepted Requests"
+            android:textColor="@color/white"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/_1sdp"
+            android:fontFamily="@font/poppins_semibold"
+            android:gravity="center"/>
+
+
+
+
+    </androidx.cardview.widget.CardView>
+
     <fragment
         android:id="@+id/mainContainer"
         android:name="androidx.navigation.fragment.NavHostFragment"

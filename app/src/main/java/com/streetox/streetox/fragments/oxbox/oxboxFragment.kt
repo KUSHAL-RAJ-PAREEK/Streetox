@@ -201,7 +201,8 @@ class oxboxFragment : Fragment(), OxoboxAdapter.OnItemClickListener {
         val clickedItem = oxboxArrayList[position]
 
         viewModel.apply {
-            setNotiId(clickedItem.uid!!)
+            setUid(clickedItem.uid!!)
+            setNotiId(clickedItem.noti_id!!)
             setMessage(clickedItem.message!!)
             setToLocation( clickedItem.to_location!!)
             setToLatitude(clickedItem.to!!.latitude)

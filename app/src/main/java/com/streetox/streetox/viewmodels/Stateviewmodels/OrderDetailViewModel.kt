@@ -6,6 +6,11 @@ import androidx.lifecycle.ViewModel
 
 class OrderDetailViewModel : ViewModel() {
 
+
+    private val _uid = MutableLiveData<String>()
+    val uid: LiveData<String>
+        get() = _uid
+
     private val _notiId = MutableLiveData<String>()
     val notiId: LiveData<String>
         get() = _notiId
@@ -76,6 +81,10 @@ class OrderDetailViewModel : ViewModel() {
 
     fun setToLongitude(value: Double) {
         _toLongitude.value = value
+    }
+
+    fun setUid(value: String) {
+        _uid.value = value
     }
 
     fun setNotiId(value: String) {

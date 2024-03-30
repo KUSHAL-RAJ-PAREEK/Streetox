@@ -65,6 +65,8 @@ class FirebaseService : FirebaseMessagingService() {
                 Intent(this, MainActivity::class.java).apply {
                     putExtra("fromNotification", true)
                     putExtra("fcmToken", fcmToken)
+                    putExtra("notificationId", message.data["notificationId"])
+                    putExtra("UID",auth.currentUser!!.uid)
                 }
             }
 
@@ -72,11 +74,13 @@ class FirebaseService : FirebaseMessagingService() {
                 // Create an intent for the second type of notification
                 Intent(this, MainActivity::class.java).apply {
                     putExtra("AreaNotification", true)
+                    putExtra("notificationId", message.data["notificationId"])
                     putExtra("fcmToken", fcmToken)
                 }
             }else -> {
                 Intent(this, UserMainActivity::class.java).apply {
                     putExtra("AreaNotification", true)
+                    putExtra("notificationId", message.data["notificationId"])
                     putExtra("fcmToken", fcmToken)
 
                 }

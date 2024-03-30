@@ -1,9 +1,11 @@
 package com.streetox.streetox
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.location.Location
 import android.widget.Toast
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import java.time.LocalDate
 import java.time.Period
 import java.time.format.DateTimeFormatter
@@ -31,6 +33,8 @@ object Utils {
         Location.distanceBetween(from.latitude, from.longitude, to.latitude, to.longitude, results)
         return results[0]
     }
+
+
    }
 
 

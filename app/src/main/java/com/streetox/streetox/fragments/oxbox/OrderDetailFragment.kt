@@ -1,16 +1,24 @@
 package com.streetox.streetox.fragments.oxbox
 
+import android.app.Dialog
+import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.streetox.streetox.R
@@ -110,14 +118,58 @@ class OrderDetailFragment : Fragment() {
             val title = "Your request has been accepted"
             val message = viewModel.message.value ?: ""
             val fcmToken = viewModel.fcmToken.value
+            val notificationId = viewModel.notiId.value ?: ""
+
             Log.d("fcm", fcmToken ?: "FCM token is null")
 
+
+            val currentUserUid = viewModel.uid.value
+
+            // Update Firebase Database
+            val authCurrentUserUid = auth.currentUser?.uid
+
+            currentUserUid?.let { viewModelUid ->
+                authCurrentUserUid?.let { authUid ->
+                    viewModel.fcmToken.value?.let { requesterFcmToken ->
+                        val underReviewsRef = FirebaseDatabase.getInstance().getReference("underReviews")
+                        val userUnderReviewRef = underReviewsRef.child(viewModelUid)
+                        userUnderReviewRef.child("requesterUid").setValue(authUid)
+                        userUnderReviewRef.child("requesterFcmToken").setValue(requesterFcmToken)
+                        userUnderReviewRef.child("notificationId").setValue(viewModel.notiId.value)
+                    }
+                }
+            }
+
             fcmToken?.let { token ->
-                PushNotification(NotificationData(title, message, "acceptNoti"), token).also {
+                PushNotification(NotificationData(title, message, "acceptNoti",notificationId), token).also {
                     sendNotification(it)
                 }
             } ?: Log.d("fcm", "FCM token is null")
+
+
+            findNavController().navigate(R.id.action_orderDetailFragment_to_searchFragment)
+            showCustomDialogBox(requireContext(),"Please wait for a moment until requester respond to your action")
         }
+    }
+
+
+    private fun showCustomDialogBox(context: Context, message: String) {
+        val dialog = Dialog(context)
+        dialog.apply {
+            requestWindowFeature(Window.FEATURE_NO_TITLE)
+            setCancelable(false)
+            setContentView(R.layout.costumer_response_dailog)
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+            val txtMessage: TextView = findViewById(R.id.txt_message)
+            txtMessage.text = message
+
+            val handler = Handler()
+            handler.postDelayed({
+                dismiss()
+            }, 10000) //10 seconds
+        }
+        dialog.show()
     }
 
 
@@ -133,8 +185,6 @@ class OrderDetailFragment : Fragment() {
 
 
     }
-
-
 
 
     private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {

@@ -23,11 +23,7 @@
         android:id="@+id/walletFragment"
         android:name="com.streetox.streetox.fragments.user.WalletFragment"
         android:label="fragment_wallet"
-        tools:layout="@layout/fragment_wallet" >
-        <action
-            android:id="@+id/action_walletFragment_to_mapCostumerFragment"
-            app:destination="@id/mapCostumerFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_wallet" />
     <fragment
         android:id="@+id/requestFragment"
         android:name="com.streetox.streetox.fragments.user.RequestFragment"
@@ -280,6 +276,9 @@
             app:destination="@id/searchFragment"
             app:popUpTo="@id/searchFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_raisedRequestAnimationFragment_self"
+            app:destination="@id/raisedRequestAnimationFragment" />
     </fragment>
     <fragment
         android:id="@+id/oxboxFragment"
@@ -308,6 +307,11 @@
         <action
             android:id="@+id/action_orderDetailFragment_to_directionFragment"
             app:destination="@id/directionFragment" />
+        <action
+            android:id="@+id/action_orderDetailFragment_to_searchFragment"
+            app:destination="@id/searchFragment"
+            app:popUpTo="@id/searchFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/directionFragment"
@@ -319,9 +323,4 @@
             app:destination="@id/orderDetailFragment"
             app:popUpTo="@id/orderDetailFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/mapCostumerFragment"
-        android:name="com.streetox.streetox.maps.MapCostumerFragment"
-        android:label="fragment_map_costumer"
-        tools:layout="@layout/fragment_map_costumer" />
 </navigation>

@@ -1,5 +1,6 @@
 package com.streetox.streetox.fragments.user
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.streetox.streetox.R
 import com.streetox.streetox.databinding.FragmentPolylineCostumerBinding
 import com.streetox.streetox.databinding.FragmentWalletBinding
+import com.streetox.streetox.maps.MapCostumerActivity
 
 
 class WalletFragment : Fragment() {
@@ -24,7 +26,12 @@ class WalletFragment : Fragment() {
 
 
         binding.btnClick.setOnClickListener {
-            findNavController().navigate(R.id.action_walletFragment_to_mapCostumerFragment)
+
+            val intent = Intent(requireContext(), MapCostumerActivity::class.java).apply {
+                putExtra("fcmToken", "ok")
+                putExtra("notiUid", "ok1")
+            }
+            startActivity(intent)
         }
 
         return binding.root

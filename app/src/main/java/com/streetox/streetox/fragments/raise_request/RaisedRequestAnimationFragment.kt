@@ -1,5 +1,9 @@
 package com.streetox.streetox.fragments.raise_request
 
+import android.app.Dialog
+import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Binder
 import android.os.Bundle
 import android.os.Handler
@@ -8,6 +12,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.navigation.fragment.findNavController
 import com.streetox.streetox.R
@@ -30,6 +36,7 @@ class RaisedRequestAnimationFragment : Fragment() {
         Handler(Looper.getMainLooper()).postDelayed({
 
             findNavController().navigate(R.id.action_raisedRequestAnimationFragment_to_searchFragment)
+
         },2000)
 
 
