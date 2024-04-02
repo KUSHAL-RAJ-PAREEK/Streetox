@@ -1,12 +1,20 @@
 package com.streetox.streetox.fragments.oxbox
 
+import android.annotation.SuppressLint
+import android.app.Dialog
+import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.activityViewModels
@@ -161,10 +169,11 @@ class oxboxFragment : Fragment(), OxoboxAdapter.OnItemClickListener {
                         val ispayable = notificationSnapshot.child("ispayable").getValue(String::class.java)
                         val upload_time = notificationSnapshot.child("upload_time").getValue(String::class.java)
                         val fcmToken = notificationSnapshot.child("fcm_token").getValue(String::class.java)
+                        val toffee_money = notificationSnapshot.child("toffee_money").getValue(String::class.java)
 
                         Log.d("fcmmm",fcmToken.toString())
                         val user = notification_content(noti_id, uid, from, to, message, toLocation, fromLocation, date, time,
-                            price, location_desc, detail_requrement, ismed, ispayable, upload_time,fcmToken)
+                            price, location_desc, detail_requrement, ismed, ispayable, upload_time,fcmToken,toffee_money)
 
                         oxboxArrayList.add(0,user)
                         binding.oxboxShimmerView.visibility = View.GONE
@@ -216,6 +225,7 @@ class oxboxFragment : Fragment(), OxoboxAdapter.OnItemClickListener {
             setIsMed(clickedItem.ismed!!)
             setIsPayable(clickedItem.ispayable!!)
             setFcmToken(clickedItem.fcm_token!!)
+            setToffeeMoney(clickedItem.toffee_money!!)
         }
 
         Log.d("hello",viewModel.message.value.toString())

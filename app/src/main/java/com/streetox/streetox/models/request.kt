@@ -14,5 +14,8 @@ data class request(
     val price :String ?= null,
     val location_desc :String ?= null,
     val detail_requrement : String ?= null,
-    val fcm_token : String?= null
+    val fcm_token : String?= null,
+    val toffee_money : String? = null,
+    val ismed :String?= null,
+    val ispayable :String?= null
 )

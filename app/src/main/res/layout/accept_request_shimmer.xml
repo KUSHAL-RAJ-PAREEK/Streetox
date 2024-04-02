@@ -33,7 +33,7 @@
         <LinearLayout
             android:layout_marginTop="@dimen/_3sdp"
             android:layout_width="wrap_content"
-            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginStart="@dimen/_3sdp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_gravity="center|start"
@@ -41,9 +41,9 @@
 
 
             <androidx.cardview.widget.CardView
-                android:layout_marginTop="@dimen/_1sdp"
+                android:layout_marginTop="@dimen/_2sdp"
                 android:layout_width="@dimen/_60sdp"
-                android:layout_height="@dimen/_15sdp"
+                android:layout_height="@dimen/_10sdp"
                 android:maxWidth="@dimen/_200sdp"
                 android:background="#DDDDDD"
                 app:cardCornerRadius="@dimen/_5sdp"
@@ -54,6 +54,7 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="@dimen/_100sdp"
                 android:layout_height="@dimen/_21sdp"
+                android:layout_marginTop="@dimen/_2sdp"
                 android:background="#DDDDDD"
                 app:cardCornerRadius="@dimen/_5sdp"
                 android:fontFamily="@font/radio_canada"

@@ -20,5 +20,7 @@
     <color name="detail_cv">#454444</color>
     <color name="cardview_tracking">#22212E</color>
     <color name="text_tracking">#797979</color>
-    <color name="dummy">#FF0000</color>
+    <color name="tracking_map_divider">#C8C8C8</color>
+    <color name="tracking_mpa_button">#49475F</color>
+    <color name="tracker_text">#797979</color>
 </resources>

@@ -15,35 +15,29 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.database
 import com.google.gson.Gson
 import com.streetox.streetox.R
-import com.streetox.streetox.Utils
 import com.streetox.streetox.fragments.oxbox.NotificationData
 import com.streetox.streetox.fragments.oxbox.PushNotification
 import com.streetox.streetox.fragments.oxbox.RetrofitInstance
-import com.streetox.streetox.maps.MapCostumerActivity
-import com.streetox.streetox.models.notification_content
 import com.streetox.streetox.models.request
 import com.streetox.streetox.service.LocationService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import java.util.Timer
 import java.util.TimerTask
 
@@ -211,9 +205,10 @@ class UserMainActivity : AppCompatActivity(){
             mapDeliveryRef.child(uid).addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     if (dataSnapshot.exists()) {
-                        // Start the MapDeliveryActivity
-                    //    Utils.showToast(this@UserMainActivity,"exists")
-                        startActivity(Intent(this@UserMainActivity, MapCostumerActivity::class.java))
+
+                        // Start the TrackingDeliveryActivity
+
+                    startActivity(Intent(this@UserMainActivity, TrackingDeliveryActivity::class.java))
                     }
                 }
 
@@ -279,22 +274,20 @@ class UserMainActivity : AppCompatActivity(){
         val cancelBtn = dialog.findViewById<Button>(R.id.cancel_btn)
 
         acceptBtn.setOnClickListener {
-
-            val request_aceepted = "request accepted by requester"
-            sendNotificationsToToken(fcmToken,request_aceepted)
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val accepterfcmToken = getUserFcmToken(uid)
+                    val request_aceepted = "request accepted by requester"
+            sendNotificationsToToken(accepterfcmToken!!,request_aceepted)
 
             // Delete the snapshot
             snapshot.ref.removeValue()
 
+                    val underreviewNotifications = FirebaseDatabase.getInstance().getReference("underreviewNotifications")
+                    underreviewNotifications.child(notificationId).removeValue()
+
 
             val accepterUid = auth.currentUser?.uid
-
-
-            // run in background
-
-            CoroutineScope(Dispatchers.IO).launch {
-                try {
-                    val accepterfcmToken = getUserFcmToken(uid)
 
                     val database = FirebaseDatabase.getInstance()
                     val ref = database.reference.child("notifications").child(notificationId!!)
@@ -310,17 +303,20 @@ class UserMainActivity : AppCompatActivity(){
                                 val locationDetail = notificationDataMap?.get("location_desc") as? String
                                 val price = notificationDataMap?.get("price") as? String
                                 val detailRequrement = notificationDataMap?.get("detail_requrement") as? String
-                                val fromLatitude = (notificationDataMap?.get("from") as? Map<String, Any>)?.get("latitude") as? Double ?: 0.0
-                                val fromLongitude = (notificationDataMap?.get("from") as? Map<String, Any>)?.get("longitude") as? Double ?: 0.0
-                                val toLatitude = (notificationDataMap?.get("to") as? Map<String, Any>)?.get("latitude") as? Double ?: 0.0
-                                val toLongitude = (notificationDataMap?.get("to") as? Map<String, Any>)?.get("longitude") as? Double ?: 0.0
-
+                                val fromLatitude = (notificationDataMap?.get("from") as? Map<String, Any>)?.get("latitude") as? Double
+                                val fromLongitude = (notificationDataMap?.get("from") as? Map<String, Any>)?.get("longitude") as? Double
+                                val toLatitude = (notificationDataMap?.get("to") as? Map<String, Any>)?.get("latitude") as? Double
+                                val toLongitude = (notificationDataMap?.get("to") as? Map<String, Any>)?.get("longitude") as? Double
+                                val toffe_money = notificationDataMap?.get("toffee_money") as? String
+                                val ismed = notificationDataMap?.get("ismed") as? String
+                                val ispayable = notificationDataMap?.get("ispayable") as? String
                                 // Create LatLng objects
-                                val fromLatLng = LatLng(fromLatitude, fromLongitude)
-                                val toLatLng = LatLng(toLatitude, toLongitude)
+                                val fromLatLng = LatLng(fromLatitude!!, fromLongitude!!)
+                                val toLatLng = LatLng(toLatitude!!, toLongitude!!)
 
                                 val mapRequesterRef = database.getReference("mapRequester").child(accepterUid!!).push()
                                 val mapDeliveryRef = database.getReference("mapDelivery").child(uid)
+
 
                                 val dataMapReq = request(
                                     mapRequesterRef.key,
@@ -334,7 +330,10 @@ class UserMainActivity : AppCompatActivity(){
                                     price,
                                     locationDetail,
                                     detailRequrement,
-                                    accepterfcmToken
+                                    accepterfcmToken,
+                                    toffe_money,
+                                    ismed,
+                                    ispayable
                                 )
 
 
@@ -351,15 +350,18 @@ class UserMainActivity : AppCompatActivity(){
                                     price,
                                     locationDetail,
                                     detailRequrement,
-                                    fcmToken
+                                    fcmToken,
+                                    toffe_money,
+                                    ismed,
+                                    ispayable
                                 )
-
-
 
                                 mapRequesterRef.setValue(dataMapReq)
 
 
                                 mapDeliveryRef.setValue(dataMapDel)
+
+                        database.reference.child("notifications").child(notificationId!!).removeValue()
 
                             } else {
                                 println("Data does not exist")
@@ -371,10 +373,58 @@ class UserMainActivity : AppCompatActivity(){
                             println("Error getting data: ${databaseError.toException()}")
                         }
                     })
+
                 } catch (e: Exception) {
                     println("Error: ${e.message}")
                 }
             }
+
+
+            val oxboxRef = FirebaseDatabase.getInstance().reference.child("oxbox")
+
+            Log.d("Firebase", "Attempting to delete child nodes")
+
+            oxboxRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    Log.d("Firebase", "onDataChange triggered")
+                    val fcmTokens = mutableListOf<String>()
+
+                    dataSnapshot.children.forEach { uidSnapshot ->
+
+                        uidSnapshot.children.forEach { requestIdSnapshot ->
+
+                            val notiId = requestIdSnapshot.child("noti_id").getValue(String::class.java)
+                            val fcmToken = requestIdSnapshot.child("fcm_token").getValue(String::class.java)
+                            if (notiId == notificationId) {
+
+                                requestIdSnapshot.ref.removeValue()
+                                    .addOnSuccessListener {
+                                        fcmToken?.let {
+                                            fcmTokens.add(it)
+                                        }
+                                        Log.d("Firebase", "Child node removed successfully")
+                                    }
+                                    .addOnFailureListener { e ->
+
+                                        Log.e("Firebase", "Error removing child node: ${e.message}", e)
+                                    }
+                            }
+                        }
+                    }
+
+                    if (fcmTokens.isNotEmpty()) {
+                        fcmTokens.forEach { token ->
+                            sendNotificationsToToken(token, "The request in your oxbox has been accepted, thus it was removed from your oxbox.")
+                        }
+                    }
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+
+                    Log.e("Firebase", "Error querying database: ${databaseError.message}", databaseError.toException())
+                }
+            })
+
 
         isDialogShown = false
         dialog.dismiss()
@@ -383,18 +433,31 @@ class UserMainActivity : AppCompatActivity(){
         }
 
         cancelBtn.setOnClickListener {
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                  val token = getUserFcmToken(uid)
+                        val request_declined = "request declined by requester"
+                        sendNotificationsToToken(token!!, request_declined)
 
-            val request_declined = "request declined by requester"
-            sendNotificationsToToken(fcmToken,request_declined)
 
-            // Delete the snapshot
-            snapshot.ref.removeValue()
+                    // Delete the snapshot
+                    snapshot.ref.removeValue()
 
-            isDialogShown = false
+                    val underreviewNotifications = FirebaseDatabase.getInstance().getReference("underreviewNotifications")
+                    underreviewNotifications.child(notificationId).removeValue()
 
-            dialog.dismiss()
+                    isDialogShown = false
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error in cancel button coroutine: ${e.message}")
+                    // Handle the error appropriately
+                } finally {
+                    // Dismiss the dialog
+                    withContext(Dispatchers.Main) {
+                        dialog.dismiss()
+                    }
+                }
+            }
         }
-
         dialog.show()
     }
 

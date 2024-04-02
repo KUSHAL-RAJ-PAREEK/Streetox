@@ -6,12 +6,12 @@
     </style>
 
     <style name="Theme.Streetox" parent="Base.Theme.Streetox" />
-    
+
     <style name="RadioButtonStyle" parent="Theme.AppCompat.Light">
-        
+
         <!-- color of radio button -->
         <item name="colorAccent">@color/streetox_primary_color</item>
-        
+
         <!-- default color of radio button -->
         <item name="android:textColorPrimary">@color/background_color</item>
     </style>

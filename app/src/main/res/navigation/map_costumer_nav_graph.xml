@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/map_costumer_nav_graph"
+    app:startDestination="@id/acceptedRequestFragment">
+    <fragment
+        android:id="@+id/acceptedRequestFragment"
+        android:name="com.streetox.streetox.fragments.user.AcceptedRequestFragment"
+        android:label="fragment_accepted_request"
+        tools:layout="@layout/fragment_accepted_request" >
+        <action
+            android:id="@+id/action_acceptedRequestFragment_to_mapCostumerFragment"
+            app:destination="@id/mapCostumerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mapCostumerFragment"
+        android:name="com.streetox.streetox.maps.MapCostumerFragment"
+        android:label="fragment_map_costumer"
+        tools:layout="@layout/fragment_map_costumer" >
+        <action
+            android:id="@+id/action_mapCostumerFragment_to_acceptedRequestFragment"
+            app:destination="@id/acceptedRequestFragment"
+            app:popUpTo="@id/acceptedRequestFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+</navigation>

@@ -1,5 +1,6 @@
 package com.streetox.streetox.fragments.oxbox
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
@@ -12,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
@@ -80,6 +82,14 @@ class OrderDetailFragment : Fragment() {
             binding.medical.text = isMed
             Log.d(TAG, "Is Medical: $isMed")
         }
+        viewModel.isMed.observe(viewLifecycleOwner) { isMed ->
+            binding.medical.text = isMed
+            Log.d(TAG, "Is Medical: $isMed")
+        }
+        viewModel.tm.observe(viewLifecycleOwner) { tm ->
+            binding.tm.text = tm
+            Log.d(TAG, "Is Medical: $tm")
+        }
         viewModel.isPayable.observe(viewLifecycleOwner) { isPayable ->
             binding.payable.visibility = if (isPayable == "Yes") View.VISIBLE else View.GONE
             Log.d(TAG, "Is Payable: $isPayable")
@@ -89,6 +99,7 @@ class OrderDetailFragment : Fragment() {
         setting_text()
         btn_back_click()
         on_btn_Accept_click()
+        click_info()
 
 
 
@@ -119,6 +130,7 @@ class OrderDetailFragment : Fragment() {
             val message = viewModel.message.value ?: ""
             val fcmToken = viewModel.fcmToken.value
             val notificationId = viewModel.notiId.value ?: ""
+            val uid = viewModel.uid?: ""
 
             Log.d("fcm", fcmToken ?: "FCM token is null")
 
@@ -139,6 +151,11 @@ class OrderDetailFragment : Fragment() {
                     }
                 }
             }
+
+
+            val underreviewNotifications = FirebaseDatabase.getInstance().getReference("underreviewNotifications")
+            underreviewNotifications.child(notificationId).setValue(uid)
+
 
             fcmToken?.let { token ->
                 PushNotification(NotificationData(title, message, "acceptNoti",notificationId), token).also {
@@ -172,7 +189,34 @@ class OrderDetailFragment : Fragment() {
         dialog.show()
     }
 
+private fun click_info(){
 
+    binding.infoBtn.setOnClickListener {
+        showCustomDialogBoxinfo(requireContext(),"Toffee Money","The amount of money you need to provide the person delivering your need. If the distance is less than 1 km, 5 ruppess must be paid. and if higher, five ruppess per km.")
+    }
+}
+    @SuppressLint("MissingInflatedId", "ClickableViewAccessibility")
+    private fun showCustomDialogBoxinfo(context: Context, title: String, message: String) {
+        val dialog = Dialog(context)
+        dialog.apply {
+            requestWindowFeature(Window.FEATURE_NO_TITLE)
+            setCancelable(false)
+            setContentView(R.layout.costumer_response_dailog)
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+            val txttitle: TextView = findViewById(R.id.txt_title)
+            txttitle.text = title
+
+            val txtMessage: TextView = findViewById(R.id.txt_message)
+            txtMessage.text = message
+
+            window?.decorView?.setOnTouchListener { _, _ ->
+                dismiss()
+                true
+            }
+        }
+        dialog.show()
+    }
 
     private fun on_direction_click(){
         binding.direction.setOnClickListener {
@@ -199,5 +243,6 @@ class OrderDetailFragment : Fragment() {
             Log.d(TAG,e.toString())
         }
     }
+
 
 }

@@ -161,4 +161,6 @@ dependencies {
 
     
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
+    implementation ("androidx.activity:activity-ktx:1.4.0")
 }

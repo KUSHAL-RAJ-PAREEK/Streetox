@@ -4,8 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class OrderDetailViewModel : ViewModel() {
 
+class MapContentViewModel : ViewModel() {
+
+    private val _name = MutableLiveData<String>()
+    val name: LiveData<String>
+        get() = _name
 
     private val _uid = MutableLiveData<String>()
     val uid: LiveData<String>
@@ -43,7 +47,7 @@ class OrderDetailViewModel : ViewModel() {
     val isMed: LiveData<String>
         get() = _isMed
 
-    private val _isPayable = MutableLiveData<String>()
+    private val _isPayable= MutableLiveData<String>()
     val isPayable: LiveData<String>
         get() = _isPayable
 
@@ -123,15 +127,19 @@ class OrderDetailViewModel : ViewModel() {
         _isMed.value = value
     }
 
-    fun setIsPayable(value: String) {
-        _isPayable.value = value
-    }
-
     fun setFcmToken(value: String) {
         _fcmToken.value = value
     }
     fun setToffeeMoney(value: String) {
         _tm.value = value
+    }
+
+    fun setisPayable(value: String) {
+        _isPayable.value = value
+    }
+
+    fun setname(value: String) {
+        _name.value = value
     }
 
 }

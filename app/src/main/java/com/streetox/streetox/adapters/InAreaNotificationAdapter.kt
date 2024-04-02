@@ -1,13 +1,21 @@
 package com.streetox.streetox.adapters
 
+import android.app.Dialog
+import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
@@ -43,8 +51,6 @@ class InAreaNotificationAdapter(private val inareanotificationlist: ArrayList<no
         holder.addToOxboxButton.setOnClickListener {
             holder.addToOxboxButton.startAnimation(AnimationUtils.loadAnimation(holder.itemView.context, R.anim.button_click_animation))
             auth = FirebaseAuth.getInstance()
-            val animation = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.scale_up_down)
-            oxboxImageView.startAnimation(animation)
             // Retrieve data from the clicked item and do something with it
             val clickedItem = inareanotificationlist[position]
             Log.d("ClickedItem", "Message: ${clickedItem.message}, Location: ${clickedItem.to_location}, Time: ${clickedItem.upload_time}")
@@ -73,6 +79,8 @@ class InAreaNotificationAdapter(private val inareanotificationlist: ArrayList<no
                     val upload_time = dataSnapshot.child("upload_time").getValue(String::class.java)
 
                     val fcm_toekn = dataSnapshot.child("fcm_token").getValue(String::class.java)
+
+                    val tm = dataSnapshot.child("toffee_money").getValue(String::class.java)
                     // Create LatLng objects for "from" and "to" coordinates
                     val fromLatLng = LatLng(fromLatitude ?: 0.0, fromLongitude ?: 0.0)
                     val toLatLng = LatLng(toLatitude ?: 0.0, toLongitude ?: 0.0)
@@ -94,14 +102,35 @@ class InAreaNotificationAdapter(private val inareanotificationlist: ArrayList<no
                         ismed,
                         ispayable,
                         upload_time,
-                        fcm_toekn
+                        fcm_toekn,
+                        tm
                     )
 
                     // Log the notificationContent
                     Log.d("NotificationContent", notificationContent.toString())
 
+                    if (uid != null) {
+                        val underReviewsRef = FirebaseDatabase.getInstance().getReference("underreviewNotifications").child(currentitem.noti_id)
+                        underReviewsRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                if (snapshot.exists()) {
+                                    showCustomDialogBox(holder.itemView.context,"A request has already been accepted, and it is currently being reviewed")
+                                } else {
+                                    val animation = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.scale_up_down)
+                                    oxboxImageView.startAnimation(animation)
+                                    sendToOxbox(notificationContent)
+                                }
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                Log.e("FirebaseError", "Error fetching data: $error")
+                            }
+                        })
+                    } else {
+                        Log.e("error", "uid is null")
+                    }
                     // Send the notification_content object to "oxbox"
-                    sendToOxbox(notificationContent)
+
                 }
 
                 override fun onCancelled(databaseError: DatabaseError) {
@@ -142,6 +171,24 @@ class InAreaNotificationAdapter(private val inareanotificationlist: ArrayList<no
         })
     }
 
+    private fun showCustomDialogBox(context: Context, message: String) {
+        val dialog = Dialog(context)
+        dialog.apply {
+            requestWindowFeature(Window.FEATURE_NO_TITLE)
+            setCancelable(false)
+            setContentView(R.layout.costumer_response_dailog)
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+            val txtMessage: TextView = findViewById(R.id.txt_message)
+            txtMessage.text = message
+
+            val handler = Handler()
+            handler.postDelayed({
+                dismiss()
+            }, 10000) //10 seconds
+        }
+        dialog.show()
+    }
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
 
