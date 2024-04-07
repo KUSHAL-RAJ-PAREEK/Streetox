@@ -1,5 +1,6 @@
 package com.streetox.streetox.fragments.raise_request
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
@@ -34,7 +35,7 @@ class RaisedRequestAnimationFragment : Fragment() {
 
 
         Handler(Looper.getMainLooper()).postDelayed({
-
+            showCustomDialogBoxinfo(requireContext(),"streetox","For 30 minutes, your request is available. If it's accepted during this time, you'll be notified.")
             findNavController().navigate(R.id.action_raisedRequestAnimationFragment_to_searchFragment)
 
         },2000)
@@ -42,6 +43,29 @@ class RaisedRequestAnimationFragment : Fragment() {
 
 
         return binding.root
+    }
+
+    @SuppressLint("MissingInflatedId", "ClickableViewAccessibility")
+    private fun showCustomDialogBoxinfo(context: Context, title: String, message: String) {
+        val dialog = Dialog(context)
+        dialog.apply {
+            requestWindowFeature(Window.FEATURE_NO_TITLE)
+            setCancelable(false)
+            setContentView(R.layout.costumer_response_dailog)
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+            val txttitle: TextView = findViewById(R.id.txt_title)
+            txttitle.text = title
+
+            val txtMessage: TextView = findViewById(R.id.txt_message)
+            txtMessage.text = message
+
+            window?.decorView?.setOnTouchListener { _, _ ->
+                dismiss()
+                true
+            }
+        }
+        dialog.show()
     }
 
     override fun onResume() {

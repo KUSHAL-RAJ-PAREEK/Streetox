@@ -1,7 +1,11 @@
 package com.streetox.streetox.activities
 
 import android.annotation.SuppressLint
+import android.app.AlarmManager
 import android.app.Dialog
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -15,6 +19,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI.setupWithNavController
@@ -54,6 +59,7 @@ class UserMainActivity : AppCompatActivity(){
     private lateinit var mapDeliveryRef: DatabaseReference
     private var checking = true
     private lateinit var mapDeliveryListener: ValueEventListener
+
 
 
 
@@ -249,7 +255,6 @@ class UserMainActivity : AppCompatActivity(){
             Log.d("FirebaseAuth", "User is not authenticated")
         }
     }
-
 
     private fun showCustomDialogBox(uid : String,fcmToken:String, notificationId : String,snapshot: DataSnapshot) {
         val dialog = Dialog(this)

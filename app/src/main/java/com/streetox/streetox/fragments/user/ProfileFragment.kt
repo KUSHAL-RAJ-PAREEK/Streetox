@@ -1,7 +1,11 @@
 package com.streetox.streetox.fragments.user
 
+import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.room.Room
@@ -217,6 +222,8 @@ class ProfileFragment : Fragment() {
             getUserData()
         }
     }
+
+
 
     private fun getUserData() {
         val key = auth.currentUser?.uid

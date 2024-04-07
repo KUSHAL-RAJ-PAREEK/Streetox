@@ -21,4 +21,9 @@
     <color name="cardview_tracking">#22212E</color>
     <color name="tracking_map_divider">#C8C8C8</color>
     <color name="tracking_mpa_button">#49475F</color>
+    <color name="boundary">#E8E6EA</color>
+    <color name="reciver_message">#F3F2F2</color>
+    <color name="sender_message">#FFF8DE</color>
+    <color name="map_delivery_view">#FFF8DE</color>
+    <color name="order_detail_text">#C8C8C8</color>
 </resources>

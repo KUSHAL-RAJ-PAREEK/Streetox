@@ -1,5 +1,6 @@
 package com.streetox.streetox.service
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -9,6 +10,9 @@ import android.app.PendingIntent.FLAG_ONE_SHOT
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.media.MediaPlayer
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -28,6 +32,7 @@ import kotlin.random.Random
 
 
 private const val CHANNEL_ID = "streetox_channel"
+
 
 
 class FirebaseService : FirebaseMessagingService() {
@@ -54,8 +59,44 @@ class FirebaseService : FirebaseMessagingService() {
             }
         })
 
+        message.data.isNotEmpty().let {
+            val notificationType = message.data["notificationType"]
 
+            if (notificationType == "alarmNoti") {
+                playAlarmSound(this)
+            }
+        }
 
+    }
+
+    private fun playAlarmSound(context: Context) {
+        try {
+            // Get the default alarm sound URI
+            val alarmSoundUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+
+            // Create a MediaPlayer instance
+            val mediaPlayer = MediaPlayer()
+
+            // Set the data source to the alarm sound URI
+            mediaPlayer.setDataSource(context, alarmSoundUri)
+
+            // Prepare the MediaPlayer
+            mediaPlayer.prepare()
+
+            // Start playing the alarm sound
+            mediaPlayer.start()
+
+            // Optionally, you can set looping or handle other configurations
+            mediaPlayer.isLooping = true
+
+            // Release the MediaPlayer resources when playback is complete
+            mediaPlayer.setOnCompletionListener {
+                mediaPlayer.stop()
+                mediaPlayer.release()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun notification(message: RemoteMessage,fcmToken:String){
@@ -77,7 +118,15 @@ class FirebaseService : FirebaseMessagingService() {
                     putExtra("notificationId", message.data["notificationId"])
                     putExtra("fcmToken", fcmToken)
                 }
-            }else -> {
+            }
+            "alarmNoti" -> {
+                Intent(this, MainActivity::class.java).apply {
+                    putExtra("AlarmNotification", true)
+                    putExtra("notificationId", message.data["notificationId"])
+                    putExtra("fcmToken", fcmToken)
+                }
+            }
+            else -> {
                 Intent(this, UserMainActivity::class.java).apply {
                     putExtra("AreaNotification", true)
                     putExtra("notificationId", message.data["notificationId"])
@@ -99,13 +148,28 @@ class FirebaseService : FirebaseMessagingService() {
         val pendingIntent = PendingIntent.getActivity(this,0,intent,
             FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE)
 
-        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+        val stopIntent = Intent(this, MainActivity::class.java).apply {
+        }
+        val stopPendingIntent = PendingIntent.getActivity(this, 1, stopIntent,
+            FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE)
+
+        val notificationBuilder  = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(message.data["title"])
             .setContentText(message.data["message"])
             .setSmallIcon(R.drawable.so_trans_logo)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
-            .build()
+
+        if (message.data["notificationType"] == "alarmNoti") {
+            notificationBuilder.addAction(R.drawable.so_trans_logo, "Stop", stopPendingIntent)
+                .setAutoCancel(true)
+        }
+
+        val bigTextStyle = NotificationCompat.BigTextStyle()
+            .bigText(message.data["message"])
+        notificationBuilder.setStyle(bigTextStyle)
+
+        val notification = notificationBuilder.build()
 
         notificationManager.notify(notificationID,notification)
     }

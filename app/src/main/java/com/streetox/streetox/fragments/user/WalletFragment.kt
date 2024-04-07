@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.streetox.streetox.R
 import com.streetox.streetox.databinding.FragmentWalletBinding
 
 
@@ -20,7 +22,9 @@ class WalletFragment : Fragment() {
 
         binding = FragmentWalletBinding.inflate(layoutInflater)
 
-
+binding.btnClick.setOnClickListener {
+    findNavController().navigate(R.id.action_walletFragment_to_chatFragment2)
+}
 
         return binding.root
     }

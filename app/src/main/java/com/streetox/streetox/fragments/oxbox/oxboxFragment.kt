@@ -14,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.res.ResourcesCompat
@@ -36,6 +37,7 @@ import com.streetox.streetox.R
 import com.streetox.streetox.adapters.OxoboxAdapter
 import com.streetox.streetox.databinding.FragmentOxboxBinding
 import com.streetox.streetox.models.notification_content
+import com.streetox.streetox.models.request
 import com.streetox.streetox.viewmodels.Stateviewmodels.OrderDetailViewModel
 import com.streetox.streetox.viewmodels.Stateviewmodels.StateNameViewModel
 
@@ -209,29 +211,45 @@ class oxboxFragment : Fragment(), OxoboxAdapter.OnItemClickListener {
     override fun onItemClick(position: Int) {
         val clickedItem = oxboxArrayList[position]
 
-        viewModel.apply {
-            setUid(clickedItem.uid!!)
-            setNotiId(clickedItem.noti_id!!)
-            setMessage(clickedItem.message!!)
-            setToLocation( clickedItem.to_location!!)
-            setToLatitude(clickedItem.to!!.latitude)
-            setToLongitude(clickedItem.to!!.longitude)
-            setFromLocation(clickedItem.from_location!!)
-            setFromLatitude(clickedItem.from!!.latitude)
-            setFromLongitude(clickedItem.from!!.longitude)
-            setPrice(clickedItem.price!!)
-            setLocationDesc(clickedItem.location_desc!!)
-            setDetailRequirement(clickedItem.detail_requrement!!)
-            setIsMed(clickedItem.ismed!!)
-            setIsPayable(clickedItem.ispayable!!)
-            setFcmToken(clickedItem.fcm_token!!)
-            setToffeeMoney(clickedItem.toffee_money!!)
-        }
 
-        Log.d("hello",viewModel.message.value.toString())
+        val mapRequest = FirebaseDatabase.getInstance().getReference("mapRequester").child(auth.currentUser!!.uid)
+        mapRequest.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    showCustomDialogBox(requireContext(),"streetox","You currently are unable to accept requests. Your delivery is currently underway.")
+                } else {
+
+                    viewModel.apply {
+                        setUid(clickedItem.uid!!)
+                        setNotiId(clickedItem.noti_id!!)
+                        setMessage(clickedItem.message!!)
+                        setToLocation( clickedItem.to_location!!)
+                        setToLatitude(clickedItem.to!!.latitude)
+                        setToLongitude(clickedItem.to!!.longitude)
+                        setFromLocation(clickedItem.from_location!!)
+                        setFromLatitude(clickedItem.from!!.latitude)
+                        setFromLongitude(clickedItem.from!!.longitude)
+                        setPrice(clickedItem.price!!)
+                        setLocationDesc(clickedItem.location_desc!!)
+                        setDetailRequirement(clickedItem.detail_requrement!!)
+                        setIsMed(clickedItem.ismed!!)
+                        setIsPayable(clickedItem.ispayable!!)
+                        setFcmToken(clickedItem.fcm_token!!)
+                        setToffeeMoney(clickedItem.toffee_money!!)
+                    }
+
+                    Log.d("hello",viewModel.message.value.toString())
 
 
-        findNavController().navigate(R.id.action_oxboxFragment_to_orderDetailFragment)
+                    findNavController().navigate(R.id.action_oxboxFragment_to_orderDetailFragment)
+
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseError", "Error fetching data: $error")
+            }
+        })
     }
 
 
@@ -239,6 +257,30 @@ class oxboxFragment : Fragment(), OxoboxAdapter.OnItemClickListener {
         oxboxArrayList.clear()
         oxboxRecyclerview.removeAllViews()
         oxboxRecyclerview.adapter?.notifyDataSetChanged()
+    }
+
+
+    @SuppressLint("MissingInflatedId", "ClickableViewAccessibility")
+    private fun showCustomDialogBox(context: Context, title: String, message: String) {
+        val dialog = Dialog(context)
+        dialog.apply {
+            requestWindowFeature(Window.FEATURE_NO_TITLE)
+            setCancelable(false)
+            setContentView(R.layout.costumer_response_dailog)
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+            val txttitle: TextView = findViewById(R.id.txt_title)
+            txttitle.text = title
+
+            val txtMessage: TextView = findViewById(R.id.txt_message)
+            txtMessage.text = message
+
+            window?.decorView?.setOnTouchListener { _, _ ->
+                dismiss()
+                true
+            }
+        }
+        dialog.show()
     }
 }
 

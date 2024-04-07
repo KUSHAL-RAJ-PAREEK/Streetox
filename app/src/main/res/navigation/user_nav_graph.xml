@@ -23,7 +23,11 @@
         android:id="@+id/walletFragment"
         android:name="com.streetox.streetox.fragments.user.WalletFragment"
         android:label="fragment_wallet"
-        tools:layout="@layout/fragment_wallet" />
+        tools:layout="@layout/fragment_wallet" >
+        <action
+            android:id="@+id/action_walletFragment_to_chatFragment2"
+            app:destination="@id/chatFragment2" />
+    </fragment>
     <fragment
         android:id="@+id/requestFragment"
         android:name="com.streetox.streetox.fragments.user.RequestFragment"
@@ -323,4 +327,9 @@
             app:destination="@id/orderDetailFragment"
             app:popUpTo="@id/orderDetailFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/chatFragment2"
+        android:name="com.streetox.streetox.fragments.user.ChatFragment"
+        android:label="fragment_chat"
+        tools:layout="@layout/fragment_chat" />
 </navigation>

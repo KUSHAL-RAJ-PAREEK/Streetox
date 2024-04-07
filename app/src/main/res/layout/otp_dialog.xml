@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="@dimen/_20sdp"
+    android:backgroundTint="@color/pop_up_background_color"
+    android:layout_marginHorizontal="@dimen/_20sdp">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/_20sdp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/otp_txt_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:text="O T P"
+            android:textSize="@dimen/_15ssp"
+            android:textColor="@color/streetox_primary_color"/>
+
+        <TextView
+            android:id="@+id/otp_txt_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="OTP will appear after payment."
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:textSize="@dimen/_15ssp"/>
+
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

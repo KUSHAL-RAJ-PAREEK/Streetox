@@ -1,5 +1,6 @@
 package com.streetox.streetox.models
 
+
 data class user(
     val name: String = "",
     val dob: String? = null,

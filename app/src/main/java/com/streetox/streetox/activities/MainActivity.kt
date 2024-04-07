@@ -1,5 +1,6 @@
 package com.streetox.streetox.activities
 
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -14,6 +15,8 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
+import com.google.android.play.integrity.internal.i
+import com.razorpay.Checkout
 import com.streetox.streetox.R
 import com.streetox.streetox.fragments.user.NotificationFragment
 import java.security.MessageDigest
@@ -32,7 +35,6 @@ class MainActivity : AppCompatActivity() {
         setStatusBarColor()
 
 
-
         if (intent.hasExtra("fromNotification")) {
             val fcmToken = intent.getStringExtra("fcmToken")
             Log.d("useractvity",fcmToken.toString())
@@ -40,7 +42,6 @@ class MainActivity : AppCompatActivity() {
             Handler().postDelayed({
 
                 val intent = Intent(this, UserMainActivity::class.java)
-
                 intent.putExtra("fromNotification", true)
                 intent.putExtra("fcmToken", fcmToken)
                 startActivity(intent)

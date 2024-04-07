@@ -295,11 +295,11 @@
                 <ImageView
                     android:id="@+id/info_btn"
                     android:layout_width="@dimen/_12sdp"
-                    android:layout_height="@dimen/_12sdp"
-                    android:src="@drawable/info"
+                    android:layout_height="13dp"
                     android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/_5sdp"
                     android:layout_marginTop="@dimen/_2sdp"
-                    android:layout_marginStart="@dimen/_5sdp"/>
+                    android:src="@drawable/info" />
             </LinearLayout>
 
 

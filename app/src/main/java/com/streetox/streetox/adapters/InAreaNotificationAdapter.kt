@@ -1,5 +1,6 @@
 package com.streetox.streetox.adapters
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
@@ -114,11 +115,29 @@ class InAreaNotificationAdapter(private val inareanotificationlist: ArrayList<no
                         underReviewsRef.addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(snapshot: DataSnapshot) {
                                 if (snapshot.exists()) {
-                                    showCustomDialogBox(holder.itemView.context,"A request has already been accepted, and it is currently being reviewed")
+                                    showCustomDialogBox(holder.itemView.context,"streetox","A request has already been accepted, and it is currently being reviewed")
+                                    return
                                 } else {
-                                    val animation = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.scale_up_down)
-                                    oxboxImageView.startAnimation(animation)
-                                    sendToOxbox(notificationContent)
+                                    // checking currently going on requests
+
+                                    val mapRequest = FirebaseDatabase.getInstance().getReference("mapRequester").child(auth.currentUser!!.uid)
+                                    mapRequest.addListenerForSingleValueEvent(object : ValueEventListener {
+                                        override fun onDataChange(snapshot: DataSnapshot) {
+                                            if (snapshot.exists()) {
+                                                showCustomDialogBox(holder.itemView.context,"streetox","You currently are unable to accept requests. Your delivery is currently underway.")
+                                                return
+                                            } else {
+
+                                                val animation = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.scale_up_down)
+                                                oxboxImageView.startAnimation(animation)
+                                                sendToOxbox(notificationContent)
+                                            }
+                                        }
+
+                                        override fun onCancelled(error: DatabaseError) {
+                                            Log.e("FirebaseError", "Error fetching data: $error")
+                                        }
+                                    })
                                 }
                             }
 
@@ -171,7 +190,8 @@ class InAreaNotificationAdapter(private val inareanotificationlist: ArrayList<no
         })
     }
 
-    private fun showCustomDialogBox(context: Context, message: String) {
+    @SuppressLint("MissingInflatedId", "ClickableViewAccessibility")
+    private fun showCustomDialogBox(context: Context, title: String, message: String) {
         val dialog = Dialog(context)
         dialog.apply {
             requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -179,13 +199,16 @@ class InAreaNotificationAdapter(private val inareanotificationlist: ArrayList<no
             setContentView(R.layout.costumer_response_dailog)
             window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
+            val txttitle: TextView = findViewById(R.id.txt_title)
+            txttitle.text = title
+
             val txtMessage: TextView = findViewById(R.id.txt_message)
             txtMessage.text = message
 
-            val handler = Handler()
-            handler.postDelayed({
+            window?.decorView?.setOnTouchListener { _, _ ->
                 dismiss()
-            }, 10000) //10 seconds
+                true
+            }
         }
         dialog.show()
     }
