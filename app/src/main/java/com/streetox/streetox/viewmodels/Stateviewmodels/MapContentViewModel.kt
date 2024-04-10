@@ -79,6 +79,10 @@ class MapContentViewModel : ViewModel() {
     val otp: LiveData<String>
         get() = _otp
 
+    private val _request = MutableLiveData<String>()
+    val request: LiveData<String>
+        get() = _request
+
     fun setFromLatitude(value: Double) {
         _fromLatitude.value = value
     }
@@ -148,6 +152,10 @@ class MapContentViewModel : ViewModel() {
 
     fun setotp(value: String) {
         _otp.value = value
+    }
+
+    fun setrequest(value: String) {
+        _request.value = value
     }
 
 }

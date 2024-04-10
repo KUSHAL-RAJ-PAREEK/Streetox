@@ -30,6 +30,7 @@ class InAreaNotificationAdapter(private val inareanotificationlist: ArrayList<no
 
     private lateinit var databaseReference: DatabaseReference
     private lateinit var auth: FirebaseAuth
+    private var isDataAdded = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.in_area_notification_item, parent, false)
@@ -127,10 +128,36 @@ class InAreaNotificationAdapter(private val inareanotificationlist: ArrayList<no
                                                 showCustomDialogBox(holder.itemView.context,"streetox","You currently are unable to accept requests. Your delivery is currently underway.")
                                                 return
                                             } else {
+                                                val notificationsRef = FirebaseDatabase.getInstance().reference.child("notifications")
 
-                                                val animation = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.scale_up_down)
-                                                oxboxImageView.startAnimation(animation)
-                                                sendToOxbox(notificationContent)
+                                                notificationsRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                                                    override fun onDataChange(snapshot: DataSnapshot) {
+
+                                                        for (notificationSnapshot in snapshot.children) {
+                                                            val notificationUid = notificationSnapshot.child("uid").getValue(String::class.java)
+                                                            if (notificationUid == auth.currentUser!!.uid) {
+                                                                showCustomDialogBox(holder.itemView.context,"streetox","Your request is currently raised.")
+                                                                return
+                                                            }else{
+
+                                                                if (!isDataAdded) {
+                                                                    isDataAdded = true
+                                                                    val animation = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.scale_up_down)
+                                                                    oxboxImageView.startAnimation(animation)
+                                                                    sendToOxbox(notificationContent)
+
+                                                                }
+                                                            }
+                                                        }
+
+                                                    }
+
+                                                    override fun onCancelled(error: DatabaseError) {
+                                                        // Error occurred while trying to read data
+                                                        Log.e("MainActivity", "Error: ${error.message}")
+                                                    }
+                                                })
+
                                             }
                                         }
 

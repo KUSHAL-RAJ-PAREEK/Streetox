@@ -211,46 +211,68 @@ class oxboxFragment : Fragment(), OxoboxAdapter.OnItemClickListener {
     override fun onItemClick(position: Int) {
         val clickedItem = oxboxArrayList[position]
 
+        val notificationsRef = FirebaseDatabase.getInstance().reference.child("notifications")
 
-        val mapRequest = FirebaseDatabase.getInstance().getReference("mapRequester").child(auth.currentUser!!.uid)
-        mapRequest.addListenerForSingleValueEvent(object : ValueEventListener {
+        notificationsRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    showCustomDialogBox(requireContext(),"streetox","You currently are unable to accept requests. Your delivery is currently underway.")
-                } else {
+                var requestRaised = false
 
-                    viewModel.apply {
-                        setUid(clickedItem.uid!!)
-                        setNotiId(clickedItem.noti_id!!)
-                        setMessage(clickedItem.message!!)
-                        setToLocation( clickedItem.to_location!!)
-                        setToLatitude(clickedItem.to!!.latitude)
-                        setToLongitude(clickedItem.to!!.longitude)
-                        setFromLocation(clickedItem.from_location!!)
-                        setFromLatitude(clickedItem.from!!.latitude)
-                        setFromLongitude(clickedItem.from!!.longitude)
-                        setPrice(clickedItem.price!!)
-                        setLocationDesc(clickedItem.location_desc!!)
-                        setDetailRequirement(clickedItem.detail_requrement!!)
-                        setIsMed(clickedItem.ismed!!)
-                        setIsPayable(clickedItem.ispayable!!)
-                        setFcmToken(clickedItem.fcm_token!!)
-                        setToffeeMoney(clickedItem.toffee_money!!)
+                for (notificationSnapshot in snapshot.children) {
+                    val notificationUid = notificationSnapshot.child("uid").getValue(String::class.java)
+                    if (notificationUid == auth.currentUser!!.uid) {
+                        showCustomDialogBox(requireContext(), "streetox", "Your request is currently raised.")
+                        requestRaised = true
+
+                        return
                     }
+                }
 
-                    Log.d("hello",viewModel.message.value.toString())
+                if (!requestRaised) {
+                    val mapRequest = FirebaseDatabase.getInstance().getReference("mapRequester").child(auth.currentUser!!.uid)
+                    mapRequest.addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            if (snapshot.exists()) {
+                                showCustomDialogBox(requireContext(), "streetox", "You currently are unable to accept requests. Your delivery is currently underway.")
+                            } else {
+                                viewModel.apply {
+                                    setUid(clickedItem.uid!!)
+                                    setNotiId(clickedItem.noti_id!!)
+                                    setMessage(clickedItem.message!!)
+                                    setToLocation(clickedItem.to_location!!)
+                                    setToLatitude(clickedItem.to!!.latitude)
+                                    setToLongitude(clickedItem.to!!.longitude)
+                                    setFromLocation(clickedItem.from_location!!)
+                                    setFromLatitude(clickedItem.from!!.latitude)
+                                    setFromLongitude(clickedItem.from!!.longitude)
+                                    setPrice(clickedItem.price!!)
+                                    setLocationDesc(clickedItem.location_desc!!)
+                                    setDetailRequirement(clickedItem.detail_requrement!!)
+                                    setIsMed(clickedItem.ismed!!)
+                                    setIsPayable(clickedItem.ispayable!!)
+                                    setFcmToken(clickedItem.fcm_token!!)
+                                    setToffeeMoney(clickedItem.toffee_money!!)
+                                }
 
+                                Log.d("hello", viewModel.message.value.toString())
 
-                    findNavController().navigate(R.id.action_oxboxFragment_to_orderDetailFragment)
+                                findNavController().navigate(R.id.action_oxboxFragment_to_orderDetailFragment)
+                            }
+                        }
 
+                        override fun onCancelled(error: DatabaseError) {
+                            Log.e("FirebaseError", "Error fetching data: $error")
+                        }
+                    })
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("FirebaseError", "Error fetching data: $error")
+                // Error occurred while trying to read data
+                Log.e("MainActivity", "Error: ${error.message}")
             }
         })
     }
+
 
 
     private fun clearNotificationList() {

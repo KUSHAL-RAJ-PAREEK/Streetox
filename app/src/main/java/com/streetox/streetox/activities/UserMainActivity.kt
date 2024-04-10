@@ -344,7 +344,7 @@ class UserMainActivity : AppCompatActivity(){
 
 
                                 val dataMapDel = request(
-                                    mapDeliveryRef.key,
+                                    mapRequesterRef.key,
                                     notificationId,
                                     accepterUid,
                                     fromLatLng,
