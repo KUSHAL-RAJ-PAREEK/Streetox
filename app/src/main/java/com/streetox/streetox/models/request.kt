@@ -17,5 +17,6 @@ data class request(
     val fcm_token : String?= null,
     val toffee_money : String? = null,
     val ismed :String?= null,
-    val ispayable :String?= null
+    val ispayable :String?= null,
+    val name : String?= null
 )

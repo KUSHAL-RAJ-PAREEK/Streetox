@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardElevation="@dimen/_5sdp"
+    android:layout_marginVertical="@dimen/_7sdp"
+    android:layout_marginHorizontal="@dimen/_5sdp"
+    android:backgroundTint="@color/background_color"
+    app:strokeColor="@color/white"
+    app:strokeWidth="@dimen/_2sdp"
+    app:cardCornerRadius="@dimen/_8sdp">
+
+    <LinearLayout
+        android:id="@+id/completed_order_root"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginVertical="@dimen/_9sdp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/completed_order_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Title"
+                android:textSize="@dimen/_13ssp"
+                android:textColor="@color/white"
+                android:fontFamily="@font/radio_canada"/>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_6sdp"
+                android:layout_marginStart="@dimen/_7sdp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Delivery-guy"
+                    android:textSize="@dimen/_8ssp"
+                    android:textColor="@color/name_card_color"
+                    android:fontFamily="@font/radio_canada"/>
+
+                <TextView
+                    android:id="@+id/completed_delivery_boy_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_10ssp"
+                    android:text="Name"
+                    android:fontFamily="@font/radio_canada"/>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_60sdp"
+            android:layout_gravity="bottom|end">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="| "
+                android:textSize="@dimen/_14ssp"
+                android:textColor="@color/name_card_color"
+                android:fontFamily="@font/radio_canada"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Completed"
+                android:textSize="@dimen/_12ssp"
+                android:textColor="@color/name_card_color"
+                android:fontFamily="@font/radio_canada"/>
+        </LinearLayout>
+    </LinearLayout>
+
+
+
+
+</com.google.android.material.card.MaterialCardView>

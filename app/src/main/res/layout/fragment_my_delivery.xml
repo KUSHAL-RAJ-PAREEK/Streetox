@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/background_color"
+    tools:context=".fragments.user.order_delivery.MyDeliveryFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/btn_back"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_marginStart="@dimen/_18sdp"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:src="@drawable/back_arrow" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_18sdp"
+            android:layout_marginTop="@dimen/_13sdp"
+            android:fontFamily="@font/poppins_semibold"
+            android:text="My Delivery"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_28ssp"
+            android:textStyle="bold" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginHorizontal="@dimen/_18sdp">
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/delivery_tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_20sdp"
+                android:background="@color/background_color"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tabIndicator="@drawable/order_delivery_tab_indicator"
+                app:tabIndicatorAnimationMode="linear"
+                app:tabIndicatorColor="@null"
+                app:tabIndicatorFullWidth="false"
+                app:tabIndicatorGravity="stretch"
+                app:tabMode="scrollable"
+                app:tabRippleColor="@null"
+                app:tabSelectedTextColor="@color/black"
+                tools:ignore="MissingConstraints"/>
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/delivery_viewpager"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/viewpager_bg"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/delivery_tab_layout" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+    </LinearLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

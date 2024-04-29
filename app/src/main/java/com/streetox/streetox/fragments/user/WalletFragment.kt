@@ -22,9 +22,10 @@ class WalletFragment : Fragment() {
 
         binding = FragmentWalletBinding.inflate(layoutInflater)
 
-binding.btnClick.setOnClickListener {
-    findNavController().navigate(R.id.action_walletFragment_to_chatFragment2)
-}
+        binding.txt.setOnClickListener{
+
+            findNavController().navigate(R.id.action_walletFragment_to_ratingFragment2)
+        }
 
         return binding.root
     }

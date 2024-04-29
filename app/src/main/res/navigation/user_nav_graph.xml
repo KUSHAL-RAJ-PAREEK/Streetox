@@ -27,6 +27,9 @@
         <action
             android:id="@+id/action_walletFragment_to_chatFragment2"
             app:destination="@id/chatFragment2" />
+        <action
+            android:id="@+id/action_walletFragment_to_ratingFragment2"
+            app:destination="@id/ratingFragment2" />
     </fragment>
     <fragment
         android:id="@+id/requestFragment"
@@ -51,6 +54,12 @@
         <action
             android:id="@+id/action_profileFragment_to_verifyPhone_NumberFragment"
             app:destination="@id/verifyPhone_NumberFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_myOrdersFragment"
+            app:destination="@id/myOrdersFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_myDeliveryFragment2"
+            app:destination="@id/myDeliveryFragment" />
     </fragment>
     <fragment
         android:id="@+id/changePasswordFragment"
@@ -332,4 +341,32 @@
         android:name="com.streetox.streetox.fragments.user.ChatFragment"
         android:label="fragment_chat"
         tools:layout="@layout/fragment_chat" />
+    <fragment
+        android:id="@+id/myOrdersFragment"
+        android:name="com.streetox.streetox.fragments.user.order_delivery.MyOrdersFragment"
+        android:label="fragment_my_orders"
+        tools:layout="@layout/fragment_my_orders" >
+        <action
+            android:id="@+id/action_myOrdersFragment_to_orderDetailFragment2"
+            app:destination="@id/orderDetailFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/myDeliveryFragment"
+        android:name="com.streetox.streetox.fragments.user.order_delivery.MyDeliveryFragment"
+        android:label="fragment_my_delivery"
+        tools:layout="@layout/fragment_my_delivery" />
+    <fragment
+        android:id="@+id/orderDetailFragment2"
+        android:name="com.streetox.streetox.fragments.user.order_delivery.fragments.OrderDetailFragment"
+        android:label="fragment_order_detail2"
+        tools:layout="@layout/fragment_order_detail2" >
+        <action
+            android:id="@+id/action_orderDetailFragment2_to_myOrdersFragment"
+            app:destination="@id/myOrdersFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/ratingFragment2"
+        android:name="com.streetox.streetox.fragments.user.RatingFragment"
+        android:label="fragment_rating"
+        tools:layout="@layout/fragment_rating" />
 </navigation>

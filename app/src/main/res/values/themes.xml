@@ -15,4 +15,5 @@
         <!-- default color of radio button -->
         <item name="android:textColorPrimary">@color/background_color</item>
     </style>
+
 </resources>

@@ -62,9 +62,19 @@ class CustomerFragment : Fragment() {
         send_verification_code()
 
 
-
+checkOrder()
 
         return binding.root
+    }
+
+    private fun checkOrder() {
+        binding.myOrderBtn.setOnClickListener{
+
+            findNavController().navigate(
+                R.id.action_profileFragment_to_myOrdersFragment
+            )
+
+        }
     }
 
 

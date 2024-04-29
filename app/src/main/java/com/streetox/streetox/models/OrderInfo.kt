@@ -18,6 +18,8 @@ data class OrderInfo(
     val toLongitude: Double,
     val fcmToken: String,
     val tm: String,
-    val otp: String
+    val otp: String,
+    val Dname: String,
+    val Cname : String
 )
 

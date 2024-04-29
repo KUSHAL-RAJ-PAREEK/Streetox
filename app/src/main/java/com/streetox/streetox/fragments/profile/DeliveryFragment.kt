@@ -47,12 +47,22 @@ class DeliveryFragment : Fragment() {
             send_verification_code()
         }
 
-
+        checkDelivery()
         database.keepSynced(true)
 
         return binding.root
     }
 
+
+    private fun checkDelivery() {
+        binding.myDeliveryBtn.setOnClickListener{
+
+            findNavController().navigate(
+                R.id.action_profileFragment_to_myDeliveryFragment2
+            )
+
+        }
+    }
 
     private fun set_user_email_and_phone_number(){
 

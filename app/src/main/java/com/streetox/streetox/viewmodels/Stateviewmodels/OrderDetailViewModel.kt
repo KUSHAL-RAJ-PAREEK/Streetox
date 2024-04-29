@@ -71,6 +71,14 @@ class OrderDetailViewModel : ViewModel() {
     val tm: LiveData<String>
         get() = _tm
 
+    private val _Dname = MutableLiveData<String>()
+    val Dname: LiveData<String>
+        get() = _Dname
+
+    private val _Cname = MutableLiveData<String>()
+    val Cname: LiveData<String>
+        get() = _Cname
+
     fun setFromLatitude(value: Double) {
         _fromLatitude.value = value
     }
@@ -132,6 +140,14 @@ class OrderDetailViewModel : ViewModel() {
     }
     fun setToffeeMoney(value: String) {
         _tm.value = value
+    }
+
+    fun setDName(value: String) {
+        _Dname.value = value
+    }
+
+    fun setCName(value: String) {
+        _Cname.value = value
     }
 
 }

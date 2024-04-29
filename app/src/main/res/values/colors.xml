@@ -29,4 +29,5 @@
     <color name="map_delivery_view">#FFF8DE</color>
     <color name="order_detail_text">#C8C8C8</color>
     <color name="alarm_btn">#FAE8A6</color>
+    <color name="rating_text">#ACACAC</color>
 </resources>

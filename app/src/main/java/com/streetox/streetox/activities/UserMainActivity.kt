@@ -452,6 +452,95 @@ class UserMainActivity : AppCompatActivity(){
                     underreviewNotifications.child(notificationId).removeValue()
 
                     isDialogShown = false
+
+
+
+                    val database = FirebaseDatabase.getInstance()
+                    val ref = database.reference.child("notifications").child(notificationId!!)
+
+                    ref.addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                val notificationDataMap = dataSnapshot.value as? Map<String, Any>
+
+                                val message = notificationDataMap?.get("message") as? String
+                                val from = notificationDataMap?.get("from_location") as? String
+                                val to = notificationDataMap?.get("to_location") as? String
+                                val locationDetail = notificationDataMap?.get("location_desc") as? String
+                                val price = notificationDataMap?.get("price") as? String
+                                val detailRequrement = notificationDataMap?.get("detail_requrement") as? String
+                                val fromLatitude = (notificationDataMap?.get("from") as? Map<String, Any>)?.get("latitude") as? Double
+                                val fromLongitude = (notificationDataMap?.get("from") as? Map<String, Any>)?.get("longitude") as? Double
+                                val toLatitude = (notificationDataMap?.get("to") as? Map<String, Any>)?.get("latitude") as? Double
+                                val toLongitude = (notificationDataMap?.get("to") as? Map<String, Any>)?.get("longitude") as? Double
+                                val toffe_money = notificationDataMap?.get("toffee_money") as? String
+                                val ismed = notificationDataMap?.get("ismed") as? String
+                                val ispayable = notificationDataMap?.get("ispayable") as? String
+                                // Create LatLng objects
+                                val fromLatLng = LatLng(fromLatitude!!, fromLongitude!!)
+                                val toLatLng = LatLng(toLatitude!!, toLongitude!!)
+
+                                val database_order = FirebaseDatabase.getInstance().reference
+                                val orderrandomKey = database_order.child("order_complete").child(uid).push().key
+
+
+                                val cancel_info = request(
+                                    orderrandomKey.toString(),
+                                    notificationId,
+                                    uid,
+                                    fromLatLng,
+                                    toLatLng,
+                                    message,
+                                    to,
+                                    from,
+                                    price,
+                                    locationDetail,
+                                    detailRequrement,
+                                    null,
+                                    toffe_money,
+                                    ismed,
+                                    ispayable
+                                )
+
+
+                                if (orderrandomKey != null) {
+                                    // Set the order info with the generated key
+                                    val orderInfoRef = database_order.child("order_cancel").child("costumer").child(auth.currentUser!!.uid).child(orderrandomKey)
+                                    orderInfoRef.setValue(cancel_info)
+                                        .addOnCompleteListener { task ->
+                                            Log.d("order", "canceled")                                  }
+                                } else {
+                                    // Handle the case where the key is null
+                                    Log.e("order", "Error generating unique key for order info")
+                                }
+
+
+                                if (orderrandomKey != null) {
+                                    // Set the order info with the generated key
+                                    val orderInfoRef = database_order.child("order_cancel").child("delivery").child(uid).child(orderrandomKey)
+                                    orderInfoRef.setValue(cancel_info)
+                                        .addOnCompleteListener { task ->
+                                            Log.d("order", "canceled")                                  }
+                                } else {
+                                    // Handle the case where the key is null
+                                    Log.e("order", "Error generating unique key for order info")
+                                }
+
+                                database.reference.child("notifications").child(notificationId!!).removeValue()
+
+                            } else {
+                                println("Data does not exist")
+                            }
+                        }
+
+                        override fun onCancelled(databaseError: DatabaseError) {
+
+                            println("Error getting data: ${databaseError.toException()}")
+                        }
+                    })
+
+
+
                 } catch (e: Exception) {
                     Log.e(TAG, "Error in cancel button coroutine: ${e.message}")
                     // Handle the error appropriately
