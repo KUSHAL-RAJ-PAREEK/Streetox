@@ -60,6 +60,5 @@ We’ve documented the journey behind **StreetOx** – from how we came up with 
 - **Krunal Lohar**
 - **Neeraj Verma**
 - **Mentor: Apporva Bansal**
-
 ---
 Thank you.
