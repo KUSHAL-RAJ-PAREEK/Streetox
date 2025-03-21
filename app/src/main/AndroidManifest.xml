@@ -63,7 +63,7 @@
             android:value="@string/google_map_api_key" />
 
         <meta-data android:name="com.razorpay.ApiKey"
-            android:value="rzp_test_Um8ty7VBnaGVn2"/>
+            android:value="@string/razorpay_api"/>
 
         <service
             android:name=".service.LocationService"
