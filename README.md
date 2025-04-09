@@ -56,9 +56,10 @@ We’ve documented the journey behind **StreetOx** – from how we came up with 
 4. Build and run the app on an emulator or physical device.
 
 ## 🤝 Contributors
-- **Kushal Raj Pareek**
-- **Krunal Lohar**
-- **Neeraj Verma**
-- **Mentor: Apporva Bansal**
+- [**Kushal Raj Pareek**](https://github.com/KUSHAL-RAJ-PAREEK)
+- [**Krunal Lohar**](https://github.com/Krunallohar)
+- [**Neeraj Verma**](https://github.com/NeerajVermaGPS)
+- **Mentor:** [**Apporva Bansal**](https://github.com/AppoorvaBansal)
+
 ---
 Thank you.
