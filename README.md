@@ -13,7 +13,7 @@ StreetOx is an idea built around the power of communities. If you need something
 ## 💡 How did we come up with this?
 Our team – **Kushal Raj Pareek, Krunal Lohar, and Neeraj Verma** – wanted to address a common problem: the lack of easy ways to connect and share resources in local communities. After brainstorming, we developed this concept to simplify how people help each other.
 
-We’re also extremely grateful for the guidance of our mentor, **Apporva Bansal**(https://github.com/AppoorvaBansal), whose support has been invaluable throughout this project.
+We’re also extremely grateful for the guidance of our mentor, [**Apporva Bansal**](https://github.com/AppoorvaBansal), whose support has been invaluable throughout this project.
 
 ## 🚀 Features
 - **Real-time Tracking** 🛰️ - Track users with Google Maps API integration.
