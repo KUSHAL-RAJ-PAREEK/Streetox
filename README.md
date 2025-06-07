@@ -46,7 +46,7 @@ While the project is still in development, we’re exploring exciting features t
 Check out our **Figma design** for a complete visual overview:  
 [👉 View Figma Design](https://www.figma.com/design/X2CjsnFe6gJ03A2714VyUX/Streetox-Design?node-id=0-1&t=ykMnUIArPMWFCev3-1)
 
-## 📺 Demo Video
+## 📺 Full Video
 🎥 **Watch our video**
 We’ve documented the journey behind **StreetOx** – from how we came up with the idea to showcasing a glimpse of our project. We’d love for you to check it out and share your thoughts!  
 [📹 Watch Video](https://www.linkedin.com/feed/update/urn:li:activity:7273286006471028737/)
