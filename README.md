@@ -13,7 +13,7 @@ StreetOx is an idea built around the power of communities. If you need something
 ## 🎥 Demo Video
 📽️ Check out the app in action:
 
-https://www.linkedin.com/posts/streetox_streetox-startup-logistics-activity-7273286006471028737-oysV?utm_source=share&utm_medium=member_desktop&rcm=ACoAAD6K2CsB7HDNhcXdMy9UAPAAleQv9nt2A8k
+https://github.com/user-attachments/assets/2013f3ee-c8cd-4cee-9aed-a4770c628054
 
 ## 💡 How did we come up with this?
 Our team – [**Kushal Raj Pareek**](https://github.com/KUSHAL-RAJ-PAREEK), [**Krunal Lohar**](https://github.com/Krunallohar), and [**Neeraj Verma**](https://github.com/NeerajVermaGPS) – wanted to address a common problem: the lack of easy ways to connect and share resources in local communities. After brainstorming, we developed this concept to simplify how people help each other.
